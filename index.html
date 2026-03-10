@@ -309,12 +309,10 @@ nav .nav-logo{font-family:'Syne',sans-serif;font-weight:800;font-size:2.2rem;tex
   position: fixed; inset: 0; z-index: 400;
   background: rgba(0,0,0,.72);
   backdrop-filter: blur(6px);
-  display: none;          /* <- HIDDEN */
+  display: none;
   justify-content: flex-end;
-  opacity: 0;
-  transition: opacity .3s;
 }
-#nav-drawer.on { opacity: 1; }
+#nav-drawer.on { display: flex; }
 
 /* Drawer panel */
 .drawer-panel {
@@ -1034,11 +1032,12 @@ nav .nav-logo:hover span {
 /* ══ MENU — declarado primero para evitar ReferenceError ══ */
 function toggleMenu(){
   const d=document.getElementById('nav-drawer');
-  const opening=!d.classList.contains('on');
-  if(opening){d.style.display='flex';requestAnimationFrame(()=>d.classList.add('on'));document.body.style.overflow='hidden';}
-  else{d.classList.remove('on');document.body.style.overflow='';setTimeout(()=>d.style.display='none',300);}
+  d.classList.toggle('on');
+  document.body.style.overflow=d.classList.contains('on')?'hidden':'';
 }
-function closeMenuBg(e){if(e.target===document.getElementById('nav-drawer'))toggleMenu();}
+function closeMenuBg(e){
+  if(e.target===document.getElementById('nav-drawer')) toggleMenu();
+}
 
 /* ══ CANVAS FONDO ══ */
 const cv=document.getElementById('bgC'),ctx=cv.getContext('2d');
