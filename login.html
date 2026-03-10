@@ -1,1 +1,103 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Iniciar sesión — dªtªblɛ</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,300&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#04040F;--mg:#FF00CC;--cy:#00F0FF;--gn:#1DFF8A;--yw:#FFE500;--or:#FF6B1A;--pu:#C400FF;--bl:#3D7EFF;--mu:rgba(255,255,255,.45)}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:#fff;font-family:'DM Sans',sans-serif;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px;overflow-x:hidden}
+#bgC{position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.5}
+.wrap{position:relative;z-index:1;width:100%;max-width:420px}
+.logo{font-family:'Syne',sans-serif;font-weight:800;font-size:2rem;text-decoration:none;display:block;text-align:center;margin-bottom:32px}
+.logo span:nth-child(1){color:#FF00CC;text-shadow:0 0 12px #FF00CC}
+.logo span:nth-child(2){color:#FF6B1A;text-shadow:0 0 12px #FF6B1A}
+.logo span:nth-child(3){color:#FFE500;text-shadow:0 0 12px #FFE500}
+.logo span:nth-child(4){color:#1DFF8A;text-shadow:0 0 12px #1DFF8A}
+.logo span:nth-child(5){color:#00F0FF;text-shadow:0 0 12px #00F0FF}
+.logo span:nth-child(6){color:#3D7EFF;text-shadow:0 0 12px #3D7EFF}
+.logo span:nth-child(7){color:#C400FF;text-shadow:0 0 12px #C400FF}
+.card{background:rgba(255,255,255,.04);border:1.5px solid rgba(255,255,255,.1);border-radius:24px;padding:36px 32px;position:relative;overflow:hidden;box-shadow:0 0 60px rgba(255,0,204,.1)}
+.card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--mg),var(--cy),transparent)}
+h1{font-family:'Syne',sans-serif;font-weight:800;font-size:1.5rem;margin-bottom:6px;text-align:center}
+.sub{font-size:.88rem;color:var(--mu);text-align:center;margin-bottom:28px;line-height:1.5}
+.field{margin-bottom:16px}
+label{font-size:.8rem;font-weight:600;color:rgba(255,255,255,.7);display:block;margin-bottom:6px}
+input{width:100%;background:rgba(255,255,255,.06);border:1.5px solid rgba(255,255,255,.12);border-radius:12px;padding:13px 15px;color:#fff;font-family:'DM Sans',sans-serif;font-size:.93rem;outline:none;transition:border-color .2s}
+input:focus{border-color:var(--cy);box-shadow:0 0 18px rgba(0,240,255,.15)}
+input::placeholder{color:rgba(255,255,255,.25)}
+.btn-main{width:100%;padding:15px;border:none;border-radius:14px;cursor:pointer;font-family:'Syne',sans-serif;font-weight:800;font-size:1rem;color:#fff;background:linear-gradient(135deg,var(--mg),var(--pu));box-shadow:0 0 30px rgba(255,0,204,.4),0 4px 0 rgba(100,0,80,.8);transition:all .2s;margin-top:8px}
+.btn-main:hover{transform:translateY(-2px);box-shadow:0 0 50px rgba(255,0,204,.6),0 6px 0 rgba(100,0,80,.8)}
+.divider{display:flex;align-items:center;gap:10px;margin:20px 0;color:rgba(255,255,255,.25);font-size:.8rem}
+.divider::before,.divider::after{content:'';flex:1;height:1px;background:rgba(255,255,255,.1)}
+.btn-google{width:100%;padding:13px;border:1.5px solid rgba(255,255,255,.15);border-radius:14px;cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:600;font-size:.9rem;color:#fff;background:rgba(255,255,255,.06);display:flex;align-items:center;justify-content:center;gap:10px;transition:all .2s}
+.btn-google:hover{background:rgba(255,255,255,.12)}
+.footer-links{text-align:center;margin-top:20px;font-size:.82rem;color:var(--mu)}
+.footer-links a{color:var(--cy);text-decoration:none}
+.back{display:flex;align-items:center;gap:7px;color:var(--mu);text-decoration:none;font-size:.83rem;margin-bottom:20px;transition:color .2s}
+.back:hover{color:#fff}
+.msg{padding:11px 14px;border-radius:10px;font-size:.83rem;margin-bottom:16px;display:none}
+.msg.err{background:rgba(255,0,100,.1);border:1px solid rgba(255,0,100,.3);color:#ff6680}
+.msg.ok{background:rgba(29,255,138,.1);border:1px solid rgba(29,255,138,.3);color:var(--gn)}
+</style>
+</head>
+<body>
+<canvas id="bgC"></canvas>
+<div class="wrap">
+  <a href="index.html" class="back">← Volver al inicio</a>
+  <a class="logo" href="index.html"><span>d</span><span>ª</span><span>t</span><span>ª</span><span>b</span><span>l</span><span>ɛ</span></a>
+  <div class="card">
+    <h1>Bienvenido de vuelta</h1>
+    <p class="sub">Ingresa a tu cuenta para acceder a tu dashboard</p>
+    <div class="msg" id="msg"></div>
+    <div class="field">
+      <label>Correo electrónico</label>
+      <input type="email" id="email" placeholder="tu@correo.com">
+    </div>
+    <div class="field">
+      <label>Contraseña</label>
+      <input type="password" id="password" placeholder="••••••••">
+    </div>
+    <button class="btn-main" onclick="handleLogin()">Entrar a mi cuenta →</button>
+    <div class="divider">o</div>
+    <button class="btn-google" onclick="handleGoogle()">
+      <svg width="18" height="18" viewBox="0 0 18 18"><path fill="#4285F4" d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.717v2.258h2.908c1.702-1.567 2.684-3.875 2.684-6.615z"/><path fill="#34A853" d="M9 18c2.43 0 4.467-.806 5.956-2.184l-2.908-2.258c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332C2.438 15.983 5.482 18 9 18z"/><path fill="#FBBC05" d="M3.964 10.707c-.18-.54-.282-1.117-.282-1.707s.102-1.167.282-1.707V4.961H.957C.347 6.175 0 7.55 0 9s.348 2.825.957 4.039l3.007-2.332z"/><path fill="#EA4335" d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0 5.482 0 2.438 2.017.957 4.961L3.964 7.293C4.672 5.166 6.656 3.58 9 3.58z"/></svg>
+      Continuar con Google
+    </button>
+    <div class="footer-links" style="margin-top:16px">
+      ¿No tienes cuenta? <a href="#" onclick="alert('Primero obtén tu diagnóstico gratis desde la página principal.')">Crear cuenta</a>
+    </div>
+  </div>
+</div>
+<script>
+const cv=document.getElementById('bgC'),ctx=cv.getContext('2d');
+let W,H;function rsz(){W=cv.width=window.innerWidth;H=cv.height=window.innerHeight}
+const blobs=[{x:.1,y:.15,r:.4,c:'#FF00CC',p:0},{x:.85,y:.1,r:.33,c:'#00F0FF',p:1.2},{x:.5,y:.7,r:.44,c:'#BF00FF',p:2.4}];
+let t=0;
+function draw(){ctx.clearRect(0,0,W,H);ctx.fillStyle='#04040F';ctx.fillRect(0,0,W,H);t+=.004;
+blobs.forEach(b=>{const px=(b.x+Math.sin(t+b.p)*.12)*W,py=(b.y+Math.cos(t*.72+b.p)*.1)*H,r=b.r*Math.min(W,H)*.72;
+const g=ctx.createRadialGradient(px,py,0,px,py,r);g.addColorStop(0,b.c+'1C');g.addColorStop(.45,b.c+'0B');g.addColorStop(1,'transparent');
+ctx.fillStyle=g;ctx.beginPath();ctx.arc(px,py,r,0,Math.PI*2);ctx.fill();});requestAnimationFrame(draw);}
+rsz();draw();window.addEventListener('resize',rsz);
 
+function showMsg(txt, type){const m=document.getElementById('msg');m.textContent=txt;m.className='msg '+type;m.style.display='block';}
+
+function handleLogin(){
+  const email=document.getElementById('email').value.trim();
+  const pass=document.getElementById('password').value.trim();
+  if(!email||!pass){showMsg('Por favor llena todos los campos.','err');return;}
+  showMsg('Verificando... un momento.','ok');
+  // TODO: Connect to Supabase auth
+  setTimeout(()=>{
+    showMsg('Próximamente: la app estará disponible muy pronto. ¡Gracias por tu paciencia!','ok');
+  },1200);
+}
+function handleGoogle(){
+  showMsg('Próximamente: acceso con Google estará disponible muy pronto.','ok');
+}
+</script>
+</body>
+</html>
