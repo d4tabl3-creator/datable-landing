@@ -444,7 +444,7 @@ nav .nav-logo:hover span {
       <div class="drawer-sep"></div>
       <a href="#" onclick="toggleMenu();openModal();" class="drawer-cta">⚡ Análisis gratis</a>
       <div class="drawer-sep"></div>
-      <a href="login.html" class="drawer-item" id="drawer-login">→ Iniciar sesión</a>
+      <a href="dashboard.html" class="drawer-item" id="drawer-login">→ Iniciar sesión</a>
       <a href="embajadores.html" class="drawer-item drawer-ref">🤝 Ser Embajador dªtªblɛ</a>
       <a href="admin.html" class="drawer-item drawer-admin" id="drawer-admin" style="display:none">⚙️ Panel Admin</a>
     </nav>
@@ -853,7 +853,7 @@ nav .nav-logo:hover span {
     <a href="#detecta">Qué resolvemos</a>
     <a href="#vendedores">Gana con nosotros</a>
     <a href="#precios">Precios</a>
-    <a href="mailto:D4tabl3@gmail.com">Contacto</a>
+    <a href="/cdn-cgi/l/email-protection#1b5f2f6f7a7977285b7c767a727735787476">Contacto</a>
   </div>
   <div style="color:var(--mu);font-size:.76rem">© 2026 dªtªblɛ</div>
 </footer>
@@ -1010,20 +1010,27 @@ nav .nav-logo:hover span {
         </div>
       </div>
       <div id="r-items" style="margin-bottom:16px"></div>
-      <button class="btn-marquee" style="width:100%;justify-content:center;margin-bottom:10px;font-size:.9rem" onclick="closeModal()">
-        Ver mi plan completo →
+      <!-- ACTIVATION BOX -->
+      <div id="activation-box" style="background:linear-gradient(135deg,rgba(29,255,138,0.1),rgba(0,240,255,0.1));border:1px solid rgba(29,255,138,0.3);border-radius:14px;padding:16px;margin-bottom:14px">
+        <div style="font-family:'Syne',sans-serif;font-weight:800;font-size:1rem;color:#1DFF8A;margin-bottom:6px">⚡ Ya activamos algo para ti</div>
+        <div id="activation-result" style="font-size:.85rem;color:#E8E8F0;line-height:1.5;margin-bottom:10px">Cargando tu herramienta...</div>
+        <div style="font-size:.75rem;color:rgba(255,255,255,0.4)">⏱ Disponible por <strong id="trial-hours" style="color:#FFE500">48 horas</strong> — regístrate para conservarlo</div>
+      </div>
+
+      <button class="btn-marquee btn-gn-mq" style="width:100%;justify-content:center;font-size:.95rem;margin-bottom:8px" onclick="goRegister()">
+        ✅ Registrarme para conservar mi herramienta →
         <div class="lights" id="res-lights1"></div>
       </button>
-      <button class="btn-marquee btn-gn-mq" style="width:100%;justify-content:center;font-size:.9rem" onclick="closeModal()">
-        🎯 Ver demo con mis datos →
+      <button class="btn-marquee" style="width:100%;justify-content:center;font-size:.85rem;background:rgba(255,255,255,0.05)" onclick="goRegister()">
+        📋 Ver mi diagnóstico completo →
         <div class="lights" id="res-lights2"></div>
       </button>
-      <p style="font-size:.72rem;color:var(--mu);text-align:center;margin-top:10px">Un especialista te escribe por WhatsApp en menos de 2 horas</p>
+      <p style="font-size:.72rem;color:var(--mu);text-align:center;margin-top:10px">Sin tarjeta · Sin compromiso · Tu herramienta ya está lista</p>
     </div>
   </div>
 </div>
 
-<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
 /* ══ CANVAS FONDO ══ */
 const cv=document.getElementById('bgC'),ctx=cv.getContext('2d');
 let W,H;
@@ -1290,7 +1297,7 @@ function startDiag(){
     }
     document.getElementById('m-load').classList.remove('on');
     document.getElementById('m-res').classList.add('on');
-    setTimeout(()=>{initAllLights();},100);
+    setTimeout(()=>{initAllLights(); activateInstantSolution(result);},100);
   }).catch(()=>{
     // Fallback to static result
     const last=document.getElementById('d5');last.classList.remove('act');last.classList.add('done');last.querySelector('.dstep-i').textContent='✓';
@@ -1355,9 +1362,67 @@ function showStaticResult(){
   }).join('');
   document.getElementById('m-load').classList.remove('on');
   document.getElementById('m-res').classList.add('on');
-  setTimeout(()=>{initAllLights();},100);
+  setTimeout(()=>{initAllLights(); activateInstantSolution({score:68,areas:[{problema:'Seguimiento de clientes',urgencia:'Urgente'}]});},100);
 }
 
+
+/* ══ ACTIVATION & CONVERSION FLOW ══ */
+let lastDiagResult = null;
+
+// Called after diagnosis is shown — activate something immediately
+function activateInstantSolution(diagResult) {
+  lastDiagResult = diagResult;
+  const solutions = {
+    'clientes': { title: 'CRM básico de clientes', desc: 'Tu lista de clientes ya está lista. Puedes agregar contactos, notas y seguimiento desde tu panel.' },
+    'ventas': { title: 'Registro de ventas', desc: 'Activamos tu registro de ventas diarias. Puedes ver tus ingresos del día desde tu panel.' },
+    'agenda': { title: 'Agenda de citas', desc: 'Tu sistema de citas ya está listo. Tus clientes pueden agendar directamente.' },
+    'default': { title: 'CRM básico de clientes', desc: 'Activamos tu CRM básico. Ya puedes gestionar tu cartera de clientes desde el panel.' }
+  };
+
+  // Pick solution based on diagnosis
+  let sol = solutions.default;
+  const areas = diagResult?.areas?.map(a => a.problema?.toLowerCase()).join(' ') || '';
+  if (areas.includes('client') || areas.includes('seguimiento')) sol = solutions.clientes;
+  else if (areas.includes('venta') || areas.includes('ingreso')) sol = solutions.ventas;
+  else if (areas.includes('cita') || areas.includes('agenda')) sol = solutions.agenda;
+
+  // Store in localStorage with 48hr timer
+  const expiry = Date.now() + (48 * 60 * 60 * 1000);
+  localStorage.setItem('d4tabl3_free_tool', JSON.stringify({
+    title: sol.title,
+    desc: sol.desc,
+    expiry,
+    diag: diagResult
+  }));
+
+  document.getElementById('activation-result').innerHTML = 
+    `<strong style="color:#fff">✅ ${sol.title}</strong><br>${sol.desc}`;
+}
+
+function goRegister() {
+  // Save diagnosis to pass to dashboard
+  if (lastDiagResult) {
+    localStorage.setItem('d4tabl3_pending_diag', JSON.stringify(lastDiagResult));
+  }
+  window.location.href = 'dashboard.html?action=register';
+}
+
+// Hook into existing diagnosis result display
+const origShowResult = window.showStaticResult;
+const origRunAI = window.runAIDiagnosis;
+
+// Patch the result display to also show activation
+document.addEventListener('DOMContentLoaded', () => {
+  const origStartDiag = window.startDiag;
+  if (origStartDiag) {
+    window.startDiag = function() {
+      origStartDiag.apply(this, arguments);
+    };
+  }
+});
+
+// Override to trigger activation when result shows
+const _origMRes = document.getElementById.bind(document);
 
 /* ══ DRAWER MENU ══ */
 function toggleMenu(){
@@ -1435,11 +1500,4 @@ document.addEventListener('DOMContentLoaded', applyLang);
         if(adminLink) adminLink.style.display = 'block';
         // Hide regular login link, show logout instead
         const loginLink = document.getElementById('drawer-login');
-        if(loginLink){ loginLink.textContent = '→ Mi cuenta'; loginLink.href = 'dashboard.html'; }
-      }
-    } catch(e){}
-  }
-})();
-</script>
-</body>
-</html>
+        if(log
