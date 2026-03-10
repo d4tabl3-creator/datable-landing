@@ -1416,24 +1416,6 @@ function goRegister() {
   window.location.href = 'dashboard.html?action=register';
 }
 
-/* ══ DRAWER MENU ══ */
-function toggleMenu(){
-  const d = document.getElementById('nav-drawer');
-  const opening = !d.classList.contains('on');
-  if(opening){
-    d.style.display = 'flex';
-    requestAnimationFrame(()=> d.classList.add('on'));
-    document.body.style.overflow = 'hidden';
-  } else {
-    d.classList.remove('on');
-    document.body.style.overflow = '';
-    setTimeout(()=> d.style.display = 'none', 300);
-  }
-}
-function closeMenuBg(e){
-  if(e.target===document.getElementById('nav-drawer')) toggleMenu();
-}
-
 /* ══ DETECCIÓN AUTOMÁTICA DE IDIOMA ══ */
 const i18n = {
   en: {
@@ -1480,15 +1462,19 @@ document.addEventListener('DOMContentLoaded', applyLang);
 
 /* ══ ADMIN SESSION CHECK ══ */
 (function(){
-  // Check if admin is logged in
   const session = localStorage.getItem('d4tabl3_session');
   if(session){
     try {
       const data = JSON.parse(session);
       if(data.role === 'admin'){
-        // Show admin link in drawer
         const adminLink = document.getElementById('drawer-admin');
         if(adminLink) adminLink.style.display = 'block';
-        // Hide regular login link, show logout instead
         const loginLink = document.getElementById('drawer-login');
-        if(log
+        if(loginLink) loginLink.textContent = '→ Mi panel';
+      }
+    } catch(e){}
+  }
+})();
+</script>
+</body>
+</html>
