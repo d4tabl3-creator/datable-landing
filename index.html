@@ -254,96 +254,171 @@ footer{border-top:1px solid rgba(255,255,255,.06);padding:36px clamp(16px,5vw,60
 /* ══════════════════════════════════
    AJOLOTE MASCOTA
 ══════════════════════════════════ */
-#ajolote-wrap{
-  position:fixed;bottom:24px;right:20px;z-index:300;
-  display:flex;flex-direction:column;align-items:flex-end;gap:10px;
-}
-#ajolote-bubble{
-  background:#0D0D24;border:1.5px solid var(--mg);border-radius:20px 20px 4px 20px;
-  padding:13px 16px;max-width:270px;width:270px;font-size:.83rem;line-height:1.5;color:#fff;
-  box-shadow:0 0 24px rgba(255,0,204,.3);position:relative;
-  animation:bubbleIn .4s ease;
-}
-@keyframes bubbleIn{from{opacity:0;transform:scale(.8) translateY(10px)}to{opacity:1;transform:scale(1) translateY(0)}}
-#ajolote-bubble::after{content:'';position:absolute;bottom:-10px;right:22px;
-  width:0;height:0;border-left:8px solid transparent;border-right:0;
-  border-top:10px solid var(--mg)}
-#ajolote-bubble .ab-close{
-  position:absolute;top:6px;right:8px;background:none;border:none;color:var(--mu);
-  font-size:.8rem;cursor:pointer;padding:2px 5px;border-radius:4px;transition:color .2s}
-#ajolote-bubble .ab-close:hover{color:#fff}
-#ajolote-btn{
-  width:64px;height:64px;border-radius:50%;cursor:pointer;border:3px solid var(--mg);
-  background:#0D0D24;box-shadow:0 0 22px rgba(255,0,204,.5),0 0 44px rgba(255,0,204,.2);
-  display:flex;align-items:center;justify-content:center;font-size:2.2rem;
-  transition:transform .2s;animation:floatAjo 3s ease-in-out infinite;
-  position:relative;overflow:hidden;
-}
-#ajolote-btn::before{content:'';position:absolute;top:0;left:0;right:0;height:50%;background:rgba(255,255,255,.12);border-radius:50% 50% 0 0}
-#ajolote-btn:hover{transform:scale(1.12)}
-@keyframes floatAjo{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+/* ══ AXOLÍN ══ */
+#axol-wrap{position:fixed;bottom:24px;right:20px;z-index:500;display:flex;flex-direction:column;align-items:flex-end;gap:12px}
+#axol-btn{width:68px;height:68px;border-radius:50%;border:none;cursor:pointer;background:radial-gradient(circle at 35% 35%,#a78bfa,#5b21b6);box-shadow:0 0 0 4px rgba(167,139,250,.25),0 4px 20px rgba(167,139,250,.5);padding:6px;transition:transform .2s,box-shadow .2s;position:relative;animation:axolFloat 3s ease-in-out infinite}
+#axol-btn:hover{transform:scale(1.1);box-shadow:0 0 0 6px rgba(167,139,250,.4),0 6px 28px rgba(167,139,250,.8)}
+#axol-svg{width:100%;height:100%;filter:drop-shadow(0 0 8px rgba(167,139,250,.7))}
+@keyframes axolFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
 
-/* ══════════════════════════════════
-   MODAL
-══════════════════════════════════ */
-.ov{position:fixed;inset:0;z-index:500;background:rgba(0,0,0,.85);
-  backdrop-filter:blur(14px);display:none;align-items:center;justify-content:center;padding:16px}
-.ov.on{display:flex}
-.modal{background:#09091C;border:1.5px solid rgba(255,255,255,.12);border-radius:26px;
-  padding:clamp(22px,5vw,40px);max-width:520px;width:100%;position:relative;
-  max-height:90vh;overflow-y:auto;
-  box-shadow:0 0 80px rgba(255,0,204,.14),0 0 160px rgba(0,240,255,.09)}
-.modal::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;
-  background:linear-gradient(90deg,transparent,var(--mg),var(--cy),transparent)}
-.mc{position:absolute;top:13px;right:13px;background:rgba(255,255,255,.07);
-  border:1px solid rgba(255,255,255,.12);border-radius:50%;width:30px;height:30px;
-  color:#fff;font-size:.9rem;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s}
-.mc:hover{background:rgba(255,0,204,.2)}
-.modal-t{font-family:'Syne',sans-serif;font-weight:800;font-size:1.45rem;margin-bottom:5px}
-.modal-s{font-size:.83rem;color:var(--mu);margin-bottom:18px;line-height:1.55}
-/* drop zone */
-.dz{border:2px dashed rgba(255,255,255,.18);border-radius:16px;padding:28px 18px;
-  text-align:center;cursor:pointer;transition:all .3s;margin-bottom:12px}
-.dz:hover,.dz.drag{border-color:var(--cy);background:rgba(0,240,255,.05)}
-.dz-icon{font-size:2.2rem;display:block;margin-bottom:7px}
-.dz-hint{font-size:.82rem;color:var(--mu);line-height:1.55}
-.dz-hint strong{color:var(--cy)}
-.dz-mini{display:flex;gap:6px;justify-content:center;flex-wrap:wrap;margin-top:8px}
-.dz-tag{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);
-  border-radius:20px;padding:3px 10px;font-size:.7rem;color:rgba(255,255,255,.6)}
-#fi{display:none}
-/* textarea inside modal — always visible */
-.m-ta-wrap{margin-bottom:16px}
-.m-ta-label{font-size:.8rem;font-weight:600;color:rgba(255,255,255,.7);margin-bottom:6px;display:block}
-.m-ta{width:100%;background:rgba(255,255,255,.05);border:1.5px solid rgba(255,255,255,.12);
-  border-radius:12px;padding:12px 13px;color:#fff;font-family:'DM Sans',sans-serif;
-  font-size:.88rem;resize:none;min-height:90px;outline:none;transition:border-color .2s;line-height:1.6}
-.m-ta:focus{border-color:var(--cy);box-shadow:0 0 18px rgba(0,240,255,.15)}
-.m-ta::placeholder{color:rgba(255,255,255,.24)}
-/* loading */
-.m-load{display:none;text-align:center;padding:18px 0}
-.m-load.on{display:block}
-.spinner{width:44px;height:44px;border-radius:50%;border:3px solid rgba(255,255,255,.1);
-  border-top-color:var(--cy);animation:spin 1s linear infinite;margin:0 auto 13px}
-@keyframes spin{to{transform:rotate(360deg)}}
-.dstep{display:flex;align-items:center;gap:10px;font-size:.8rem;color:var(--mu);padding:5px 0;transition:color .4s}
-.dstep.done{color:var(--gn)}.dstep.act{color:var(--cy)}
-.dstep-i{width:20px;height:20px;border-radius:50%;border:1.5px solid;
-  display:flex;align-items:center;justify-content:center;font-size:.67rem;flex-shrink:0}
-.dstep.done .dstep-i{background:var(--gn);border-color:var(--gn);color:#000}
-.dstep.act .dstep-i{border-color:var(--cy);animation:blink 1s infinite}
-/* result */
-.m-res{display:none}.m-res.on{display:block}
-.res-top{display:flex;align-items:center;gap:16px;padding:14px;
-  background:rgba(29,255,138,.06);border:1.5px solid rgba(29,255,138,.25);
-  border-radius:12px;margin-bottom:13px}
-.res-n{font-family:'Syne',sans-serif;font-weight:800;font-size:2.9rem;
-  color:var(--gn);text-shadow:0 0 22px var(--gn);line-height:1}
-.res-ri{display:flex;align-items:center;gap:9px;background:rgba(255,255,255,.04);
-  border-radius:9px;padding:9px 11px;margin-bottom:7px}
-.ri-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0}
-.ri-lbl{font-size:.78rem;flex:1;font-weight:500}
-.ri-pill{font-size:.62rem;font-weight:700;padding:2px 9px;border-radius:18px;border:1px solid}
+/* bounce-in animation */
+@keyframes axolBounceIn{0%{transform:scale(0) translateY(20px);opacity:0}60%{transform:scale(1.2) translateY(-4px);opacity:1}80%{transform:scale(.92) translateY(2px)}100%{transform:scale(1) translateY(0)}}
+.axol-bounce{animation:axolBounceIn .6s cubic-bezier(.36,.07,.19,.97) forwards!important}
+
+/* sparkle ring */
+#axol-sparks-ring{position:absolute;bottom:0;right:0;width:68px;height:68px;pointer-events:none;border-radius:50%;z-index:499}
+.spark-dot{position:absolute;width:7px;height:7px;border-radius:50%;animation:sparkOut .7s ease-out forwards}
+@keyframes sparkOut{0%{transform:translate(0,0) scale(1);opacity:1}100%{transform:translate(var(--tx),var(--ty)) scale(0);opacity:0}}
+
+/* notification dot */
+.axol-notif{position:absolute;top:-2px;right:-2px;width:18px;height:18px;background:var(--gn);border-radius:50%;border:2px solid var(--bg);font-size:.65rem;font-weight:800;color:#000;display:flex;align-items:center;justify-content:center;animation:pulse 1.5s ease-in-out infinite}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(29,255,138,.6)}50%{box-shadow:0 0 0 6px rgba(29,255,138,0)}}
+
+/* bubble */
+#axol-bubble{background:#0D0D22;border:1.5px solid rgba(167,139,250,.35);border-radius:20px 20px 4px 20px;padding:20px 18px 14px;width:300px;max-height:480px;display:flex;flex-direction:column;gap:10px;box-shadow:0 0 40px rgba(167,139,250,.2);display:none;animation:bubbleIn .3s ease}
+@keyframes bubbleIn{from{opacity:0;transform:translateY(10px) scale(.96)}to{opacity:1;transform:translateY(0) scale(1)}}
+#axol-bubble.on{display:flex}
+.axol-close{background:none;border:none;color:rgba(255,255,255,.4);cursor:pointer;font-size:.9rem;align-self:flex-end;padding:0;line-height:1;transition:color .2s}
+.axol-close:hover{color:#fff}
+.axol-intro-name{font-family:'Syne',sans-serif;font-weight:800;font-size:1.1rem;color:#fff;margin-bottom:8px}
+.axol-intro-name strong{color:#FF9EDB}
+.axol-intro-text{font-size:.83rem;color:rgba(255,255,255,.75);line-height:1.55}
+.axol-intro-btns{display:flex;flex-direction:column;gap:6px;margin-top:12px}
+.axol-qbtn{background:rgba(255,110,199,.1);border:1px solid rgba(255,110,199,.25);color:rgba(255,255,255,.85);border-radius:10px;padding:8px 12px;font-size:.78rem;font-family:'DM Sans',sans-serif;cursor:pointer;text-align:left;transition:all .2s}
+.axol-qbtn:hover{background:rgba(255,110,199,.2);border-color:rgba(255,110,199,.5);color:#fff}
+.axol-qbtn:last-child{background:rgba(29,255,138,.1);border-color:rgba(29,255,138,.3);color:var(--gn)}
+#axol-chat-history{max-height:180px;overflow-y:auto;display:flex;flex-direction:column;gap:8px;font-size:.82rem}
+.axol-msg-user{background:rgba(255,255,255,.08);border-radius:10px 10px 2px 10px;padding:8px 11px;color:rgba(255,255,255,.9);align-self:flex-end;max-width:90%}
+.axol-msg-axol{background:rgba(255,110,199,.1);border:1px solid rgba(255,110,199,.2);border-radius:10px 10px 10px 2px;padding:8px 11px;color:rgba(255,255,255,.85);align-self:flex-start;max-width:95%;line-height:1.5}
+.axol-input-row{display:flex;gap:8px;margin-top:4px}
+#axol-input{flex:1;background:rgba(255,255,255,.06);border:1.5px solid rgba(255,255,255,.12);border-radius:10px;padding:9px 12px;color:#fff;font-family:'DM Sans',sans-serif;font-size:.83rem;outline:none;transition:border-color .2s}
+#axol-input:focus{border-color:rgba(255,110,199,.5)}
+#axol-input::placeholder{color:rgba(255,255,255,.25)}
+.axol-send{background:linear-gradient(135deg,#FF6EC7,#c0306a);border:none;border-radius:10px;padding:0 14px;color:#fff;font-size:1rem;cursor:pointer;transition:opacity .2s}
+.axol-send:hover{opacity:.85}
+
+/* ══ NAV ══ */
+nav{position:fixed;top:0;left:0;right:0;z-index:300;display:flex;align-items:center;justify-content:space-between;padding:0 16px;height:60px;background:rgba(4,4,15,.95);backdrop-filter:blur(14px);border-bottom:1px solid rgba(255,255,255,.07);box-sizing:border-box;overflow:visible}
+nav .nav-logo{font-family:'Syne',sans-serif;font-weight:800;font-size:2.2rem;text-decoration:none;line-height:1;flex-shrink:0}
+.nav-ham{background:rgba(255,255,255,.1);border:1.5px solid rgba(255,255,255,.2);border-radius:12px;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;padding:8px 14px 6px;flex-shrink:0;min-width:56px}
+.nav-ham span{display:block;width:22px;height:2.5px;background:#fff;border-radius:3px}
+.ham-label{font-size:.55rem;font-weight:800;letter-spacing:.1em;color:rgba(255,255,255,.75);text-transform:uppercase;line-height:1}
+
+/* Drawer overlay — HIDDEN BY DEFAULT */
+#nav-drawer {
+  position: fixed; inset: 0; z-index: 400;
+  background: rgba(0,0,0,.72);
+  backdrop-filter: blur(6px);
+  display: none;          /* <- HIDDEN */
+  justify-content: flex-end;
+  opacity: 0;
+  transition: opacity .3s;
+}
+#nav-drawer.on { opacity: 1; }
+
+/* Drawer panel */
+.drawer-panel {
+  background: #09091C;
+  width: min(300px, 85vw);
+  height: 100%;
+  padding: 28px 22px;
+  overflow-y: auto;
+  border-left: 1px solid rgba(255,255,255,.08);
+  transform: translateX(100%);
+  transition: transform .3s ease;
+}
+#nav-drawer.on .drawer-panel { transform: translateX(0); }
+
+.drawer-close {
+  background: none; border: 1px solid rgba(255,255,255,.15);
+  color: #fff; border-radius: 50%; width: 32px; height: 32px;
+  cursor: pointer; display: flex; align-items: center;
+  justify-content: center; font-size: .9rem;
+  float: right; margin-bottom: 8px; transition: background .2s;
+}
+.drawer-close:hover { background: rgba(255,0,204,.2); }
+
+.drawer-links {
+  display: flex; flex-direction: column; gap: 4px; clear: both; margin-top: 12px;
+}
+.drawer-links a {
+  color: rgba(255,255,255,.7); text-decoration: none;
+  font-size: .95rem; padding: 12px 14px; border-radius: 12px;
+  transition: all .2s; font-weight: 500; display: block;
+}
+.drawer-links a:hover { background: rgba(255,255,255,.07); color: #fff; }
+.drawer-sep { height: 1px; background: rgba(255,255,255,.08); margin: 10px 0; }
+.drawer-cta {
+  background: linear-gradient(135deg,var(--mg),var(--pu)) !important;
+  color: #fff !important; text-align: center;
+  font-weight: 700 !important;
+  box-shadow: 0 0 20px rgba(255,0,204,.3);
+}
+.drawer-ref { color: var(--gn) !important; border: 1px solid rgba(29,255,138,.2); background: rgba(29,255,138,.05) !important; }
+.drawer-item { border: 1px solid rgba(255,255,255,.08) !important; }
+
+
+/* ══ MODAL ══ */
+#ov{position:fixed;inset:0;z-index:500;background:rgba(0,0,0,.8);backdrop-filter:blur(8px);display:none;align-items:center;justify-content:center;padding:20px}
+#ov.on{display:flex}
+.modal{background:#0D0D22;border:1.5px solid rgba(255,0,204,.25);border-radius:24px;padding:28px 24px;width:100%;max-width:520px;max-height:90vh;overflow-y:auto;position:relative}
+.modal::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--mg),var(--cy),var(--gn));border-radius:24px 24px 0 0}
+.mc{position:absolute;top:14px;right:14px;background:none;border:1px solid rgba(255,255,255,.2);color:#fff;border-radius:50%;width:30px;height:30px;cursor:pointer;font-size:.85rem;display:flex;align-items:center;justify-content:center}
+.modal-t{font-family:'Syne',sans-serif;font-weight:800;font-size:1.2rem;margin-bottom:4px}
+.modal-s{font-size:.8rem;color:var(--mu);margin-bottom:20px}
+.drop-area{border:2px dashed rgba(255,255,255,.15);border-radius:16px;padding:28px 20px;text-align:center;cursor:pointer;transition:all .2s;margin-bottom:16px;background:rgba(255,255,255,.02)}
+.drop-area:hover,.drop-area.drag{border-color:var(--mg);background:rgba(255,0,204,.05)}
+.drop-icon{font-size:2rem;margin-bottom:8px}
+.drop-title{font-weight:700;font-size:.95rem;margin-bottom:4px}
+.drop-sub{font-size:.78rem;color:var(--mu)}
+.drop-types{display:flex;gap:6px;justify-content:center;flex-wrap:wrap;margin-top:10px;font-size:.72rem;color:var(--mu)}
+#m-file-input{display:none}
+#m-preview{display:none;margin-bottom:12px;border-radius:12px;overflow:hidden;position:relative}
+#m-preview img{width:100%;max-height:200px;object-fit:cover;border-radius:12px}
+.m-preview-del{position:absolute;top:8px;right:8px;background:rgba(0,0,0,.7);border:none;color:#fff;border-radius:50%;width:28px;height:28px;cursor:pointer;font-size:.8rem}
+#m-ta{width:100%;background:rgba(255,255,255,.05);border:1.5px solid rgba(255,255,255,.1);border-radius:12px;padding:12px;color:#fff;font-family:'DM Sans',sans-serif;font-size:.88rem;resize:vertical;min-height:80px;outline:none;margin-bottom:12px}
+#m-ta:focus{border-color:var(--cy)}
+#m-ta::placeholder{color:rgba(255,255,255,.25)}
+.m-submit{width:100%;padding:14px;border:none;border-radius:14px;cursor:pointer;font-family:'Syne',sans-serif;font-weight:800;font-size:1rem;color:#fff;background:linear-gradient(135deg,var(--mg),var(--pu));box-shadow:0 0 24px rgba(255,0,204,.4);transition:all .2s;position:relative;overflow:hidden}
+.m-submit:hover{transform:translateY(-2px);box-shadow:0 0 40px rgba(255,0,204,.6)}
+.m-note{text-align:center;font-size:.72rem;color:var(--mu);margin-top:8px}
+/* Loading state */
+#m-loading{display:none;text-align:center;padding:20px 0}
+.m-load-title{font-family:'Syne',sans-serif;font-weight:800;font-size:1.1rem;margin-bottom:6px}
+.m-load-sub{font-size:.83rem;color:var(--mu);margin-bottom:20px}
+.m-steps{display:flex;flex-direction:column;gap:10px;text-align:left}
+.m-step{display:flex;align-items:center;gap:10px;font-size:.85rem;color:rgba(255,255,255,.6)}
+.m-step.active{color:#fff}
+.m-step-dot{width:10px;height:10px;border-radius:50%;background:rgba(255,255,255,.15);flex-shrink:0}
+.m-step.active .m-step-dot{background:var(--cy);box-shadow:0 0 8px var(--cy);animation:pulse 1s ease infinite}
+/* Result state */
+#m-result{display:none}
+.drawer-admin{color:var(--yw)!important;border:1px solid rgba(255,229,0,.2)!important;background:rgba(255,229,0,.04)!important}
+
+/* ══ LOGO ANIMADO ══ */
+nav .nav-logo span {
+  display: inline-block;
+  animation: letterPulse 2.5s ease-in-out infinite;
+  transition: text-shadow .3s;
+}
+nav .nav-logo span:nth-child(1){color:#FF00CC;text-shadow:0 0 12px #FF00CC;animation-delay:0s}
+nav .nav-logo span:nth-child(2){color:#FF6B1A;text-shadow:0 0 12px #FF6B1A;animation-delay:.18s}
+nav .nav-logo span:nth-child(3){color:#FFE500;text-shadow:0 0 12px #FFE500;animation-delay:.36s}
+nav .nav-logo span:nth-child(4){color:#1DFF8A;text-shadow:0 0 12px #1DFF8A;animation-delay:.54s}
+nav .nav-logo span:nth-child(5){color:#00F0FF;text-shadow:0 0 12px #00F0FF;animation-delay:.72s}
+nav .nav-logo span:nth-child(6){color:#3D7EFF;text-shadow:0 0 12px #3D7EFF;animation-delay:.90s}
+nav .nav-logo span:nth-child(7){color:#C400FF;text-shadow:0 0 12px #C400FF;animation-delay:1.08s}
+
+@keyframes letterPulse {
+  0%,100% { transform: translateY(0) scale(1); filter: brightness(1); }
+  50%      { transform: translateY(-4px) scale(1.08); filter: brightness(1.6); }
+}
+
+nav .nav-logo:hover span {
+  animation-play-state: running;
+  filter: brightness(2);
+}
+
 </style>
 </head>
 <body>
@@ -351,39 +426,46 @@ footer{border-top:1px solid rgba(255,255,255,.06);padding:36px clamp(16px,5vw,60
 
 <!-- NAV -->
 <nav>
-  <a class="logo" href="#">
-    <span>d</span><span>ª</span><span>t</span><span>ª</span><span>b</span><span>l</span><span>ɛ</span>
-  </a>
-  <div class="nav-links">
-    <a href="#como">Cómo funciona</a>
-    <a href="#detecta">Qué resolvemos</a>
-    <a href="#vendedores">Gana con nosotros</a>
-    <a href="#precios">Precios</a>
-  </div>
-  <div class="nav-r">
-    <a class="btn-ghost" href="#" style="padding:9px 18px;font-size:.82rem">Entrar a mi cuenta</a>
-    <button class="btn-marquee" onclick="openModal()" style="padding:10px 20px;font-size:.82rem">
-      Análisis gratis ⚡
-      <div class="lights" id="nav-lights"></div>
-    </button>
-  </div>
+  <a class="logo nav-logo" href="#"><span>d</span><span>ª</span><span>t</span><span>ª</span><span>b</span><span>l</span><span>ɛ</span></a>
+  <button class="nav-ham" onclick="toggleMenu()" id="ham-btn">
+    <span></span><span></span><span></span>
+    <div class="ham-label">MENÚ</div>
+  </button>
 </nav>
+<!-- DRAWER MENU -->
+<div id="nav-drawer" onclick="closeMenuBg(event)">
+  <div class="drawer-panel">
+    <button class="drawer-close" onclick="toggleMenu()">✕</button>
+    <a class="logo" href="#" style="display:block;margin-bottom:28px"><span>d</span><span>ª</span><span>t</span><span>ª</span><span>b</span><span>l</span><span>ɛ</span></a>
+    <nav class="drawer-links">
+      <a href="#como" onclick="toggleMenu()">Cómo funciona</a>
+      <a href="#detecta" onclick="toggleMenu()">Qué resolvemos</a>
+      <a href="#precios" onclick="toggleMenu()">Precios</a>
+      <div class="drawer-sep"></div>
+      <a href="#" onclick="toggleMenu();openModal();" class="drawer-cta">⚡ Análisis gratis</a>
+      <div class="drawer-sep"></div>
+      <a href="login.html" class="drawer-item" id="drawer-login">→ Iniciar sesión</a>
+      <a href="embajadores.html" class="drawer-item drawer-ref">🤝 Ser Embajador dªtªblɛ</a>
+      <a href="admin.html" class="drawer-item drawer-admin" id="drawer-admin" style="display:none">⚙️ Panel Admin</a>
+    </nav>
+  </div>
+</div>
 
 <main>
 
 <!-- ══════ HERO ══════ -->
 <section id="hero">
-  <div class="eyebrow">Especialistas en organizar negocios · Resultado en 30 segundos</div>
+  <div class="eyebrow">Digitalización de negocios · Diagnóstico en 30 segundos</div>
   <h1 class="hero-h1">
     <span class="h1-wh">Tu negocio puede</span>
-    <span class="h1-grad">funcionar solo.</span>
+    <span class="h1-grad">crecer sin límites.</span>
   </h1>
   <p class="hero-p">
-    Mándanos una foto, un Excel, o cuéntanos cómo trabajas hoy. <strong>En 30 segundos te decimos exactamente qué está fallando</strong> y cómo arreglarlo. Sin tecnicismos, sin reuniones, sin costo.
+    Mándanos una foto, un Excel, o cuéntanos cómo funciona tu negocio hoy. <strong>En 30 segundos te mostramos exactamente qué puedes optimizar y cómo escalar.</strong> Sin tecnicismos, sin reuniones, sin costo.
   </p>
   <div class="hero-btns">
     <button class="btn-marquee" onclick="openModal()" style="font-size:1rem;padding:16px 36px">
-      👆 Quiero mi análisis gratis
+      👆 Quiero mi diagnóstico gratis
       <div class="lights" id="hero-lights"></div>
     </button>
     <a class="btn-ghost" href="#como">¿Cómo funciona? →</a>
@@ -401,13 +483,13 @@ footer{border-top:1px solid rgba(255,255,255,.06);padding:36px clamp(16px,5vw,60
     </div>
     <textarea class="ucard-ta" id="hero-ta" placeholder="Ejemplo: Soy masajista a domicilio, mis clientes me escriben por WhatsApp y yo anoto todo en un cuaderno. A veces se me olvidan citas. Quiero organizar mejor mis pagos y mis clientes..."></textarea>
     <button class="btn-marquee" onclick="openModalWithText()" style="width:100%;justify-content:center;font-size:1rem">
-      📤 Analizar mi negocio — es gratis
+      📤 Digitalizar mi negocio — es gratis
       <div class="lights" id="ucard-lights"></div>
     </button>
   </div>
 
   <div class="hstats">
-    <div class="hs"><div class="hs-n" style="color:var(--mg)">30s</div><div class="hs-l">Para ver tu diagnóstico</div></div>
+    <div class="hs"><div class="hs-n" style="color:var(--mg)">30s</div><div class="hs-l">Para tu diagnóstico</div></div>
     <div class="hs"><div class="hs-n" style="color:var(--cy)">$0</div><div class="hs-l">Costo del análisis</div></div>
     <div class="hs"><div class="hs-n" style="color:var(--gn)">100%</div><div class="hs-l">Hecho para tu negocio</div></div>
     <div class="hs"><div class="hs-n" style="color:var(--yw)">+200</div><div class="hs-l">Negocios ya analizados</div></div>
@@ -436,7 +518,7 @@ footer{border-top:1px solid rgba(255,255,255,.06);padding:36px clamp(16px,5vw,60
         <div class="sc-num">02</div>
         <span class="sc-icon">🔬</span>
         <div class="sc-title">Nuestro equipo lo analiza</div>
-        <div class="sc-desc">Nuestra metodología propia, desarrollada con cientos de negocios reales, detecta en segundos dónde están los problemas y qué se puede mejorar primero.</div>
+        <div class="sc-desc">Nuestra metodología propia, desarrollada con cientos de negocios reales, identifica en segundos las mejores oportunidades de crecimiento para tu negocio.</div>
         <span class="step-tag">🔍 30 segundos</span>
       </div>
 
@@ -444,7 +526,7 @@ footer{border-top:1px solid rgba(255,255,255,.06);padding:36px clamp(16px,5vw,60
         <div class="sc-num">03</div>
         <span class="sc-icon">📋</span>
         <div class="sc-title">Recibes tu plan personalizado</div>
-        <div class="sc-desc">Te decimos exactamente qué está fallando en tu negocio, qué arreglar primero y cuánto dinero puedes recuperar. Sin palabras raras. En español normal.</div>
+        <div class="sc-desc">Te decimos exactamente qué está fallando en tu negocio, qué arreglar primero y cuánto dinero puedes recuperar. Sin tecnicismos. Sin palabras raras.</div>
         <span class="step-tag">✅ Listo para actuar</span>
       </div>
 
@@ -472,109 +554,40 @@ footer{border-top:1px solid rgba(255,255,255,.06);padding:36px clamp(16px,5vw,60
 <section class="sec" id="detecta" style="background:linear-gradient(180deg,transparent,rgba(255,0,204,.03),transparent)">
   <div class="wrap">
     <div class="rv">
-      <div class="st-ey">Lo que resolvemos</div>
-      <h2 class="st-h2">¿Te suena<br><span style="color:var(--mg);text-shadow:0 0 16px var(--mg)">alguno de estos?</span></h2>
-      <p class="st-p">Estos son los problemas más comunes que encontramos en los negocios que llegan con nosotros. Seguro uno o varios aplican al tuyo.</p>
+      <div class="st-ey">Lo que transformamos</div>
+      <h2 class="st-h2">¿Reconoces<br><span style="color:var(--mg);text-shadow:0 0 16px var(--mg)">alguna de estas situaciones?</span></h2>
+      <p class="st-p">Estas son las oportunidades de crecimiento más comunes que detectamos en los negocios que trabajan con nosotros.</p>
     </div>
     <div class="dg rv">
       <div class="dc" style="--ac:var(--mg);background:rgba(255,0,204,.05);border-color:rgba(255,0,204,.25)">
         <span class="dc-icon">😩</span>
-        <h3>"Se me olvidan los clientes"</h3>
-        <p>Tienes clientes que no regresan porque nadie les da seguimiento. No es tu culpa — sin un sistema, es imposible acordarse de todos.</p>
+        <h3>✦ Seguimiento de clientes sin esfuerzo</h3>
+        <p>Con un sistema organizado, ningún cliente queda sin atención. Automatiza el seguimiento y haz que regresen solos.</p>
       </div>
       <div class="dc" style="--ac:var(--cy);background:rgba(0,240,255,.05);border-color:rgba(0,240,255,.25)">
         <span class="dc-icon">📋</span>
-        <h3>"Todo está en papeles o en mi cabeza"</h3>
-        <p>Cuadernos, hojas sueltas, notas de voz, WhatsApp... la información está regada en mil lugares y cuando la necesitas, no la encuentras.</p>
+        <h3>✦ Toda tu información en un solo lugar</h3>
+        <p>Imagina tener toda la información de tu negocio accesible en segundos, desde cualquier dispositivo, en cualquier momento.</p>
       </div>
       <div class="dc" style="--ac:var(--gn);background:rgba(29,255,138,.05);border-color:rgba(29,255,138,.25)">
         <span class="dc-icon">🧑‍💼</span>
-        <h3>"Si yo no estoy, el negocio para"</h3>
-        <p>Todo depende de ti. Si sales un día, algo se traba. Eso significa que hay procesos que pueden automatizarse para que funcionen solos.</p>
+        <h3>✦ Tu negocio funciona aunque no estés</h3>
+        <p>Automatiza los procesos clave para que tu negocio opere solo, aunque estés de vacaciones o atendiendo otros proyectos.</p>
       </div>
       <div class="dc" style="--ac:var(--yw);background:rgba(255,229,0,.05);border-color:rgba(255,229,0,.25)">
         <span class="dc-icon">💸</span>
-        <h3>"No sé cuánto gané este mes"</h3>
-        <p>Los números están en Excel, en WhatsApp y en tu recuerdo. No hay un reporte claro. Eso impide tomar buenas decisiones.</p>
+        <h3>✦ Tus números siempre claros</h3>
+        <p>Un tablero con tus métricas en tiempo real. Sabe exactamente cuánto entraste, cuánto salió y hacia dónde va tu negocio.</p>
       </div>
       <div class="dc" style="--ac:var(--or);background:rgba(255,107,26,.05);border-color:rgba(255,107,26,.25)">
         <span class="dc-icon">⏱️</span>
-        <h3>"Me la paso haciendo lo mismo todos los días"</h3>
-        <p>Cotizaciones, confirmaciones, recordatorios, reportes... tareas que se repiten y te quitan tiempo que podrías dedicar a hacer crecer el negocio.</p>
+        <h3>✦ Tareas repetitivas en piloto automático</h3>
+        <p>Cotizaciones, confirmaciones, recordatorios, reportes — todo automático. Libera tu tiempo para lo que realmente importa: crecer.</p>
       </div>
       <div class="dc" style="--ac:var(--pu);background:rgba(196,0,255,.05);border-color:rgba(196,0,255,.25)">
         <span class="dc-icon">😰</span>
-        <h3>"Quiero crecer pero me da miedo el caos"</h3>
-        <p>Sabes que puedes atender más clientes, pero si creces sin orden, todo se descontrola. Primero hay que organizar, luego escalar.</p>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ══════ DEMO MOCKUP ══════ -->
-<section class="sec" id="demo">
-  <div class="wrap">
-    <div class="rv">
-      <div class="st-ey">Ejemplo real</div>
-      <h2 class="st-h2">Esto es lo que<br><span style="background:linear-gradient(90deg,var(--yw),var(--or));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">recibirías tú.</span></h2>
-      <p class="st-p">Resultado real de un taller con 4 sucursales que usaba 12 Excel y todo por WhatsApp.</p>
-    </div>
-    <div class="demo-wrap rv">
-      <div class="phone">
-        <div class="phone-bar">
-          <div class="pdot" style="background:var(--mg);box-shadow:0 0 6px var(--mg)"></div>
-          <div class="pdot" style="background:var(--yw);box-shadow:0 0 6px var(--yw)"></div>
-          <div class="pdot" style="background:var(--gn);box-shadow:0 0 6px var(--gn)"></div>
-          <span style="font-size:.68rem;color:var(--mu);margin-left:7px">dªtªblɛ · tu diagnóstico</span>
-        </div>
-        <div class="phone-body">
-          <div style="text-align:center;padding:14px 0 18px">
-            <div class="score-ring">
-              <svg viewBox="0 0 100 100">
-                <defs><linearGradient id="sg" x1="0%" y1="0%" x2="100%" y2="0%">
-                  <stop offset="0%" stop-color="#FF00CC"/><stop offset="50%" stop-color="#00F0FF"/><stop offset="100%" stop-color="#1DFF8A"/>
-                </linearGradient></defs>
-                <circle class="sr-bg" cx="50" cy="50" r="42"/>
-                <circle class="sr-fg" cx="50" cy="50" r="42"/>
-              </svg>
-              <span class="score-n">74</span>
-            </div>
-            <div style="font-size:.74rem;font-weight:600;color:#fff;margin-bottom:2px">Nivel de desorden en tu operación</div>
-            <div style="font-size:.68rem;color:var(--mu)">Alto · 5 cosas que mejorar detectadas</div>
-          </div>
-          <div class="di"><div class="di-dot" style="background:var(--mg)"></div><div class="di-lbl">Seguimiento de clientes</div><div class="di-bar" style="background:linear-gradient(90deg,var(--mg),var(--pu))"></div><div class="di-pct" style="color:var(--mg)">88%</div></div>
-          <div class="di"><div class="di-dot" style="background:var(--cy)"></div><div class="di-lbl">Información dispersa</div><div class="di-bar" style="background:linear-gradient(90deg,var(--cy),var(--bl));width:48px"></div><div class="di-pct" style="color:var(--cy)">73%</div></div>
-          <div class="di"><div class="di-dot" style="background:var(--yw)"></div><div class="di-lbl">Tareas que se repiten</div><div class="di-bar" style="background:linear-gradient(90deg,var(--yw),var(--or));width:43px"></div><div class="di-pct" style="color:var(--yw)">66%</div></div>
-          <div class="di"><div class="di-dot" style="background:var(--gn)"></div><div class="di-lbl">Ventas que se pierden</div><div class="di-bar" style="background:linear-gradient(90deg,var(--gn),var(--cy));width:34px"></div><div class="di-pct" style="color:var(--gn)">51%</div></div>
-          <div style="margin-top:14px;padding-top:11px;border-top:1px solid rgba(255,255,255,.07)">
-            <div style="font-size:.64rem;color:var(--mu);margin-bottom:7px;text-transform:uppercase;letter-spacing:.1em">Qué hacer primero</div>
-            <div class="pitem" style="background:rgba(255,0,204,.08);border:1px solid rgba(255,0,204,.2)"><span style="color:var(--mg);font-size:.7rem;font-weight:700">1°</span><span style="font-size:.7rem">Guardar todos tus clientes en un lugar</span></div>
-            <div class="pitem" style="background:rgba(0,240,255,.08);border:1px solid rgba(0,240,255,.2)"><span style="color:var(--cy);font-size:.7rem;font-weight:700">2°</span><span style="font-size:.7rem">Mandar recordatorios automáticos</span></div>
-            <div class="pitem" style="background:rgba(29,255,138,.08);border:1px solid rgba(29,255,138,.2)"><span style="color:var(--gn);font-size:.7rem;font-weight:700">3°</span><span style="font-size:.7rem">Crear tu reporte semanal automático</span></div>
-          </div>
-        </div>
-      </div>
-      <div style="display:flex;flex-direction:column;gap:18px">
-        <div style="display:flex;gap:14px;align-items:flex-start">
-          <div style="min-width:42px;height:42px;border-radius:11px;background:rgba(255,0,204,.1);border:1.5px solid rgba(255,0,204,.3);display:flex;align-items:center;justify-content:center;font-size:1.2rem;flex-shrink:0">📊</div>
-          <div><div style="font-family:'Syne',sans-serif;font-weight:700;font-size:.96rem;margin-bottom:5px">Un número que lo dice todo</div><div style="font-size:.81rem;color:var(--mu);line-height:1.55">Te damos un puntaje de qué tan desorganizado está tu negocio hoy — y qué se puede mejorar.</div></div>
-        </div>
-        <div style="display:flex;gap:14px;align-items:flex-start">
-          <div style="min-width:42px;height:42px;border-radius:11px;background:rgba(0,240,255,.1);border:1.5px solid rgba(0,240,255,.3);display:flex;align-items:center;justify-content:center;font-size:1.2rem;flex-shrink:0">🎯</div>
-          <div><div style="font-family:'Syne',sans-serif;font-weight:700;font-size:.96rem;margin-bottom:5px">Te decimos qué hacer primero</div><div style="font-size:.81rem;color:var(--mu);line-height:1.55">No una lista enorme. Solo las 3 cosas más importantes para empezar, en orden.</div></div>
-        </div>
-        <div style="display:flex;gap:14px;align-items:flex-start">
-          <div style="min-width:42px;height:42px;border-radius:11px;background:rgba(29,255,138,.1);border:1.5px solid rgba(29,255,138,.3);display:flex;align-items:center;justify-content:center;font-size:1.2rem;flex-shrink:0">💰</div>
-          <div><div style="font-family:'Syne',sans-serif;font-weight:700;font-size:.96rem;margin-bottom:5px">Cuánto dinero estás perdiendo</div><div style="font-size:.81rem;color:var(--mu);line-height:1.55">Calculamos cuánto te cuesta al mes el desorden en tu negocio — en pesos reales.</div></div>
-        </div>
-        <div style="display:flex;gap:14px;align-items:flex-start">
-          <div style="min-width:42px;height:42px;border-radius:11px;background:rgba(255,229,0,.1);border:1.5px solid rgba(255,229,0,.3);display:flex;align-items:center;justify-content:center;font-size:1.2rem;flex-shrink:0">📞</div>
-          <div><div style="font-family:'Syne',sans-serif;font-weight:700;font-size:.96rem;margin-bottom:5px">Nosotros te llamamos</div><div style="font-size:.81rem;color:var(--mu);line-height:1.55">Después de tu análisis, uno de nuestros especialistas te contacta para explicarte el plan con calma.</div></div>
-        </div>
-        <button class="btn-marquee" onclick="openModal()" style="align-self:flex-start">
-          Ver mi diagnóstico →
-          <div class="lights" id="demo-lights"></div>
-        </button>
+        <h3>✦ Crece con estructura y sin límites</h3>
+        <p>Con procesos digitalizados, escalar es simple. Más clientes, más sucursales, más ingresos — sin que nada se descontrole.</p>
       </div>
     </div>
   </div>
@@ -586,7 +599,7 @@ footer{border-top:1px solid rgba(255,255,255,.06);padding:36px clamp(16px,5vw,60
     <div class="rv">
       <div class="st-ey">El sistema completo</div>
       <h2 class="st-h2">Todo tu negocio<br><span style="color:var(--cy);text-shadow:0 0 14px var(--cy)">en una sola pantalla.</span></h2>
-      <p class="st-p">Una vez que te suscribes, accedes a todas las herramientas. Sin aprender nada complicado — todo está en español simple.</p>
+      <p class="st-p">Una vez que te suscribes, accedes a todas las herramientas. Sin aprender nada complicado — todo diseñado para que cualquier persona lo use desde el primer día.</p>
     </div>
     <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:12px;margin-top:50px" class="rv">
       <div class="nc" style="--ac:var(--mg)"><div style="font-size:1.7rem;margin-bottom:9px">⚡</div><div style="font-family:'Syne',sans-serif;font-weight:700;font-size:.93rem;margin-bottom:5px;color:var(--mg)">Tareas automáticas</div><div style="font-size:.79rem;color:var(--mu);line-height:1.55">Las cosas que haces todos los días, ahora se hacen solas.</div></div>
@@ -638,7 +651,7 @@ footer{border-top:1px solid rgba(255,255,255,.06);padding:36px clamp(16px,5vw,60
     </div>
     <div class="rv" style="text-align:center;margin-top:32px">
       <button class="btn-marquee btn-gn-mq" style="font-size:1rem" onclick="openModal()">
-        Quiero ser recomendador →
+        Quiero ser Embajador →
         <div class="lights" id="agent-lights"></div>
       </button>
       <div style="font-size:.77rem;color:var(--mu);margin-top:12px">Gratis · Sin costo de alta · Cobras automático</div>
@@ -656,12 +669,12 @@ footer{border-top:1px solid rgba(255,255,255,.06);padding:36px clamp(16px,5vw,60
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:50px" class="rv">
       <div class="gc diff-big" style="grid-column:1/-1;--ac:var(--mg);padding:30px">
         <div style="font-size:.66rem;letter-spacing:.18em;text-transform:uppercase;font-weight:700;color:var(--mg);margin-bottom:9px">Lo más importante</div>
-        <div style="font-family:'Syne',sans-serif;font-weight:800;font-size:1.3rem;margin-bottom:9px">El análisis es 100% gratis. Sin registrarte. Sin tarjeta. Sin que nadie te llame a vender.</div>
-        <p style="font-size:.85rem;color:var(--mu);line-height:1.65">La mayoría de los consultores cobran miles de pesos solo para decirte qué necesitas. Nosotros te lo decimos gratis, en 30 segundos, porque creemos que primero tienes que ver el valor antes de gastarte un peso.</p>
+        <div style="font-family:'Syne',sans-serif;font-weight:800;font-size:1.3rem;margin-bottom:9px">El diagnóstico es 100% gratis. Sin registrarte. Sin tarjeta. Sin que nadie te llame a vender.</div>
+        <p style="font-size:.85rem;color:var(--mu);line-height:1.65">La mayoría de los consultores cobran miles de pesos solo para decirte qué necesitas. Nosotros te lo mostramos gratis, en 30 segundos, porque creemos que primero tienes que ver el valor antes de invertir un peso.</p>
       </div>
       <div class="gc" style="--ac:var(--cy)">
         <div style="color:var(--cy);font-size:.66rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;margin-bottom:8px">Sin tecnicismos</div>
-        <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:1rem;margin-bottom:6px">Todo en español normal</div>
+        <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:1rem;margin-bottom:6px">Claro y directo</div>
         <p style="font-size:.81rem;color:var(--mu);line-height:1.6">No necesitas saber de tecnología. Explicamos todo en palabras simples, como si estuviéramos tomando un café contigo.</p>
       </div>
       <div class="gc" style="--ac:var(--gn)">
@@ -728,7 +741,7 @@ footer{border-top:1px solid rgba(255,255,255,.06);padding:36px clamp(16px,5vw,60
               <div class="pf">✓ &nbsp;Tareas que se hacen solas</div>
               <div class="pf">✓ &nbsp;Asistente para tus dudas</div>
               <div class="pf">✓ &nbsp;App instalable en tu celular</div>
-              <div class="pf">✓ &nbsp;Soporte en español</div>
+              <div class="pf">✓ &nbsp;Soporte multiidioma</div>
             </div>
             <button class="btn-marquee" onclick="openModal()" style="width:100%;justify-content:center;font-size:.9rem;padding:13px">
               Suscribirme ahora →
@@ -762,31 +775,58 @@ footer{border-top:1px solid rgba(255,255,255,.06);padding:36px clamp(16px,5vw,60
   </div>
 </section>
 
-<!-- ══════ CASOS ══════ -->
-<section class="sec" id="casos" style="background:linear-gradient(180deg,transparent,rgba(255,0,204,.03),transparent)">
+<!-- ══════ RESEÑAS ══════ -->
+<section class="sec" id="resenas" style="background:linear-gradient(180deg,transparent,rgba(29,255,138,.03),transparent)">
   <div class="wrap">
     <div class="rv">
-      <div class="st-ey">Negocios reales</div>
-      <h2 class="st-h2">Ellos ya lo<br><span style="color:var(--gn);text-shadow:0 0 14px var(--gn)">arreglaron.</span></h2>
+      <div class="st-ey">Lo dicen ellos, no nosotros</div>
+      <h2 class="st-h2">No solo lo decimos<br><span style="color:var(--gn);text-shadow:0 0 20px rgba(29,255,138,.4)">nosotros.</span></h2>
+      <p class="st-p">Negocios reales que ya digitalizaron su operación. Sus palabras, no las nuestras.</p>
     </div>
-    <div class="cases-grid rv">
-      <div class="case-card" style="--ac:var(--mg)">
-        <div style="font-size:.66rem;letter-spacing:.13em;text-transform:uppercase;font-weight:700;color:var(--mg);margin-bottom:11px">🔧 Taller de autos · 4 sucursales</div>
-        <div class="case-stat">↓85%</div>
-        <div style="font-size:.79rem;color:rgba(255,255,255,.6);margin-bottom:13px">menos tiempo haciendo cotizaciones</div>
-        <div style="font-size:.82rem;color:var(--mu);line-height:1.6;font-style:italic;border-left:3px solid var(--mg);padding-left:12px">"Teníamos 12 Excel y nadie sabía cuál era el bueno. En 72 horas teníamos todo en un lugar. Mi equipo lo usa desde el primer día."</div>
+    <div class="reviews-grid rv">
+      <div class="review-card">
+        <div class="review-stars">★★★★★</div>
+        <p class="review-text">"Antes perdía clientes porque se me olvidaba darles seguimiento. Ahora tengo todo organizado y mis ventas subieron en el primer mes."</p>
+        <div class="review-author">
+          <div class="review-avatar" style="background:linear-gradient(135deg,var(--mg),var(--pu))">M</div>
+          <div>
+            <div class="review-name">María G.</div>
+            <div class="review-biz">Estética · Guadalajara</div>
+          </div>
+        </div>
       </div>
-      <div class="case-card" style="--ac:var(--cy)">
-        <div style="font-size:.66rem;letter-spacing:.13em;text-transform:uppercase;font-weight:700;color:var(--cy);margin-bottom:11px">🏥 Consultorio médico · 2 consultorios</div>
-        <div class="case-stat">+40%</div>
-        <div style="font-size:.79rem;color:rgba(255,255,255,.6);margin-bottom:13px">más pacientes que regresan solos</div>
-        <div style="font-size:.82rem;color:var(--mu);line-height:1.6;font-style:italic;border-left:3px solid var(--cy);padding-left:12px">"Antes los pacientes se iban y nadie los volvía a llamar. Ahora el sistema les manda un recordatorio y regresan solos."</div>
+      <div class="review-card">
+        <div class="review-stars">★★★★★</div>
+        <p class="review-text">"Tenía todo en WhatsApp y cuadernos. En una semana ya tenía mi información organizada y podía ver mis números por primera vez."</p>
+        <div class="review-author">
+          <div class="review-avatar" style="background:linear-gradient(135deg,var(--cy),var(--bl))">R</div>
+          <div>
+            <div class="review-name">Roberto M.</div>
+            <div class="review-biz">Taller mecánico · CDMX</div>
+          </div>
+        </div>
       </div>
-      <div class="case-card" style="--ac:var(--gn)">
-        <div style="font-size:.66rem;letter-spacing:.13em;text-transform:uppercase;font-weight:700;color:var(--gn);margin-bottom:11px">💼 Servicios profesionales</div>
-        <div class="case-stat">$0</div>
-        <div style="font-size:.79rem;color:rgba(255,255,255,.6);margin-bottom:13px">gasto en software externo cada mes</div>
-        <div style="font-size:.82rem;color:var(--mu);line-height:1.6;font-style:italic;border-left:3px solid var(--gn);padding-left:12px">"Pagábamos $800 dólares al mes en herramientas que nadie usaba. Ahora tenemos todo en un solo lugar por mucho menos."</div>
+      <div class="review-card">
+        <div class="review-stars">★★★★★</div>
+        <p class="review-text">"Mi negocio dependía 100% de mí. Ahora mis empleados saben exactamente qué hacer sin que yo esté presente todo el tiempo."</p>
+        <div class="review-author">
+          <div class="review-avatar" style="background:linear-gradient(135deg,var(--yw),var(--or))">C</div>
+          <div>
+            <div class="review-name">Carmen L.</div>
+            <div class="review-biz">Restaurante · Puerto Vallarta</div>
+          </div>
+        </div>
+      </div>
+      <div class="review-card">
+        <div class="review-stars">★★★★★</div>
+        <p class="review-text">"No sabía cuánto ganaba cada mes hasta que usé esto. En 30 minutos tuve claridad de mis ingresos que no había tenido en 5 años."</p>
+        <div class="review-author">
+          <div class="review-avatar" style="background:linear-gradient(135deg,var(--gn),var(--cy))">J</div>
+          <div>
+            <div class="review-name">Jorge P.</div>
+            <div class="review-biz">Consultor · Monterrey</div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -795,10 +835,10 @@ footer{border-top:1px solid rgba(255,255,255,.06);padding:36px clamp(16px,5vw,60
 <!-- ══════ CTA FINAL ══════ -->
 <section id="cta-f">
   <div class="rv">
-    <h2 class="cta-h2">¿Cuánto te está<br><span style="background:linear-gradient(90deg,var(--mg),var(--cy),var(--gn));background-size:200%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:gsh 3s ease infinite">costando el desorden?</span></h2>
-    <p class="cta-p">Mándanos una foto, tu Excel o cuéntanos cómo trabajas. En 30 segundos te decimos exactamente qué está fallando y cómo arreglarlo. Gratis, sin registro, sin compromiso.</p>
+    <h2 class="cta-h2">¿Listo para llevar<br><span style="background:linear-gradient(90deg,var(--mg),var(--cy),var(--gn));background-size:200%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:gsh 3s ease infinite">tu negocio al siguiente nivel?</span></h2>
+    <p class="cta-p">Mándanos una foto, tu Excel o cuéntanos cómo funciona tu negocio. En 30 segundos te mostramos qué puedes optimizar y cómo digitalizarlo. Gratis, sin registro, sin compromiso.</p>
     <button class="btn-marquee" onclick="openModal()" style="font-size:1.05rem;padding:17px 40px">
-      👆 Quiero mi análisis gratis ahora
+      👆 Quiero mi diagnóstico gratis ahora
       <div class="lights" id="cta-lights"></div>
     </button>
     <div style="display:inline-flex;align-items:center;gap:6px;font-size:.77rem;font-weight:600;color:var(--gn);margin-top:14px;display:block">✓ Sin registro &nbsp;·&nbsp; ✓ Sin tarjeta &nbsp;·&nbsp; ✓ Sin que nadie te llame a vender</div>
@@ -820,108 +860,78 @@ footer{border-top:1px solid rgba(255,255,255,.06);padding:36px clamp(16px,5vw,60
 
 </main>
 
-<!-- ══════ AJOLOTE MASCOTA ══════ -->
-<div id="ajolote-wrap">
-  <div id="ajolote-bubble" style="display:none">
-    <button class="ab-close" onclick="closeAjo()">✕</button>
-    <div id="ajo-msg" style="margin-bottom:6px;padding-right:16px">¡Hola! 👋 Soy Axol, tu guía. ¿Quieres saber qué está fallando en tu negocio? ¡Es gratis!</div>
-    <div id="ajo-chat" style="max-height:160px;overflow-y:auto;margin-bottom:8px;display:flex;flex-direction:column;gap:2px"></div>
-    <div id="ajo-input-wrap" style="display:none;gap:6px;align-items:center">
-      <input id="ajo-input" type="text" placeholder="Escríbeme algo..." style="flex:1;background:rgba(255,255,255,.08);border:1px solid rgba(255,0,204,.3);border-radius:20px;padding:6px 12px;color:#fff;font-size:.76rem;outline:none;font-family:'DM Sans',sans-serif">
-      <button onclick="sendAjoMsg()" style="background:linear-gradient(135deg,var(--mg),var(--pu));border:none;border-radius:50%;width:28px;height:28px;cursor:pointer;color:#fff;font-size:.8rem;display:flex;align-items:center;justify-content:center;flex-shrink:0">→</button>
+<!-- ══════ AXOL MASCOTA ══════ -->
+<div id="axol-wrap">
+  <!-- Destellos alrededor del botón -->
+  <div id="axol-sparks-ring"></div>
+
+  <!-- Burbuja de chat -->
+  <div id="axol-bubble">
+    <button class="axol-close" onclick="axolClose()">✕</button>
+    <div id="axol-intro" class="axol-intro-msg">
+      <div class="axol-intro-name">¡Hola! Soy <strong>Axolín</strong> 👋</div>
+      <div class="axol-intro-text">Tu copiloto en dªtªblɛ. Estoy aquí para guiarte y ayudarte a digitalizar tu negocio — <strong>hoy mismo.</strong><br><br>Puedes seguir explorando la página y yo te iré dando guías para que no te pierdas. O si quieres, <strong>pregúntame lo que sea ahora</strong>. 🚀</div>
+      <div class="axol-intro-btns">
+        <button class="axol-qbtn" onclick="axolQuestion('¿Qué puedo hacer aquí?')">¿Qué puedo hacer aquí?</button>
+        <button class="axol-qbtn" onclick="axolQuestion('¿Cómo digitalizo mi negocio?')">¿Cómo digitalizo mi negocio?</button>
+        <button class="axol-qbtn" onclick="openModal();axolClose()">⚡ Quiero mi diagnóstico gratis</button>
+      </div>
+    </div>
+    <div id="axol-chat-history"></div>
+    <div class="axol-input-row">
+      <input id="axol-input" type="text" placeholder="Escríbeme algo..." onkeydown="if(event.key==='Enter')axolSend()">
+      <button class="axol-send" onclick="axolSend()">→</button>
     </div>
   </div>
-  <button id="ajolote-btn" onclick="toggleAjo()" title="¡Habla conmigo!">
-<svg width="56" height="56" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <!-- Tail -->
-  <path d="M60 85 Q45 105 38 115 Q50 108 60 100 Q70 108 82 115 Q75 105 60 85Z" fill="#FF9EC4" opacity="0.85"/>
-  <!-- Body -->
-  <ellipse cx="60" cy="72" rx="28" ry="22" fill="#FFB6D9"/>
-  <!-- Belly -->
-  <ellipse cx="60" cy="76" rx="18" ry="14" fill="#FFD6EC" opacity="0.7"/>
-  <!-- Back legs -->
-  <g opacity="0.9">
-    <path d="M32 80 Q22 85 18 82 Q22 80 26 78Z" fill="#FF9EC4"/>
-    <path d="M32 80 Q20 90 16 88 Q21 84 27 82Z" fill="#FF9EC4"/>
-    <path d="M32 80 Q23 94 19 93 Q24 88 29 84Z" fill="#FF9EC4"/>
-    <path d="M88 80 Q98 85 102 82 Q98 80 94 78Z" fill="#FF9EC4"/>
-    <path d="M88 80 Q100 90 104 88 Q99 84 93 82Z" fill="#FF9EC4"/>
-    <path d="M88 80 Q97 94 101 93 Q96 88 91 84Z" fill="#FF9EC4"/>
-  </g>
-  <!-- Head -->
-  <ellipse cx="60" cy="52" rx="26" ry="22" fill="#FFB6D9"/>
-  <!-- Cheeks -->
-  <ellipse cx="42" cy="58" rx="8" ry="5" fill="#FF85B3" opacity="0.5"/>
-  <ellipse cx="78" cy="58" rx="8" ry="5" fill="#FF85B3" opacity="0.5"/>
-  <!-- BRANQUIAS izquierda -->
-  <g transform="translate(34,34)">
-    <!-- tallo -->
-    <path d="M0 0 Q-8 -18 -6 -32" stroke="#FF69A0" stroke-width="3" fill="none" stroke-linecap="round"/>
-    <!-- plumas -->
-    <path d="M-3 -10 Q-14 -12 -16 -8" stroke="#FF85B3" stroke-width="2.5" fill="none" stroke-linecap="round"/>
-    <path d="M-4 -17 Q-16 -20 -17 -15" stroke="#FF85B3" stroke-width="2.5" fill="none" stroke-linecap="round"/>
-    <path d="M-5 -24 Q-15 -28 -15 -23" stroke="#FF85B3" stroke-width="2.5" fill="none" stroke-linecap="round"/>
-    <path d="M-3 -10 Q-8 -4 -4 -2" stroke="#FFB6D9" stroke-width="2" fill="none" stroke-linecap="round"/>
-    <path d="M-4 -17 Q-5 -10 -1 -9" stroke="#FFB6D9" stroke-width="2" fill="none" stroke-linecap="round"/>
-    <!-- tallo2 -->
-    <path d="M2 0 Q10 -16 8 -30" stroke="#FF69A0" stroke-width="3" fill="none" stroke-linecap="round"/>
-    <path d="M5 -10 Q16 -13 17 -9" stroke="#FF85B3" stroke-width="2.5" fill="none" stroke-linecap="round"/>
-    <path d="M6 -18 Q17 -22 17 -17" stroke="#FF85B3" stroke-width="2.5" fill="none" stroke-linecap="round"/>
-    <path d="M6 -25 Q15 -30 14 -25" stroke="#FF85B3" stroke-width="2.5" fill="none" stroke-linecap="round"/>
-    <!-- tallo3 centro -->
-    <path d="M-1 -2 Q-2 -22 0 -34" stroke="#FF69A0" stroke-width="3" fill="none" stroke-linecap="round"/>
-    <path d="M-1 -12 Q-11 -15 -12 -10" stroke="#FF85B3" stroke-width="2" fill="none" stroke-linecap="round"/>
-    <path d="M-0 -22 Q-10 -26 -10 -21" stroke="#FF85B3" stroke-width="2" fill="none" stroke-linecap="round"/>
-  </g>
-  <!-- BRANQUIAS derecha (espejo) -->
-  <g transform="translate(86,34) scale(-1,1)">
-    <path d="M0 0 Q-8 -18 -6 -32" stroke="#FF69A0" stroke-width="3" fill="none" stroke-linecap="round"/>
-    <path d="M-3 -10 Q-14 -12 -16 -8" stroke="#FF85B3" stroke-width="2.5" fill="none" stroke-linecap="round"/>
-    <path d="M-4 -17 Q-16 -20 -17 -15" stroke="#FF85B3" stroke-width="2.5" fill="none" stroke-linecap="round"/>
-    <path d="M-5 -24 Q-15 -28 -15 -23" stroke="#FF85B3" stroke-width="2.5" fill="none" stroke-linecap="round"/>
-    <path d="M-3 -10 Q-8 -4 -4 -2" stroke="#FFB6D9" stroke-width="2" fill="none" stroke-linecap="round"/>
-    <path d="M-4 -17 Q-5 -10 -1 -9" stroke="#FFB6D9" stroke-width="2" fill="none" stroke-linecap="round"/>
-    <path d="M2 0 Q10 -16 8 -30" stroke="#FF69A0" stroke-width="3" fill="none" stroke-linecap="round"/>
-    <path d="M5 -10 Q16 -13 17 -9" stroke="#FF85B3" stroke-width="2.5" fill="none" stroke-linecap="round"/>
-    <path d="M6 -18 Q17 -22 17 -17" stroke="#FF85B3" stroke-width="2.5" fill="none" stroke-linecap="round"/>
-    <path d="M6 -25 Q15 -30 14 -25" stroke="#FF85B3" stroke-width="2.5" fill="none" stroke-linecap="round"/>
-    <path d="M-1 -2 Q-2 -22 0 -34" stroke="#FF69A0" stroke-width="3" fill="none" stroke-linecap="round"/>
-    <path d="M-1 -12 Q-11 -15 -12 -10" stroke="#FF85B3" stroke-width="2" fill="none" stroke-linecap="round"/>
-    <path d="M-0 -22 Q-10 -26 -10 -21" stroke="#FF85B3" stroke-width="2" fill="none" stroke-linecap="round"/>
-  </g>
-  <!-- Front legs -->
-  <g opacity="0.95">
-    <path d="M35 68 Q24 70 20 68 Q24 66 29 66Z" fill="#FF9EC4"/>
-    <path d="M35 68 Q22 76 18 75 Q23 71 30 69Z" fill="#FF9EC4"/>
-    <path d="M35 68 Q24 80 20 80 Q25 75 31 71Z" fill="#FF9EC4"/>
-    <path d="M85 68 Q96 70 100 68 Q96 66 91 66Z" fill="#FF9EC4"/>
-    <path d="M85 68 Q98 76 102 75 Q97 71 90 69Z" fill="#FF9EC4"/>
-    <path d="M85 68 Q96 80 100 80 Q95 75 89 71Z" fill="#FF9EC4"/>
-  </g>
-  <!-- Eyes whites -->
-  <ellipse cx="48" cy="50" rx="10" ry="10" fill="white"/>
-  <ellipse cx="72" cy="50" rx="10" ry="10" fill="white"/>
-  <!-- Eye pupils -->
-  <ellipse cx="50" cy="51" rx="6.5" ry="6.5" fill="#1a1a3e"/>
-  <ellipse cx="74" cy="51" rx="6.5" ry="6.5" fill="#1a1a3e"/>
-  <!-- Eye shine -->
-  <ellipse cx="52" cy="48" rx="2.5" ry="2.5" fill="white"/>
-  <ellipse cx="76" cy="48" rx="2.5" ry="2.5" fill="white"/>
-  <ellipse cx="47" cy="53" rx="1" ry="1" fill="white" opacity="0.7"/>
-  <ellipse cx="71" cy="53" rx="1" ry="1" fill="white" opacity="0.7"/>
-  <!-- Smile -->
-  <path d="M52 63 Q60 70 68 63" stroke="#FF69A0" stroke-width="2.5" fill="none" stroke-linecap="round"/>
-  <!-- Nostrils -->
-  <ellipse cx="56" cy="59" rx="1.5" ry="1" fill="#FF85B3" opacity="0.7"/>
-  <ellipse cx="64" cy="59" rx="1.5" ry="1" fill="#FF85B3" opacity="0.7"/>
-  <!-- Sparkles -->
-  <g class="sparkle" opacity="0.8">
-    <text x="100" y="20" font-size="10" fill="#FFE500">✦</text>
-    <text x="8" y="30" font-size="8" fill="#00F0FF">✦</text>
-    <text x="105" y="60" font-size="7" fill="#FF00CC">✦</text>
-  </g>
-</svg>
-</button>
+
+  <!-- Botón mascota -->
+  <button id="axol-btn" onclick="axolToggle()" aria-label="Abrir Axolín">
+    <svg id="axol-svg" viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <radialGradient id="bodyGrad" cx="50%" cy="40%" r="60%">
+          <stop offset="0%" stop-color="#a78bfa"/>
+          <stop offset="100%" stop-color="#7c3aed"/>
+        </radialGradient>
+        <radialGradient id="frillGrad" cx="50%" cy="50%" r="60%">
+          <stop offset="0%" stop-color="#67e8f9"/>
+          <stop offset="100%" stop-color="#a78bfa"/>
+        </radialGradient>
+      </defs>
+      <!-- body -->
+      <ellipse cx="40" cy="47" rx="21" ry="17" fill="url(#bodyGrad)"/>
+      <!-- head -->
+      <ellipse cx="40" cy="30" rx="18" ry="16" fill="url(#bodyGrad)"/>
+      <!-- eyes -->
+      <circle cx="33" cy="27" r="5.5" fill="white"/>
+      <circle cx="47" cy="27" r="5.5" fill="white"/>
+      <circle cx="34" cy="27.5" r="3" fill="#1a0a3e"/>
+      <circle cx="48" cy="27.5" r="3" fill="#1a0a3e"/>
+      <circle cx="33" cy="26" r="1.2" fill="white"/>
+      <circle cx="47" cy="26" r="1.2" fill="white"/>
+      <!-- smile -->
+      <path d="M34 34 Q40 38.5 46 34" stroke="#c084fc" stroke-width="2" fill="none" stroke-linecap="round"/>
+      <!-- gill frills left - cyan/teal -->
+      <ellipse cx="22" cy="21" rx="4" ry="9" fill="url(#frillGrad)" transform="rotate(-22 22 21)" opacity=".9"/>
+      <ellipse cx="16" cy="17" rx="3" ry="7" fill="#67e8f9" transform="rotate(-38 16 17)" opacity=".8"/>
+      <ellipse cx="27" cy="15" rx="3" ry="6" fill="#a78bfa" transform="rotate(-6 27 15)" opacity=".9"/>
+      <!-- gill frills right - cyan/teal -->
+      <ellipse cx="58" cy="21" rx="4" ry="9" fill="url(#frillGrad)" transform="rotate(22 58 21)" opacity=".9"/>
+      <ellipse cx="64" cy="17" rx="3" ry="7" fill="#67e8f9" transform="rotate(38 64 17)" opacity=".8"/>
+      <ellipse cx="53" cy="15" rx="3" ry="6" fill="#a78bfa" transform="rotate(6 53 15)" opacity=".9"/>
+      <!-- tail -->
+      <ellipse cx="40" cy="63" rx="11" ry="6" fill="#7c3aed" opacity=".8"/>
+      <ellipse cx="40" cy="65" rx="7" ry="4" fill="#67e8f9" opacity=".5"/>
+      <!-- legs -->
+      <ellipse cx="22" cy="57" rx="5.5" ry="3" fill="#a78bfa" transform="rotate(-22 22 57)"/>
+      <ellipse cx="58" cy="57" rx="5.5" ry="3" fill="#a78bfa" transform="rotate(22 58 57)"/>
+      <!-- cheeks - subtle pink glow -->
+      <circle cx="30" cy="32" r="4.5" fill="#f0abfc" opacity="0.35"/>
+      <circle cx="50" cy="32" r="4.5" fill="#f0abfc" opacity="0.35"/>
+      <!-- belly shimmer -->
+      <ellipse cx="40" cy="47" rx="11" ry="8" fill="#c4b5fd" opacity="0.2"/>
+    </svg>
+    <div id="axol-notif" class="axol-notif">1</div>
+  </button>
 </div>
 
 <!-- ══════ MODAL ══════ -->
@@ -953,7 +963,7 @@ footer{border-top:1px solid rgba(255,255,255,.06);padding:36px clamp(16px,5vw,60
         <textarea class="m-ta" id="desc" placeholder="Ejemplos:&#10;• Soy masajista a domicilio, todo lo llevo en WhatsApp y un cuaderno...&#10;• Tengo una peluquería y no sé cuánto gané este mes...&#10;• Mi negocio funciona bien pero todo depende de mí y quiero organizarme...&#10;&#10;Escribe lo que sea, cualquier cosa nos ayuda 👇"></textarea>
       </div>
       <button class="btn-marquee" onclick="startDiag()" style="width:100%;justify-content:center;font-size:.95rem;margin-top:4px">
-        📤 Ver qué está fallando en mi negocio →
+        📤 Ver mi diagnóstico de negocio →
         <div class="lights" id="modal-lights"></div>
       </button>
       <p style="font-size:.73rem;color:var(--mu);text-align:center;margin-top:10px">No te vamos a llamar a vender. Solo mandamos el diagnóstico.</p>
@@ -977,8 +987,8 @@ footer{border-top:1px solid rgba(255,255,255,.06);padding:36px clamp(16px,5vw,60
   <path d="M52 63 Q60 69 68 63" stroke="#FF69A0" stroke-width="2.5" fill="none" stroke-linecap="round"/>
   <path d="M60 85 Q47 103 40 112 Q51 106 60 98 Q69 106 80 112 Q73 103 60 85Z" fill="#FF9EC4" opacity="0.8"/>
 </svg></div>
-      <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:1.1rem;margin-bottom:4px">Axol está analizando tu negocio...</div>
-      <div style="font-size:.81rem;color:var(--mu);margin-bottom:18px">Nuestro equipo especializado está revisando</div>
+      <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:1.1rem;margin-bottom:4px">Analizando tu negocio...</div>
+      <div style="font-size:.81rem;color:var(--mu);margin-bottom:18px">Nuestro equipo está procesando tu información</div>
       <div id="dsteps" style="text-align:left">
         <div class="dstep" id="d1"><div class="dstep-i">○</div>Revisando cómo trabajas hoy</div>
         <div class="dstep" id="d2"><div class="dstep-i">○</div>Encontrando qué se puede mejorar</div>
@@ -995,7 +1005,7 @@ footer{border-top:1px solid rgba(255,255,255,.06);padding:36px clamp(16px,5vw,60
       <div class="res-top">
         <div class="res-n" id="r-score">68</div>
         <div>
-          <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:1rem;color:#fff;margin-bottom:3px">Nivel de desorden en tu operación</div>
+          <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:1rem;color:#fff;margin-bottom:3px">Nivel de optimización disponible</div>
           <div style="font-size:.79rem;color:var(--mu)">Nivel <span id="r-niv" style="color:var(--yw)">Medio-Alto</span> · <span id="r-areas">4 cosas que mejorar</span></div>
         </div>
       </div>
@@ -1013,7 +1023,7 @@ footer{border-top:1px solid rgba(255,255,255,.06);padding:36px clamp(16px,5vw,60
   </div>
 </div>
 
-<script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
 /* ══ CANVAS FONDO ══ */
 const cv=document.getElementById('bgC'),ctx=cv.getContext('2d');
 let W,H;
@@ -1085,117 +1095,128 @@ let ajoConversation=[];
 let ajoTyping=false;
 
 const ajoWelcomeMsgs=[
-  "¡Hola! 👋 Soy Axol, tu guía de d4tabl3. ¿Quieres saber qué está fallando en tu negocio? ¡Es gratis!",
+  "¡Hola! 👋 Soy Axol, tu guía de d4tabl3. ¿Quieres un diagnóstico gratis de tu negocio? ¡Sin registro!",
   "👆 ¿Tienes un minuto? Cuéntame cómo funciona tu negocio y te digo cómo mejorarlo.",
   "🤔 ¿Tienes dudas sobre d4tabl3? ¡Pregúntame lo que sea!",
   "💡 Muchos negocios como el tuyo ya se organizaron con nosotros. ¿Quieres saber cómo?",
 ];
 let ajoWelcomeIdx=0;
 
-function toggleAjo(){
-  const wrap=document.getElementById('ajolote-bubble');
-  const isHidden=wrap.style.display==='none'||!wrap.style.display;
-  if(isHidden){
-    wrap.style.display='block';
-    if(ajoConversation.length===0){
-      document.getElementById('ajo-msg').textContent=ajoWelcomeMsgs[ajoWelcomeIdx%ajoWelcomeMsgs.length];
-      // Show input after 1s
-      setTimeout(()=>{
-        document.getElementById('ajo-input-wrap').style.display='flex';
-      },800);
-    }
-  } else {
-    wrap.style.display='none';
+
+let axolIntroShown = false;
+let axolOpen = false;
+
+function axolMaybeIntro(){
+  if(axolIntroShown) return;
+  axolIntroShown = true;
+  // Remove listeners
+  window.removeEventListener('scroll', axolMaybeIntro);
+  window.removeEventListener('mousemove', axolMaybeIntro);
+  // Bounce in with sparkles after short delay
+  setTimeout(() => {
+    const btn = document.getElementById('axol-btn');
+    btn.classList.add('axol-bounce');
+    axolSparkBurst();
+    // Auto open intro after bounce
+    setTimeout(() => axolOpenBubble(), 900);
+  }, 600);
+}
+window.addEventListener('scroll', axolMaybeIntro, {once:true});
+window.addEventListener('mousemove', axolMaybeIntro, {once:true});
+
+function axolSparkBurst(){
+  const ring = document.getElementById('axol-sparks-ring');
+  const colors = ['#FF00CC','#FF6B1A','#FFE500','#1DFF8A','#00F0FF','#C400FF','#FF9EDB'];
+  for(let i = 0; i < 14; i++){
+    const dot = document.createElement('div');
+    dot.className = 'spark-dot';
+    const angle = (i / 14) * Math.PI * 2;
+    const dist = 40 + Math.random() * 24;
+    dot.style.cssText = `
+      left:50%;top:50%;
+      background:${colors[i % colors.length]};
+      box-shadow:0 0 6px ${colors[i % colors.length]};
+      --tx:${Math.cos(angle)*dist}px;
+      --ty:${Math.sin(angle)*dist}px;
+      animation-delay:${i*0.04}s;
+    `;
+    ring.appendChild(dot);
+    setTimeout(() => dot.remove(), 900);
   }
 }
-function closeAjo(){document.getElementById('ajolote-bubble').style.display='none'}
 
-async function sendAjoMsg(){
-  const inp=document.getElementById('ajo-input');
-  const msg=inp.value.trim();
-  if(!msg||ajoTyping)return;
-  inp.value='';
-  ajoTyping=true;
+function axolOpenBubble(){
+  axolOpen = true;
+  const bubble = document.getElementById('axol-bubble');
+  bubble.classList.add('on');
+  // Hide notif dot
+  const notif = document.getElementById('axol-notif');
+  if(notif) notif.style.display = 'none';
+}
 
-  // Show user message
-  const chat=document.getElementById('ajo-chat');
-  const userDiv=document.createElement('div');
-  userDiv.style.cssText='text-align:right;margin:6px 0';
-  userDiv.innerHTML=`<span style="background:rgba(0,240,255,.15);border:1px solid rgba(0,240,255,.3);border-radius:12px 12px 2px 12px;padding:6px 11px;font-size:.78rem;display:inline-block;max-width:85%;color:#fff">${msg}</span>`;
-  chat.appendChild(userDiv);
+function axolClose(){
+  axolOpen = false;
+  document.getElementById('axol-bubble').classList.remove('on');
+}
 
-  // Typing indicator
-  const typDiv=document.createElement('div');
-  typDiv.id='ajo-typing';
-  typDiv.style.cssText='margin:6px 0';
-  typDiv.innerHTML=`<span style="background:rgba(255,255,255,.07);border-radius:2px 12px 12px 12px;padding:6px 11px;font-size:.78rem;display:inline-block;color:rgba(255,255,255,.5)">Axol está pensando...</span>`;
-  chat.appendChild(typDiv);
-  chat.scrollTop=chat.scrollHeight;
+function axolToggle(){
+  if(axolOpen) axolClose();
+  else { axolSparkBurst(); axolOpenBubble(); }
+}
 
-  // Update main msg
-  document.getElementById('ajo-msg').textContent='';
+function axolQuestion(q){
+  document.getElementById('axol-intro').style.display='none';
+  addAxolMsg(q, 'user');
+  axolThinkAndRespond(q);
+}
 
-  ajoConversation.push({role:'user',content:msg});
+function axolSend(){
+  const inp = document.getElementById('axol-input');
+  const msg = inp.value.trim();
+  if(!msg) return;
+  inp.value = '';
+  document.getElementById('axol-intro').style.display='none';
+  addAxolMsg(msg, 'user');
+  axolThinkAndRespond(msg);
+}
 
-  try{
-    const res=await fetch('https://api.anthropic.com/v1/messages',{
+function addAxolMsg(text, from){
+  const hist = document.getElementById('axol-chat-history');
+  const div = document.createElement('div');
+  div.className = from === 'user' ? 'axol-msg-user' : 'axol-msg-axol';
+  div.textContent = text;
+  hist.appendChild(div);
+  hist.scrollTop = hist.scrollHeight;
+}
+
+async function axolThinkAndRespond(userMsg){
+  const hist = document.getElementById('axol-chat-history');
+  const thinking = document.createElement('div');
+  thinking.className = 'axol-msg-axol';
+  thinking.textContent = '...';
+  hist.appendChild(thinking);
+  hist.scrollTop = hist.scrollHeight;
+
+  try {
+    const resp = await fetch('https://api.anthropic.com/v1/messages', {
       method:'POST',
       headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({
+      body: JSON.stringify({
         model:'claude-sonnet-4-20250514',
-        max_tokens:1000,
-        system:`Eres Axol, la mascota ajolote de d4tabl3, una plataforma mexicana que ayuda a pequeños negocios a organizarse con IA por solo $499 MXN/mes.
-Tu personalidad: amigable, cálida, directa, usa lenguaje mexicano casual. Usas emojis moderadamente.
-Tu objetivo: responder dudas sobre d4tabl3, animar a hacer el análisis gratis, y orientar al visitante.
-Sobre d4tabl3: diagnóstico gratis de negocio en 30 segundos, dashboard con automatizaciones y métricas, $499 MXN/mes, sistema de vendedores con comisiones.
-Mantén respuestas cortas (máx 2-3 oraciones). Si preguntan sobre precios, di $499 MXN/mes. Si quieren empezar, invítalos a hacer clic en "Análisis gratis".`,
-        messages:ajoConversation
+        max_tokens:300,
+        system:`Eres Axolín, la mascota y guía interactiva de dªtªblɛ — una plataforma que digitaliza negocios pequeños y medianos en México. Tu personalidad: amigable, entusiasta, claro, directo, sin tecnicismos. Hablas como un amigo que sabe de negocios digitales. Nunca menciones que eres IA. Tus respuestas son cortas (máx 3 frases). Si alguien quiere hablar con una persona, diles que pueden escribir a D4tabl3@gmail.com o dar clic en "Análisis gratis" para que el equipo los contacte. Si preguntan precios: $499 MXN/mes. Si preguntan qué hace datable: organiza tu negocio, automatiza procesos, da diagnóstico de tu operación en 30 segundos.`,
+        messages:[{role:'user', content: userMsg}]
       })
     });
-    const data=await res.json();
-    const reply=data.content?.[0]?.text||'¡Ups! Algo falló. ¿Puedes intentar de nuevo?';
-    ajoConversation.push({role:'assistant',content:reply});
-
-    document.getElementById('ajo-typing')?.remove();
-    const botDiv=document.createElement('div');
-    botDiv.style.cssText='margin:6px 0';
-    botDiv.innerHTML=`<span style="background:rgba(255,0,204,.1);border:1px solid rgba(255,0,204,.25);border-radius:2px 12px 12px 12px;padding:6px 11px;font-size:.78rem;display:inline-block;max-width:90%;color:#fff;line-height:1.5">${reply}</span>`;
-    chat.appendChild(botDiv);
-    chat.scrollTop=chat.scrollHeight;
-  }catch(e){
-    document.getElementById('ajo-typing')?.remove();
-    const errDiv=document.createElement('div');
-    errDiv.innerHTML=`<span style="background:rgba(255,255,255,.07);border-radius:2px 12px 12px 12px;padding:6px 11px;font-size:.78rem;display:inline-block;color:rgba(255,255,255,.5)">¡Ups! Error de conexión. Intenta de nuevo 😅</span>`;
-    chat.appendChild(errDiv);
-    chat.scrollTop=chat.scrollHeight;
+    const data = await resp.json();
+    const reply = data.content?.[0]?.text || 'Disculpa, tuve un problema. ¿Me repites tu pregunta?';
+    thinking.textContent = reply;
+  } catch(e) {
+    thinking.textContent = '¡Ups! Algo falló. Escríbenos directo a D4tabl3@gmail.com 😊';
   }
-  ajoTyping=false;
+  hist.scrollTop = hist.scrollHeight;
 }
 
-document.addEventListener('DOMContentLoaded',()=>{
-  const inp=document.getElementById('ajo-input');
-  if(inp) inp.addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendAjoMsg();}});
-});
-
-// Auto-show after 5s
-setTimeout(()=>{
-  document.getElementById('ajolote-bubble').style.display='block';
-  document.getElementById('ajo-input-wrap').style.display='flex';
-},5000);
-
-// Change welcome msg on scroll
-let lastScroll=0;
-window.addEventListener('scroll',()=>{
-  const sy=window.scrollY;
-  if(sy-lastScroll>400&&ajoConversation.length===0){
-    lastScroll=sy;ajoWelcomeIdx++;
-    const b=document.getElementById('ajolote-bubble');
-    if(b.style.display!=='none'){
-      document.getElementById('ajo-msg').textContent=ajoWelcomeMsgs[ajoWelcomeIdx%ajoWelcomeMsgs.length];
-      b.style.animation='none';b.offsetHeight;b.style.animation='bubbleIn .4s ease';
-    }
-  }
-});
 
 /* ══ MODAL ══ */
 function openModal(){
@@ -1335,6 +1356,90 @@ function showStaticResult(){
   document.getElementById('m-load').classList.remove('on');
   document.getElementById('m-res').classList.add('on');
   setTimeout(()=>{initAllLights();},100);
-}</script>
+}
+
+
+/* ══ DRAWER MENU ══ */
+function toggleMenu(){
+  const d = document.getElementById('nav-drawer');
+  const opening = !d.classList.contains('on');
+  if(opening){
+    d.style.display = 'flex';
+    requestAnimationFrame(()=> d.classList.add('on'));
+    document.body.style.overflow = 'hidden';
+  } else {
+    d.classList.remove('on');
+    document.body.style.overflow = '';
+    setTimeout(()=> d.style.display = 'none', 300);
+  }
+}
+
+function closeMenuBg(e){
+  if(e.target===document.getElementById('nav-drawer')) toggleMenu();
+}
+
+/* ══ DETECCIÓN AUTOMÁTICA DE IDIOMA ══ */
+const i18n = {
+  en: {
+    eyebrow: "Business organization specialists · Results in 30 seconds",
+    h1_white: "Your business can",
+    h1_grad: "run itself.",
+    hero_p: "Send us a photo, spreadsheet, or describe how you work today. <strong>In 30 seconds we tell you exactly what's failing</strong> and how to fix it. No jargon, no meetings, no cost.",
+    ucard_title: "Send us whatever you have",
+    ucard_sub: "A photo of your schedule, your spreadsheet, a business photo, a handwritten note — anything works. Or just tell us how your business runs.",
+    stat1: "To see your diagnosis", stat2: "Cost of analysis", stat3: "Made for your business", stat4: "Businesses analyzed",
+    nav_login: "Sign in", nav_cta: "Free analysis ⚡",
+    modal_t: "⚡ Your free analysis", modal_s: "No sign up · No credit card · Results in 30 seconds",
+    ajo: ["Hi! 👋 I'm Axol, your d4tabl3 guide. Want to know what's failing in your business? It's free!",
+          "👆 Got a minute? Tell me about your business and I'll show you how to improve it.",
+          "🤔 Questions about d4tabl3? Ask me anything!",
+          "💡 Many businesses like yours already organized with us. Want to know how?"]
+  }
+};
+
+function applyLang(){
+  const lang = (navigator.language||'es').toLowerCase().startsWith('en') ? 'en' : 'es';
+  document.documentElement.lang = lang;
+  if(lang === 'es') return;
+  const t = i18n.en;
+  const q = s => document.querySelector(s);
+  const qa = s => document.querySelectorAll(s);
+  if(q('.h1-wh')) q('.h1-wh').textContent = t.h1_white;
+  if(q('.h1-grad')) q('.h1-grad').textContent = t.h1_grad;
+  if(q('.hero-p')) q('.hero-p').innerHTML = t.hero_p;
+  if(q('.eyebrow')) q('.eyebrow').innerHTML = '&#11044;&nbsp; ' + t.eyebrow;
+  if(q('.ucard-title')) q('.ucard-title').textContent = t.ucard_title;
+  if(q('.ucard-sub')) q('.ucard-sub').textContent = t.ucard_sub;
+  qa('.hs-l').forEach((el,i) => { const s=[t.stat1,t.stat2,t.stat3,t.stat4]; if(s[i]) el.textContent=s[i]; });
+  qa('.nav-r a.btn-ghost').forEach(el => el.textContent = t.nav_login);
+  if(q('.modal-t')) q('.modal-t').innerHTML = t.modal_t;
+  if(q('.modal-s')) q('.modal-s').textContent = t.modal_s;
+  window.ajoWelcomeMsgs = t.ajo;
+}
+document.addEventListener('DOMContentLoaded', applyLang);
+
+
+/* ══ LOGO SPARKS CIRCUS ANIMATION ══ */
+
+
+/* ══ ADMIN SESSION CHECK ══ */
+(function(){
+  // Check if admin is logged in
+  const session = localStorage.getItem('d4tabl3_session');
+  if(session){
+    try {
+      const data = JSON.parse(session);
+      if(data.role === 'admin'){
+        // Show admin link in drawer
+        const adminLink = document.getElementById('drawer-admin');
+        if(adminLink) adminLink.style.display = 'block';
+        // Hide regular login link, show logout instead
+        const loginLink = document.getElementById('drawer-login');
+        if(loginLink){ loginLink.textContent = '→ Mi cuenta'; loginLink.href = 'dashboard.html'; }
+      }
+    } catch(e){}
+  }
+})();
+</script>
 </body>
 </html>
