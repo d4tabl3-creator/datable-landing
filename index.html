@@ -356,6 +356,15 @@ nav .nav-logo{font-family:'Syne',sans-serif;font-weight:800;font-size:2.2rem;tex
 .drawer-item { border: 1px solid rgba(255,255,255,.08) !important; }
 
 
+
+/* Result items with blur on last */
+.res-ri{display:flex;align-items:center;gap:10px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:10px 12px;margin-bottom:7px;position:relative}
+.res-ri.blurred{filter:blur(4px);pointer-events:none;user-select:none}
+.res-ri.blurred::after{content:'🔒 Regístrate para ver';position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:.72rem;font-weight:700;color:rgba(255,255,255,.6);filter:none}
+.ri-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0}
+.ri-lbl{font-size:.82rem;font-weight:500;flex:1;color:#fff}
+.ri-pill{font-size:.68rem;font-weight:700;padding:2px 9px;border-radius:20px;border:1px solid;flex-shrink:0}
+
 /* ══ MODAL ══ */
 #ov{position:fixed;inset:0;z-index:500;background:rgba(0,0,0,.8);backdrop-filter:blur(8px);display:none;align-items:center;justify-content:center;padding:20px}
 #ov.on{display:flex}
@@ -941,30 +950,30 @@ nav .nav-logo:hover span {
       <div class="modal-t">⚡ Tu análisis gratuito</div>
       <div class="modal-s">Sin registrarte · Sin tarjeta · Resultado en 30 segundos</div>
 
+      <!-- Drop zone -->
       <div class="dz" id="dz" onclick="document.getElementById('fi').click()" ondragover="dov(event)" ondragleave="dol()" ondrop="ddr(event)">
-        <span class="dz-icon">📸</span>
-        <div class="dz-hint">
-          <strong>Toca aquí para mandar una foto o archivo</strong><br>
-          O arrastra algo desde tu celular o computadora
+        <span class="dz-icon" id="dz-icon">📸</span>
+        <div class="dz-hint" id="dz-hint">
+          <strong>Toca aquí para subir una foto o archivo</strong><br>
+          <span style="font-size:.78rem;color:var(--mu)">📸 Foto &nbsp;·&nbsp; 📊 Excel &nbsp;·&nbsp; 📄 PDF</span>
         </div>
-        <div class="dz-mini">
-          <span class="dz-tag">📸 Foto</span>
-          <span class="dz-tag">📊 Excel</span>
-          <span class="dz-tag">📄 PDF</span>
-          <span class="dz-tag">📝 Nota escrita</span>
+        <div id="dz-preview" style="display:none;margin-top:8px">
+          <img id="dz-img" style="max-height:120px;border-radius:8px;max-width:100%;display:none">
+          <div id="dz-fname" style="font-size:.82rem;color:var(--gn);font-weight:600;margin-top:4px"></div>
+          <button onclick="event.stopPropagation();clearFile()" style="margin-top:6px;background:rgba(255,0,100,.15);border:1px solid rgba(255,0,100,.3);color:#ff6680;border-radius:8px;padding:4px 12px;font-size:.75rem;cursor:pointer">✕ Quitar archivo</button>
         </div>
       </div>
-      <input type="file" id="fi" accept=".xlsx,.xls,.csv,.pdf,.png,.jpg,.jpeg" onchange="startDiag()">
+      <input type="file" id="fi" accept=".xlsx,.xls,.csv,.pdf,.png,.jpg,.jpeg" onchange="previewFile()">
 
-      <div class="m-ta-wrap" style="margin-top:14px">
-        <label class="m-ta-label">✍️ Cuéntanos cómo funciona tu negocio hoy <span style="color:var(--mu);font-weight:400">(aunque no tengas nada que subir)</span></label>
-        <textarea class="m-ta" id="desc" placeholder="Ejemplos:&#10;• Soy masajista a domicilio, todo lo llevo en WhatsApp y un cuaderno...&#10;• Tengo una peluquería y no sé cuánto gané este mes...&#10;• Mi negocio funciona bien pero todo depende de mí y quiero organizarme...&#10;&#10;Escribe lo que sea, cualquier cosa nos ayuda 👇"></textarea>
+      <div style="margin-top:14px">
+        <label style="font-size:.8rem;font-weight:600;color:rgba(255,255,255,.75);display:block;margin-bottom:6px">✍️ Cuéntanos cómo funciona tu negocio <span style="color:var(--mu);font-weight:400">(o agrega contexto a tu archivo)</span></label>
+        <textarea id="desc" style="width:100%;background:rgba(255,255,255,.05);border:1.5px solid rgba(255,255,255,.12);border-radius:12px;padding:12px;color:#fff;font-family:'DM Sans',sans-serif;font-size:.88rem;resize:vertical;min-height:90px;outline:none;transition:border-color .2s" placeholder="Ej: Soy masajista a domicilio, llevo todo en WhatsApp y un cuaderno. Se me olvidan citas y no sé cuánto gané este mes...&#10;&#10;(Entre más detallas, mejor diagnóstico recibes)"></textarea>
       </div>
-      <button class="btn-marquee" onclick="startDiag()" style="width:100%;justify-content:center;font-size:.95rem;margin-top:4px">
-        📤 Ver mi diagnóstico de negocio →
+      <button class="btn-marquee" onclick="startDiag()" style="width:100%;justify-content:center;font-size:.95rem;margin-top:12px" id="btn-analizar">
+        🔬 Analizar mi negocio →
         <div class="lights" id="modal-lights"></div>
       </button>
-      <p style="font-size:.73rem;color:var(--mu);text-align:center;margin-top:10px">No te vamos a llamar a vender. Solo mandamos el diagnóstico.</p>
+      <p style="font-size:.73rem;color:var(--mu);text-align:center;margin-top:8px">Sin registro · Sin tarjeta · Tu info es privada</p>
     </div>
 
     <div class="m-load" id="m-load">
@@ -997,33 +1006,41 @@ nav .nav-logo:hover span {
     </div>
 
     <div class="m-res" id="m-res">
-      <div style="text-align:center;font-size:1.6rem;margin-bottom:6px">✨ ¡Listo! ✨</div>
-      <div class="modal-t" style="margin-bottom:4px">¡Tu diagnóstico está listo!</div>
-      <div class="modal-s">Esto es lo que encontró Axol en tu negocio</div>
-      <div class="res-top">
-        <div class="res-n" id="r-score">68</div>
+      <div style="text-align:center;font-size:1.4rem;margin-bottom:4px">✨ ¡Diagnóstico listo! ✨</div>
+      <div class="modal-t" style="margin-bottom:4px;font-size:1.05rem">Esto encontramos en tu negocio</div>
+
+      <!-- Score -->
+      <div class="res-top" style="display:flex;align-items:center;gap:14px;background:rgba(255,255,255,.04);border-radius:14px;padding:14px;margin-bottom:14px">
+        <div class="res-n" id="r-score" style="font-family:'Syne',sans-serif;font-weight:800;font-size:2.8rem;line-height:1;min-width:64px;text-align:center;color:var(--mg);text-shadow:0 0 20px var(--mg)">68</div>
         <div>
-          <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:1rem;color:#fff;margin-bottom:3px">Nivel de optimización disponible</div>
-          <div style="font-size:.79rem;color:var(--mu)">Nivel <span id="r-niv" style="color:var(--yw)">Medio-Alto</span> · <span id="r-areas">4 cosas que mejorar</span></div>
+          <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:.95rem;color:#fff;margin-bottom:3px">Nivel de oportunidad</div>
+          <div style="font-size:.79rem;color:var(--mu)">Nivel <span id="r-niv" style="color:var(--yw);font-weight:700">Medio-Alto</span></div>
+          <div style="font-size:.75rem;color:var(--mu);margin-top:2px"><span id="r-areas">4 áreas de mejora detectadas</span></div>
         </div>
       </div>
-      <div id="r-items" style="margin-bottom:16px"></div>
-      <!-- ACTIVATION BOX -->
-      <div id="activation-box" style="background:linear-gradient(135deg,rgba(29,255,138,0.1),rgba(0,240,255,0.1));border:1px solid rgba(29,255,138,0.3);border-radius:14px;padding:16px;margin-bottom:14px">
-        <div style="font-family:'Syne',sans-serif;font-weight:800;font-size:1rem;color:#1DFF8A;margin-bottom:6px">⚡ Ya activamos algo para ti</div>
-        <div id="activation-result" style="font-size:.85rem;color:#E8E8F0;line-height:1.5;margin-bottom:10px">Cargando tu herramienta...</div>
-        <div style="font-size:.75rem;color:rgba(255,255,255,0.4)">⏱ Disponible por <strong id="trial-hours" style="color:#FFE500">48 horas</strong> — regístrate para conservarlo</div>
+
+      <!-- Items visibles + blur en los últimos -->
+      <div style="font-size:.72rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--mu);margin-bottom:8px">📋 Áreas detectadas en tu negocio</div>
+      <div id="r-items" style="margin-bottom:0px"></div>
+
+      <!-- Herramienta activada — se ve real -->
+      <div id="activation-box" style="background:linear-gradient(135deg,rgba(29,255,138,0.08),rgba(0,240,255,0.08));border:1.5px solid rgba(29,255,138,0.35);border-radius:14px;padding:16px;margin-top:14px;margin-bottom:14px">
+        <div style="font-family:'Syne',sans-serif;font-weight:800;font-size:.95rem;color:#1DFF8A;margin-bottom:10px">⚡ Tu primera herramienta ya está activa</div>
+        <div id="activation-result" style="font-size:.84rem;color:#E8E8F0;line-height:1.6;margin-bottom:10px"></div>
+        <div style="background:rgba(0,0,0,.3);border-radius:10px;padding:10px 12px;font-size:.78rem;color:rgba(255,255,255,.55)">
+          ⏱ Disponible <strong style="color:#FFE500">48 horas</strong> gratis · Regístrate para conservarla y ver el resto del diagnóstico
+        </div>
       </div>
 
-      <button class="btn-marquee btn-gn-mq" style="width:100%;justify-content:center;font-size:.95rem;margin-bottom:8px" onclick="goRegister()">
-        ✅ Registrarme para conservar mi herramienta →
+      <button class="btn-marquee btn-gn-mq" style="width:100%;justify-content:center;font-size:.92rem;margin-bottom:8px" onclick="goRegister()">
+        ✅ Registrarme y ver todo →
         <div class="lights" id="res-lights1"></div>
       </button>
-      <button class="btn-marquee" style="width:100%;justify-content:center;font-size:.85rem;background:rgba(255,255,255,0.05)" onclick="goRegister()">
-        📋 Ver mi diagnóstico completo →
+      <button class="btn-marquee" style="width:100%;justify-content:center;font-size:.82rem;background:rgba(255,255,255,0.06);padding:11px" onclick="goRegister()">
+        📋 Quiero mi diagnóstico completo →
         <div class="lights" id="res-lights2"></div>
       </button>
-      <p style="font-size:.72rem;color:var(--mu);text-align:center;margin-top:10px">Sin tarjeta · Sin compromiso · Tu herramienta ya está lista</p>
+      <p style="font-size:.7rem;color:var(--mu);text-align:center;margin-top:8px">Sin tarjeta · Sin compromiso · Cancela cuando quieras</p>
     </div>
   </div>
 </div>
@@ -1233,6 +1250,7 @@ async function axolThinkAndRespond(userMsg){
 }
 
 
+
 /* ══ MODAL ══ */
 function openModal(){
   document.getElementById('ov').classList.add('on');
@@ -1294,7 +1312,8 @@ function startDiag(){
       const colors=['var(--mg)','var(--cy)','var(--yw)','var(--gn)','var(--or)'];
       const bgs=['rgba(255,0,204,','rgba(0,240,255,','rgba(255,229,0,','rgba(29,255,138,','rgba(255,107,26,'];
       const c=colors[i%colors.length];const bg=bgs[i%bgs.length];
-      return `<div class="res-ri">
+      const blurred = i >= 2 ? ' blurred' : '';
+      return `<div class="res-ri${blurred}">
         <div class="ri-dot" style="background:${c}"></div>
         <div class="ri-lbl">${a.problema}</div>
         <div class="ri-pill" style="border-color:${c};color:${c};background:${bg}.08)">${a.urgencia}</div>
@@ -1366,7 +1385,8 @@ function showStaticResult(){
     const colors=['var(--mg)','var(--cy)','var(--yw)','var(--gn)'];
     const bgs=['rgba(255,0,204,','rgba(0,240,255,','rgba(255,229,0,','rgba(29,255,138,'];
     const c=colors[i];const bg=bgs[i];
-    return `<div class="res-ri"><div class="ri-dot" style="background:${c}"></div><div class="ri-lbl">${a.problema}</div><div class="ri-pill" style="border-color:${c};color:${c};background:${bg}.08)">${a.urgencia}</div></div>`;
+    const blurred = i >= 2 ? ' blurred' : '';
+    return `<div class="res-ri${blurred}"><div class="ri-dot" style="background:${c}"></div><div class="ri-lbl">${a.problema}</div><div class="ri-pill" style="border-color:${c};color:${c};background:${bg}.08)">${a.urgencia}</div></div>`;
   }).join('');
   document.getElementById('m-load').classList.remove('on');
   document.getElementById('m-res').classList.add('on');
@@ -1374,37 +1394,100 @@ function showStaticResult(){
 }
 
 
+/* ══ FILE PREVIEW ══ */
+function previewFile(){
+  const fi = document.getElementById('fi');
+  const file = fi.files[0];
+  if(!file) return;
+  const preview = document.getElementById('dz-preview');
+  const img = document.getElementById('dz-img');
+  const fname = document.getElementById('dz-fname');
+  const hint = document.getElementById('dz-hint');
+  const icon = document.getElementById('dz-icon');
+  preview.style.display = 'block';
+  hint.style.display = 'none';
+  icon.style.display = 'none';
+  fname.textContent = '✅ ' + file.name;
+  if(file.type.startsWith('image/')){
+    const reader = new FileReader();
+    reader.onload = e => { img.src = e.target.result; img.style.display = 'block'; };
+    reader.readAsDataURL(file);
+  } else {
+    img.style.display = 'none';
+  }
+}
+
+function clearFile(){
+  document.getElementById('fi').value = '';
+  document.getElementById('dz-preview').style.display = 'none';
+  document.getElementById('dz-hint').style.display = 'block';
+  document.getElementById('dz-icon').style.display = 'block';
+  document.getElementById('dz-img').src = '';
+}
+
 /* ══ ACTIVATION & CONVERSION FLOW ══ */
 let lastDiagResult = null;
 
-// Called after diagnosis is shown — activate something immediately
 function activateInstantSolution(diagResult) {
   lastDiagResult = diagResult;
-  const solutions = {
-    'clientes': { title: 'CRM básico de clientes', desc: 'Tu lista de clientes ya está lista. Puedes agregar contactos, notas y seguimiento desde tu panel.' },
-    'ventas': { title: 'Registro de ventas', desc: 'Activamos tu registro de ventas diarias. Puedes ver tus ingresos del día desde tu panel.' },
-    'agenda': { title: 'Agenda de citas', desc: 'Tu sistema de citas ya está listo. Tus clientes pueden agendar directamente.' },
-    'default': { title: 'CRM básico de clientes', desc: 'Activamos tu CRM básico. Ya puedes gestionar tu cartera de clientes desde el panel.' }
-  };
+  const areas = (diagResult?.areas||[]).map(a=>a.problema?.toLowerCase()).join(' ');
+  
+  // Pick the best matching tool
+  let tool;
+  if(areas.includes('cita') || areas.includes('agenda')){
+    tool = {
+      icon:'📅', name:'Agenda de citas',
+      preview:`<div style="background:rgba(0,0,0,.3);border-radius:10px;padding:12px;font-size:.8rem;margin-top:8px">
+        <div style="color:var(--cy);font-weight:700;margin-bottom:8px">📅 Tu agenda de citas</div>
+        <div style="display:flex;flex-direction:column;gap:6px">
+          <div style="background:rgba(255,255,255,.06);border-radius:7px;padding:7px 10px;display:flex;justify-content:space-between"><span>10:00 AM — Cliente nuevo</span><span style="color:var(--gn)">✓ Confirmado</span></div>
+          <div style="background:rgba(255,255,255,.06);border-radius:7px;padding:7px 10px;display:flex;justify-content:space-between"><span>12:30 PM — Seguimiento</span><span style="color:var(--yw)">⏳ Pendiente</span></div>
+          <div style="background:rgba(255,255,255,.06);border-radius:7px;padding:7px 10px;display:flex;justify-content:space-between;filter:blur(3px)"><span>3:00 PM — Consulta</span><span>···</span></div>
+        </div>
+        <div style="margin-top:8px;font-size:.72rem;color:rgba(255,255,255,.4)">Regístrate para ver y editar tu agenda completa →</div>
+      </div>`
+    };
+  } else if(areas.includes('venta') || areas.includes('ingreso') || areas.includes('dinero')){
+    tool = {
+      icon:'💰', name:'Registro de ventas',
+      preview:`<div style="background:rgba(0,0,0,.3);border-radius:10px;padding:12px;font-size:.8rem;margin-top:8px">
+        <div style="color:var(--gn);font-weight:700;margin-bottom:8px">💰 Tu registro de ventas</div>
+        <div style="display:flex;gap:8px;margin-bottom:8px">
+          <div style="flex:1;background:rgba(29,255,138,.08);border:1px solid rgba(29,255,138,.2);border-radius:8px;padding:8px;text-align:center"><div style="font-weight:800;color:var(--gn)">$0</div><div style="font-size:.68rem;color:var(--mu)">Hoy</div></div>
+          <div style="flex:1;background:rgba(0,240,255,.08);border:1px solid rgba(0,240,255,.2);border-radius:8px;padding:8px;text-align:center;filter:blur(3px)"><div style="font-weight:800;color:var(--cy)">$···</div><div style="font-size:.68rem;color:var(--mu)">Esta semana</div></div>
+          <div style="flex:1;background:rgba(255,229,0,.08);border:1px solid rgba(255,229,0,.2);border-radius:8px;padding:8px;text-align:center;filter:blur(3px)"><div style="font-weight:800;color:var(--yw)">$···</div><div style="font-size:.68rem;color:var(--mu)">Este mes</div></div>
+        </div>
+        <div style="font-size:.72rem;color:rgba(255,255,255,.4)">Regístrate para registrar tus primeras ventas →</div>
+      </div>`
+    };
+  } else {
+    tool = {
+      icon:'👥', name:'Lista de clientes (CRM)',
+      preview:`<div style="background:rgba(0,0,0,.3);border-radius:10px;padding:12px;font-size:.8rem;margin-top:8px">
+        <div style="color:var(--mg);font-weight:700;margin-bottom:8px">👥 Tu lista de clientes</div>
+        <div style="display:flex;flex-direction:column;gap:5px">
+          <div style="background:rgba(255,255,255,.06);border-radius:7px;padding:7px 10px;display:flex;align-items:center;gap:9px">
+            <div style="width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,var(--mg),var(--pu));display:flex;align-items:center;justify-content:center;font-size:.8rem;font-weight:800">C</div>
+            <div><div style="font-weight:600">Cliente nuevo</div><div style="font-size:.7rem;color:var(--mu)">Sin seguimiento aún</div></div>
+            <div style="margin-left:auto;font-size:.7rem;color:var(--yw)">⚠ Nuevo</div>
+          </div>
+          <div style="background:rgba(255,255,255,.06);border-radius:7px;padding:7px 10px;display:flex;align-items:center;gap:9px;filter:blur(3px)">
+            <div style="width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,var(--cy),var(--bl));display:flex;align-items:center;justify-content:center;font-weight:800">R</div>
+            <div><div>···</div><div style="font-size:.7rem">···</div></div>
+          </div>
+        </div>
+        <div style="margin-top:8px;font-size:.72rem;color:rgba(255,255,255,.4)">Regístrate para agregar tus clientes reales →</div>
+      </div>`
+    };
+  }
 
-  // Pick solution based on diagnosis
-  let sol = solutions.default;
-  const areas = diagResult?.areas?.map(a => a.problema?.toLowerCase()).join(' ') || '';
-  if (areas.includes('client') || areas.includes('seguimiento')) sol = solutions.clientes;
-  else if (areas.includes('venta') || areas.includes('ingreso')) sol = solutions.ventas;
-  else if (areas.includes('cita') || areas.includes('agenda')) sol = solutions.agenda;
-
-  // Store in localStorage with 48hr timer
-  const expiry = Date.now() + (48 * 60 * 60 * 1000);
-  localStorage.setItem('d4tabl3_free_tool', JSON.stringify({
-    title: sol.title,
-    desc: sol.desc,
-    expiry,
-    diag: diagResult
-  }));
+  const expiry = Date.now() + (48*60*60*1000);
+  localStorage.setItem('d4tabl3_free_tool', JSON.stringify({title:tool.name,expiry,diag:diagResult}));
 
   document.getElementById('activation-result').innerHTML = 
-    `<strong style="color:#fff">✅ ${sol.title}</strong><br>${sol.desc}`;
+    `<strong style="color:#fff">${tool.icon} ${tool.name}</strong> — lista para ti<br>
+    <span style="font-size:.78rem;color:rgba(255,255,255,.55)">Haz clic en "Registrarme" para activarla con tus datos reales</span>
+    ${tool.preview}`;
 }
 
 function goRegister() {
