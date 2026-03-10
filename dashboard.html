@@ -1,0 +1,1277 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>dªtªblɛ — Panel</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+:root {
+  --bg: #04040F;
+  --bg2: #080818;
+  --bg3: #0D0D25;
+  --mg: #FF00CC;
+  --cy: #00F0FF;
+  --gn: #1DFF8A;
+  --yw: #FFE500;
+  --or: #FF6B1A;
+  --pu: #C400FF;
+  --bl: #3D7EFF;
+  --text: #E8E8F0;
+  --muted: #6B6B8A;
+  --border: rgba(255,255,255,0.08);
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+body { background:var(--bg); color:var(--text); font-family:'DM Sans',sans-serif; min-height:100vh; }
+h1,h2,h3,h4 { font-family:'Syne',sans-serif; }
+
+/* ── AUTH SCREEN ── */
+#auth-screen {
+  min-height:100vh; display:flex; align-items:center; justify-content:center;
+  background: radial-gradient(ellipse at 20% 50%, rgba(196,0,255,0.15) 0%, transparent 50%),
+              radial-gradient(ellipse at 80% 20%, rgba(0,240,255,0.1) 0%, transparent 50%),
+              var(--bg);
+}
+.auth-box {
+  background:var(--bg2); border:1px solid var(--border); border-radius:20px;
+  padding:2.5rem; width:100%; max-width:420px; margin:1rem;
+}
+.auth-logo {
+  font-family:'Syne',sans-serif; font-size:2rem; font-weight:800; text-align:center;
+  margin-bottom:0.5rem; letter-spacing:-1px;
+}
+.auth-logo span:nth-child(1){color:#fff}
+.auth-logo span:nth-child(2){color:var(--cy)}
+.auth-logo span:nth-child(3){color:#fff}
+.auth-logo span:nth-child(4){color:var(--cy)}
+.auth-logo span:nth-child(5){color:#fff}
+.auth-logo span:nth-child(6){color:var(--mg)}
+.auth-subtitle { text-align:center; color:var(--muted); margin-bottom:2rem; font-size:0.9rem; }
+.auth-tabs { display:flex; gap:0; margin-bottom:2rem; border:1px solid var(--border); border-radius:10px; overflow:hidden; }
+.auth-tab {
+  flex:1; padding:0.75rem; text-align:center; cursor:pointer; font-family:'Syne',sans-serif;
+  font-weight:600; font-size:0.85rem; transition:all 0.2s; color:var(--muted); background:transparent; border:none;
+}
+.auth-tab.active { background:var(--cy); color:#000; }
+.form-group { margin-bottom:1.2rem; }
+.form-group label { display:block; font-size:0.8rem; color:var(--muted); margin-bottom:0.4rem; font-weight:500; }
+.form-group input {
+  width:100%; padding:0.8rem 1rem; background:var(--bg3); border:1px solid var(--border);
+  border-radius:10px; color:var(--text); font-family:'DM Sans',sans-serif; font-size:0.95rem;
+  transition:border-color 0.2s;
+}
+.form-group input:focus { outline:none; border-color:var(--cy); }
+.btn-primary {
+  width:100%; padding:1rem; background:linear-gradient(135deg,var(--cy),var(--bl));
+  border:none; border-radius:12px; color:#000; font-family:'Syne',sans-serif;
+  font-weight:700; font-size:1rem; cursor:pointer; transition:all 0.2s; margin-top:0.5rem;
+}
+.btn-primary:hover { transform:translateY(-2px); box-shadow:0 8px 25px rgba(0,240,255,0.3); }
+.auth-error { background:rgba(255,0,100,0.1); border:1px solid rgba(255,0,100,0.3); border-radius:8px; padding:0.75rem 1rem; font-size:0.85rem; color:#ff6b8a; margin-bottom:1rem; display:none; }
+.auth-switch { text-align:center; margin-top:1.5rem; font-size:0.85rem; color:var(--muted); }
+.auth-switch a { color:var(--cy); text-decoration:none; cursor:pointer; }
+
+/* ── DASHBOARD LAYOUT ── */
+#dashboard { display:none; }
+.dash-layout { display:flex; min-height:100vh; }
+
+/* Sidebar */
+.sidebar {
+  width:260px; background:var(--bg2); border-right:1px solid var(--border);
+  display:flex; flex-direction:column; position:fixed; height:100vh; z-index:100;
+  transition:transform 0.3s;
+}
+.sidebar-logo {
+  padding:1.5rem; font-family:'Syne',sans-serif; font-size:1.4rem; font-weight:800;
+  border-bottom:1px solid var(--border); letter-spacing:-0.5px;
+}
+.sidebar-logo span:nth-child(2){color:var(--cy)}
+.sidebar-logo span:nth-child(4){color:var(--cy)}
+.sidebar-logo span:nth-child(6){color:var(--mg)}
+.sidebar-nav { flex:1; padding:1rem 0; overflow-y:auto; }
+.nav-section { padding:0.5rem 1.5rem; font-size:0.7rem; color:var(--muted); font-weight:600; text-transform:uppercase; letter-spacing:1px; margin-top:0.5rem; }
+.nav-item {
+  display:flex; align-items:center; gap:0.75rem; padding:0.75rem 1.5rem;
+  cursor:pointer; transition:all 0.2s; color:var(--muted); font-size:0.9rem;
+  border:none; background:transparent; width:100%; text-align:left; font-family:'DM Sans',sans-serif;
+}
+.nav-item:hover { color:var(--text); background:rgba(255,255,255,0.04); }
+.nav-item.active { color:var(--cy); background:rgba(0,240,255,0.08); border-right:2px solid var(--cy); }
+.nav-item .nav-icon { font-size:1.1rem; width:20px; text-align:center; }
+.sidebar-footer { padding:1.5rem; border-top:1px solid var(--border); }
+.user-chip {
+  display:flex; align-items:center; gap:0.75rem; padding:0.75rem;
+  background:var(--bg3); border-radius:10px; cursor:pointer;
+}
+.user-avatar {
+  width:36px; height:36px; border-radius:50%; background:linear-gradient(135deg,var(--pu),var(--cy));
+  display:flex; align-items:center; justify-content:center; font-weight:700; font-size:0.85rem; color:#fff; flex-shrink:0;
+}
+.user-info { flex:1; min-width:0; }
+.user-name { font-size:0.85rem; font-weight:600; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.user-role { font-size:0.7rem; color:var(--muted); }
+.btn-logout { background:transparent; border:none; color:var(--muted); cursor:pointer; font-size:1rem; padding:0.25rem; }
+.btn-logout:hover { color:#ff6b8a; }
+
+/* Main content */
+.main { margin-left:260px; flex:1; min-height:100vh; }
+.topbar {
+  background:var(--bg2); border-bottom:1px solid var(--border); padding:1rem 2rem;
+  display:flex; align-items:center; justify-content:space-between; position:sticky; top:0; z-index:50;
+}
+.topbar-title { font-family:'Syne',sans-serif; font-size:1.3rem; font-weight:700; }
+.topbar-actions { display:flex; gap:0.75rem; align-items:center; }
+.badge-plan {
+  padding:0.3rem 0.75rem; border-radius:20px; font-size:0.75rem; font-weight:700;
+  font-family:'Syne',sans-serif;
+}
+.badge-free { background:rgba(107,107,138,0.2); color:var(--muted); border:1px solid var(--border); }
+.badge-active { background:rgba(29,255,138,0.15); color:var(--gn); border:1px solid rgba(29,255,138,0.3); }
+.btn-upgrade {
+  padding:0.5rem 1.25rem; background:linear-gradient(135deg,var(--mg),var(--pu));
+  border:none; border-radius:8px; color:#fff; font-family:'Syne',sans-serif;
+  font-weight:700; font-size:0.8rem; cursor:pointer; transition:all 0.2s;
+}
+.btn-upgrade:hover { transform:translateY(-1px); box-shadow:0 4px 15px rgba(255,0,204,0.4); }
+.hamburger { display:none; background:transparent; border:none; color:var(--text); font-size:1.5rem; cursor:pointer; }
+
+.page { display:none; padding:2rem; max-width:1200px; }
+.page.active { display:block; }
+
+/* Cards */
+.card {
+  background:var(--bg2); border:1px solid var(--border); border-radius:16px; padding:1.5rem;
+}
+.card-glow-cy { border-color:rgba(0,240,255,0.2); box-shadow:0 0 20px rgba(0,240,255,0.05); }
+.card-glow-mg { border-color:rgba(255,0,204,0.2); box-shadow:0 0 20px rgba(255,0,204,0.05); }
+.card-glow-gn { border-color:rgba(29,255,138,0.2); box-shadow:0 0 20px rgba(29,255,138,0.05); }
+
+.grid-2 { display:grid; grid-template-columns:1fr 1fr; gap:1.5rem; }
+.grid-3 { display:grid; grid-template-columns:repeat(3,1fr); gap:1.5rem; }
+.grid-4 { display:grid; grid-template-columns:repeat(4,1fr); gap:1rem; }
+
+.stat-card { text-align:center; padding:1.5rem; }
+.stat-value { font-family:'Syne',sans-serif; font-size:2rem; font-weight:800; margin-bottom:0.25rem; }
+.stat-label { font-size:0.8rem; color:var(--muted); }
+
+/* Diagnosis */
+.diag-upload {
+  border:2px dashed var(--border); border-radius:16px; padding:3rem 2rem;
+  text-align:center; cursor:pointer; transition:all 0.3s;
+}
+.diag-upload:hover { border-color:var(--cy); background:rgba(0,240,255,0.03); }
+.diag-upload-icon { font-size:3rem; margin-bottom:1rem; }
+.diag-upload h3 { font-size:1.2rem; margin-bottom:0.5rem; }
+.diag-upload p { color:var(--muted); font-size:0.9rem; }
+#file-input { display:none; }
+
+.progress-bar { background:var(--bg3); border-radius:4px; height:6px; overflow:hidden; margin-top:0.5rem; }
+.progress-fill { height:100%; border-radius:4px; transition:width 0.5s; }
+
+/* Solutions */
+.solution-card {
+  background:var(--bg3); border:1px solid var(--border); border-radius:12px;
+  padding:1.25rem; display:flex; align-items:flex-start; gap:1rem; transition:all 0.2s;
+}
+.solution-card:hover { border-color:rgba(255,255,255,0.15); }
+.solution-icon { font-size:1.5rem; width:48px; height:48px; border-radius:12px; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+.sol-instant .solution-icon { background:rgba(29,255,138,0.1); }
+.sol-integration .solution-icon { background:rgba(0,240,255,0.1); }
+.sol-advanced .solution-icon { background:rgba(255,107,26,0.1); }
+.solution-info { flex:1; }
+.solution-title { font-weight:600; margin-bottom:0.25rem; font-size:0.95rem; }
+.solution-desc { color:var(--muted); font-size:0.8rem; line-height:1.4; }
+.solution-badge {
+  font-size:0.65rem; font-weight:700; padding:0.2rem 0.5rem; border-radius:4px;
+  font-family:'Syne',sans-serif; text-transform:uppercase; letter-spacing:0.5px; margin-top:0.5rem; display:inline-block;
+}
+.badge-instant { background:rgba(29,255,138,0.15); color:var(--gn); }
+.badge-integration { background:rgba(0,240,255,0.15); color:var(--cy); }
+.badge-advanced { background:rgba(255,107,26,0.15); color:var(--or); }
+.btn-activate {
+  padding:0.5rem 1rem; border-radius:8px; font-family:'Syne',sans-serif;
+  font-weight:700; font-size:0.8rem; cursor:pointer; border:none; transition:all 0.2s; white-space:nowrap;
+}
+.btn-activate-green { background:rgba(29,255,138,0.15); color:var(--gn); border:1px solid rgba(29,255,138,0.3); }
+.btn-activate-green:hover { background:var(--gn); color:#000; }
+.btn-activate-cyan { background:rgba(0,240,255,0.15); color:var(--cy); border:1px solid rgba(0,240,255,0.3); }
+.btn-activate-cyan:hover { background:var(--cy); color:#000; }
+.btn-activate-orange { background:rgba(255,107,26,0.15); color:var(--or); border:1px solid rgba(255,107,26,0.3); }
+.btn-activate-orange:hover { background:var(--or); color:#fff; }
+.btn-active-done { background:rgba(29,255,138,0.08); color:var(--gn); border:1px solid rgba(29,255,138,0.2); cursor:default; }
+
+/* Section headers */
+.section-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:1.5rem; }
+.section-title { font-family:'Syne',sans-serif; font-size:1.3rem; font-weight:700; }
+.section-sub { color:var(--muted); font-size:0.85rem; margin-top:0.25rem; }
+
+/* Textarea */
+textarea {
+  width:100%; padding:1rem; background:var(--bg3); border:1px solid var(--border);
+  border-radius:12px; color:var(--text); font-family:'DM Sans',sans-serif; font-size:0.9rem;
+  resize:vertical; min-height:120px; transition:border-color 0.2s;
+}
+textarea:focus { outline:none; border-color:var(--cy); }
+
+/* Ambassador */
+.amb-code-box {
+  background:var(--bg3); border:1px solid rgba(0,240,255,0.3); border-radius:12px;
+  padding:1.5rem; text-align:center;
+}
+.amb-code { font-family:'Syne',sans-serif; font-size:2.5rem; font-weight:800; color:var(--cy); letter-spacing:4px; }
+.amb-link { font-size:0.8rem; color:var(--muted); margin-top:0.5rem; word-break:break-all; }
+
+/* Table */
+.data-table { width:100%; border-collapse:collapse; }
+.data-table th { text-align:left; padding:0.75rem 1rem; font-size:0.75rem; color:var(--muted); font-weight:600; text-transform:uppercase; letter-spacing:0.5px; border-bottom:1px solid var(--border); }
+.data-table td { padding:0.75rem 1rem; font-size:0.85rem; border-bottom:1px solid var(--border); }
+.data-table tr:hover td { background:rgba(255,255,255,0.02); }
+
+/* Loading spinner */
+.spinner { width:40px; height:40px; border:3px solid var(--border); border-top-color:var(--cy); border-radius:50%; animation:spin 0.8s linear infinite; margin:2rem auto; }
+@keyframes spin { to { transform:rotate(360deg); } }
+
+/* Toast */
+#toast {
+  position:fixed; bottom:2rem; right:2rem; padding:1rem 1.5rem; border-radius:12px;
+  font-weight:600; font-size:0.9rem; z-index:9999; transform:translateY(100px);
+  transition:transform 0.3s; max-width:300px;
+}
+#toast.show { transform:translateY(0); }
+#toast.success { background:rgba(29,255,138,0.9); color:#000; }
+#toast.error { background:rgba(255,50,80,0.9); color:#fff; }
+
+/* Axolín */
+#axolin-btn {
+  position:fixed; bottom:2rem; right:2rem; width:56px; height:56px; border-radius:50%;
+  background:linear-gradient(135deg,var(--pu),var(--cy)); border:none; cursor:pointer;
+  font-size:1.5rem; z-index:1000; box-shadow:0 4px 20px rgba(196,0,255,0.4);
+  transition:all 0.3s; display:flex; align-items:center; justify-content:center;
+}
+#axolin-btn:hover { transform:scale(1.1); }
+#axolin-chat {
+  position:fixed; bottom:6rem; right:2rem; width:320px; background:var(--bg2);
+  border:1px solid rgba(196,0,255,0.3); border-radius:16px; z-index:999;
+  display:none; flex-direction:column; max-height:420px; box-shadow:0 8px 32px rgba(0,0,0,0.5);
+}
+#axolin-chat.open { display:flex; }
+.axolin-header { padding:1rem 1.25rem; border-bottom:1px solid var(--border); display:flex; align-items:center; gap:0.75rem; }
+.axolin-avatar { font-size:1.5rem; }
+.axolin-name { font-family:'Syne',sans-serif; font-weight:700; font-size:0.9rem; }
+.axolin-status { font-size:0.7rem; color:var(--gn); }
+.axolin-messages { flex:1; overflow-y:auto; padding:1rem; display:flex; flex-direction:column; gap:0.75rem; }
+.axolin-msg { max-width:85%; padding:0.6rem 0.9rem; border-radius:12px; font-size:0.82rem; line-height:1.4; }
+.axolin-msg.bot { background:var(--bg3); color:var(--text); align-self:flex-start; border-radius:4px 12px 12px 12px; }
+.axolin-msg.user { background:linear-gradient(135deg,var(--pu),var(--bl)); color:#fff; align-self:flex-end; border-radius:12px 12px 4px 12px; }
+.axolin-input-row { padding:0.75rem; border-top:1px solid var(--border); display:flex; gap:0.5rem; }
+.axolin-input { flex:1; padding:0.6rem 0.9rem; background:var(--bg3); border:1px solid var(--border); border-radius:8px; color:var(--text); font-size:0.82rem; font-family:'DM Sans',sans-serif; }
+.axolin-input:focus { outline:none; border-color:var(--pu); }
+.axolin-send { padding:0.6rem 0.9rem; background:var(--pu); border:none; border-radius:8px; color:#fff; cursor:pointer; font-size:0.9rem; }
+
+/* Paywall modal */
+#paywall-modal {
+  position:fixed; inset:0; background:rgba(4,4,15,0.95); z-index:2000;
+  display:none; align-items:center; justify-content:center;
+}
+#paywall-modal.open { display:flex; }
+.paywall-box {
+  background:var(--bg2); border:1px solid rgba(255,0,204,0.3); border-radius:24px;
+  padding:3rem; max-width:480px; width:90%; text-align:center;
+}
+.paywall-price { font-family:'Syne',sans-serif; font-size:3rem; font-weight:800; color:var(--cy); margin:1rem 0; }
+.paywall-price span { font-size:1.2rem; color:var(--muted); }
+.paywall-features { text-align:left; margin:1.5rem 0; display:flex; flex-direction:column; gap:0.5rem; }
+.paywall-feature { display:flex; gap:0.75rem; font-size:0.9rem; }
+.paywall-feature::before { content:'✓'; color:var(--gn); font-weight:700; flex-shrink:0; }
+
+/* Responsive */
+@media(max-width:768px) {
+  .sidebar { transform:translateX(-100%); }
+  .sidebar.open { transform:translateX(0); }
+  .main { margin-left:0; }
+  .hamburger { display:block; }
+  .grid-2, .grid-3, .grid-4 { grid-template-columns:1fr; }
+  .page { padding:1rem; }
+  .topbar { padding:1rem; }
+}
+
+.overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.5); z-index:99; }
+.overlay.show { display:block; }
+</style>
+</head>
+<body>
+
+<!-- AUTH -->
+<div id="auth-screen">
+  <div class="auth-box">
+    <div class="auth-logo">
+      <span>d</span><span>ª</span><span>t</span><span>ª</span><span>bl</span><span>ɛ</span>
+    </div>
+    <p class="auth-subtitle">Tu plataforma de digitalización empresarial</p>
+    <div class="auth-tabs">
+      <button class="auth-tab active" onclick="switchTab('login')">Iniciar sesión</button>
+      <button class="auth-tab" onclick="switchTab('register')">Crear cuenta</button>
+    </div>
+    <div id="auth-error" class="auth-error"></div>
+
+    <!-- Login -->
+    <div id="login-form">
+      <div class="form-group">
+        <label>Correo electrónico</label>
+        <input type="email" id="login-email" placeholder="tu@correo.com">
+      </div>
+      <div class="form-group">
+        <label>Contraseña</label>
+        <input type="password" id="login-password" placeholder="••••••••">
+      </div>
+      <button class="btn-primary" onclick="doLogin()">Entrar →</button>
+    </div>
+
+    <!-- Register -->
+    <div id="register-form" style="display:none">
+      <div class="form-group">
+        <label>Tu nombre</label>
+        <input type="text" id="reg-name" placeholder="Nombre completo">
+      </div>
+      <div class="form-group">
+        <label>Nombre de tu negocio</label>
+        <input type="text" id="reg-business" placeholder="Mi negocio">
+      </div>
+      <div class="form-group">
+        <label>Correo electrónico</label>
+        <input type="email" id="reg-email" placeholder="tu@correo.com">
+      </div>
+      <div class="form-group">
+        <label>Contraseña</label>
+        <input type="password" id="reg-password" placeholder="Mínimo 6 caracteres">
+      </div>
+      <div class="form-group">
+        <label>Código de embajador (opcional)</label>
+        <input type="text" id="reg-code" placeholder="Ej: AMB001">
+      </div>
+      <button class="btn-primary" onclick="doRegister()">Crear cuenta gratis →</button>
+    </div>
+
+    <div class="auth-switch">
+      <a href="index.html">← Regresar al inicio</a>
+    </div>
+  </div>
+</div>
+
+<!-- DASHBOARD -->
+<div id="dashboard">
+  <div class="overlay" id="overlay" onclick="closeSidebar()"></div>
+  <div class="dash-layout">
+    <!-- Sidebar -->
+    <nav class="sidebar" id="sidebar">
+      <div class="sidebar-logo">
+        <span>d</span><span>ª</span><span>t</span><span>ª</span><span>bl</span><span>ɛ</span>
+      </div>
+      <div class="sidebar-nav">
+        <div class="nav-section">Principal</div>
+        <button class="nav-item active" onclick="showPage('home')">
+          <span class="nav-icon">🏠</span> Inicio
+        </button>
+        <button class="nav-item" onclick="showPage('diagnosis')">
+          <span class="nav-icon">🔍</span> Mi diagnóstico
+        </button>
+        <button class="nav-item" onclick="showPage('solutions')">
+          <span class="nav-icon">⚡</span> Mis soluciones
+        </button>
+        <div class="nav-section">Cuenta</div>
+        <button class="nav-item" onclick="showPage('billing')">
+          <span class="nav-icon">💳</span> Suscripción
+        </button>
+        <button class="nav-item" onclick="showPage('referrals')">
+          <span class="nav-icon">🤝</span> Referidos
+        </button>
+        <button class="nav-item" id="ambassador-nav" style="display:none" onclick="showPage('ambassador')">
+          <span class="nav-icon">🌟</span> Embajador
+        </button>
+        <div class="nav-section">Soporte</div>
+        <button class="nav-item" onclick="showPage('support')">
+          <span class="nav-icon">💬</span> Ayuda
+        </button>
+        <button class="nav-item" id="admin-nav" style="display:none" onclick="showPage('admin')">
+          <span class="nav-icon">⚙️</span> Admin
+        </button>
+      </div>
+      <div class="sidebar-footer">
+        <div class="user-chip">
+          <div class="user-avatar" id="user-avatar">?</div>
+          <div class="user-info">
+            <div class="user-name" id="user-name-display">Cargando...</div>
+            <div class="user-role" id="user-role-display">cliente</div>
+          </div>
+          <button class="btn-logout" onclick="doLogout()" title="Cerrar sesión">⏻</button>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Main -->
+    <div class="main">
+      <div class="topbar">
+        <div style="display:flex;align-items:center;gap:1rem">
+          <button class="hamburger" onclick="toggleSidebar()">☰</button>
+          <div class="topbar-title" id="page-title">Inicio</div>
+        </div>
+        <div class="topbar-actions">
+          <span class="badge-plan badge-free" id="plan-badge">Plan Gratis</span>
+          <button class="btn-upgrade" id="upgrade-btn" onclick="showPaywall()">Suscribirse $499/mes</button>
+        </div>
+      </div>
+
+      <!-- HOME PAGE -->
+      <div class="page active" id="page-home">
+        <div style="margin-bottom:2rem">
+          <h2 id="welcome-msg" style="font-size:1.6rem;margin-bottom:0.5rem">Bienvenido 👋</h2>
+          <p style="color:var(--muted)">Aquí tienes el resumen de tu negocio digital</p>
+        </div>
+
+        <!-- Stats -->
+        <div class="grid-4" style="margin-bottom:2rem">
+          <div class="card stat-card card-glow-cy">
+            <div class="stat-value" id="stat-solutions" style="color:var(--cy)">0</div>
+            <div class="stat-label">Soluciones activas</div>
+          </div>
+          <div class="card stat-card card-glow-gn">
+            <div class="stat-value" id="stat-score" style="color:var(--gn)">—</div>
+            <div class="stat-label">Puntuación digital</div>
+          </div>
+          <div class="card stat-card">
+            <div class="stat-value" id="stat-days" style="color:var(--yw)">—</div>
+            <div class="stat-label">Días activo</div>
+          </div>
+          <div class="card stat-card card-glow-mg">
+            <div class="stat-value" id="stat-referrals" style="color:var(--mg)">0</div>
+            <div class="stat-label">Referidos</div>
+          </div>
+        </div>
+
+        <!-- Quick actions -->
+        <div class="grid-2" style="margin-bottom:2rem">
+          <div class="card card-glow-cy" style="cursor:pointer" onclick="showPage('diagnosis')">
+            <div style="font-size:2.5rem;margin-bottom:1rem">🔍</div>
+            <h3 style="font-size:1.1rem;margin-bottom:0.5rem">Obtener mi diagnóstico</h3>
+            <p style="color:var(--muted);font-size:0.85rem">Sube información de tu negocio y recibe un análisis personalizado con recomendaciones concretas.</p>
+            <div style="margin-top:1rem;color:var(--cy);font-weight:600;font-size:0.85rem">Empezar análisis →</div>
+          </div>
+          <div class="card card-glow-gn" style="cursor:pointer" onclick="showPage('solutions')">
+            <div style="font-size:2.5rem;margin-bottom:1rem">⚡</div>
+            <h3 style="font-size:1.1rem;margin-bottom:0.5rem">Activar soluciones</h3>
+            <p style="color:var(--muted);font-size:0.85rem">Tu primera solución es completamente gratuita. Ve qué herramientas digitales puedes activar hoy.</p>
+            <div style="margin-top:1rem;color:var(--gn);font-weight:600;font-size:0.85rem">Ver soluciones →</div>
+          </div>
+        </div>
+
+        <!-- Recent activity placeholder -->
+        <div class="card">
+          <h3 style="font-family:'Syne',sans-serif;margin-bottom:1rem">Actividad reciente</h3>
+          <div id="recent-activity" style="color:var(--muted);font-size:0.9rem;text-align:center;padding:2rem">
+            Aún no hay actividad. ¡Empieza con tu diagnóstico!
+          </div>
+        </div>
+      </div>
+
+      <!-- DIAGNOSIS PAGE -->
+      <div class="page" id="page-diagnosis">
+        <div class="section-header">
+          <div>
+            <div class="section-title">Mi diagnóstico</div>
+            <div class="section-sub">Cuéntanos sobre tu negocio</div>
+          </div>
+        </div>
+
+        <div id="diag-input-section">
+          <div class="card" style="margin-bottom:1.5rem">
+            <h3 style="font-family:'Syne',sans-serif;margin-bottom:1rem">Describe tu negocio</h3>
+            <div class="form-group">
+              <label>¿A qué se dedica tu negocio? ¿Cuáles son tus principales retos?</label>
+              <textarea id="diag-description" placeholder="Ej: Tengo una tienda de ropa en Guadalajara con 3 empleados. Mi principal reto es conseguir nuevos clientes y llevar control de mis ventas. Actualmente uso hojas de Excel para todo pero siempre se me pierden datos..."></textarea>
+            </div>
+            <div class="diag-upload" onclick="document.getElementById('file-input').click()">
+              <div class="diag-upload-icon">📎</div>
+              <h3>Adjuntar documentos o imágenes (opcional)</h3>
+              <p>Sube fotos de tu negocio, documentos, hojas de cálculo o cualquier información adicional</p>
+              <input type="file" id="file-input" accept="image/*,.pdf,.xlsx,.csv" multiple onchange="handleFileUpload(this)">
+            </div>
+            <div id="file-preview" style="margin-top:1rem;display:none">
+              <p style="font-size:0.85rem;color:var(--gn)">✓ Archivos listos para analizar</p>
+            </div>
+            <button class="btn-primary" style="margin-top:1.5rem;max-width:300px" onclick="startDiagnosis()">
+              🔍 Analizar mi negocio
+            </button>
+          </div>
+        </div>
+
+        <!-- Diagnosis loading -->
+        <div id="diag-loading" style="display:none;text-align:center;padding:3rem">
+          <div class="spinner"></div>
+          <p style="color:var(--muted);margin-top:1rem">Analizando tu negocio con IA...</p>
+          <p style="color:var(--muted);font-size:0.8rem">Esto toma unos segundos</p>
+        </div>
+
+        <!-- Diagnosis result -->
+        <div id="diag-result" style="display:none">
+          <div class="card card-glow-cy" style="margin-bottom:1.5rem">
+            <div style="display:flex;align-items:center;gap:1rem;margin-bottom:1.5rem">
+              <div style="font-size:2.5rem">📊</div>
+              <div>
+                <h3 style="font-family:'Syne',sans-serif;font-size:1.2rem">Diagnóstico completado</h3>
+                <p style="color:var(--muted);font-size:0.85rem">Basado en la información de tu negocio</p>
+              </div>
+              <div style="margin-left:auto;text-align:right">
+                <div style="font-family:'Syne',sans-serif;font-size:2rem;font-weight:800;color:var(--cy)" id="diag-score">—</div>
+                <div style="font-size:0.75rem;color:var(--muted)">puntuación digital</div>
+              </div>
+            </div>
+            <div id="diag-summary" style="color:var(--muted);font-size:0.9rem;line-height:1.6;margin-bottom:1.5rem"></div>
+            <div style="display:flex;gap:0.75rem;flex-wrap:wrap" id="diag-areas"></div>
+          </div>
+
+          <div style="margin-bottom:1rem">
+            <h3 style="font-family:'Syne',sans-serif;margin-bottom:0.5rem">Tus recomendaciones</h3>
+            <p style="color:var(--muted);font-size:0.85rem">Soluciones personalizadas para tu negocio — activa la primera gratis</p>
+          </div>
+          <div id="diag-recommendations" style="display:flex;flex-direction:column;gap:1rem"></div>
+
+          <div style="margin-top:1.5rem">
+            <button class="btn-primary" style="max-width:250px" onclick="showPage('solutions')">
+              Ver todas mis soluciones →
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- SOLUTIONS PAGE -->
+      <div class="page" id="page-solutions">
+        <div class="section-header">
+          <div>
+            <div class="section-title">Mis soluciones</div>
+            <div class="section-sub">Herramientas digitales para tu negocio</div>
+          </div>
+        </div>
+
+        <div id="solutions-loading" style="text-align:center;padding:3rem">
+          <div class="spinner"></div>
+        </div>
+
+        <div id="solutions-content" style="display:none">
+          <div id="free-solution-banner" class="card card-glow-gn" style="margin-bottom:1.5rem;display:none">
+            <div style="display:flex;align-items:center;gap:1rem">
+              <div style="font-size:2rem">🎁</div>
+              <div>
+                <h3 style="font-family:'Syne',sans-serif;color:var(--gn)">¡Tu primera solución es gratis!</h3>
+                <p style="color:var(--muted);font-size:0.85rem">Activa cualquier solución "Activable ahora" sin costo para ver el valor real de la plataforma.</p>
+              </div>
+            </div>
+          </div>
+
+          <div style="margin-bottom:1rem">
+            <h3 style="font-family:'Syne',sans-serif;color:var(--gn);margin-bottom:0.75rem">⚡ Activables ahora</h3>
+            <div id="instant-solutions" style="display:flex;flex-direction:column;gap:0.75rem"></div>
+          </div>
+
+          <div style="margin:1.5rem 0 1rem">
+            <h3 style="font-family:'Syne',sans-serif;color:var(--cy);margin-bottom:0.75rem">🔗 Requieren integración</h3>
+            <div id="integration-solutions" style="display:flex;flex-direction:column;gap:0.75rem"></div>
+          </div>
+
+          <div style="margin:1.5rem 0 1rem">
+            <h3 style="font-family:'Syne',sans-serif;color:var(--or);margin-bottom:0.75rem">🚀 Proyectos avanzados</h3>
+            <div id="advanced-solutions" style="display:flex;flex-direction:column;gap:0.75rem"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- BILLING PAGE -->
+      <div class="page" id="page-billing">
+        <div class="section-header">
+          <div class="section-title">Suscripción</div>
+        </div>
+        <div class="grid-2">
+          <div class="card card-glow-cy">
+            <h3 style="font-family:'Syne',sans-serif;margin-bottom:1.5rem">Tu plan actual</h3>
+            <div id="billing-status" style="margin-bottom:1.5rem">
+              <div style="font-size:0.85rem;color:var(--muted);margin-bottom:0.5rem">Estado</div>
+              <div style="font-family:'Syne',sans-serif;font-size:1.2rem;font-weight:700" id="billing-plan-name">Plan Gratis</div>
+            </div>
+            <button class="btn-primary" onclick="showPaywall()">Suscribirse — $499/mes</button>
+          </div>
+          <div class="card">
+            <h3 style="font-family:'Syne',sans-serif;margin-bottom:1.5rem">Plan Pro incluye</h3>
+            <div style="display:flex;flex-direction:column;gap:0.75rem;font-size:0.9rem">
+              <div>✓ <span style="margin-left:0.5rem">Diagnóstico completo con IA</span></div>
+              <div>✓ <span style="margin-left:0.5rem">Soluciones ilimitadas activas</span></div>
+              <div>✓ <span style="margin-left:0.5rem">CRM básico para clientes</span></div>
+              <div>✓ <span style="margin-left:0.5rem">Formularios de captura</span></div>
+              <div>✓ <span style="margin-left:0.5rem">Recordatorios automáticos</span></div>
+              <div>✓ <span style="margin-left:0.5rem">Soporte prioritario</span></div>
+              <div>✓ <span style="margin-left:0.5rem">1 mes gratis por cada referido</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- REFERRALS PAGE -->
+      <div class="page" id="page-referrals">
+        <div class="section-header">
+          <div class="section-title">Referidos</div>
+          <div class="section-sub">Invita negocios y gana meses gratis</div>
+        </div>
+        <div class="card card-glow-mg" style="margin-bottom:1.5rem">
+          <h3 style="font-family:'Syne',sans-serif;margin-bottom:1rem">Tu enlace de referido</h3>
+          <div style="background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:1rem;font-family:monospace;font-size:0.85rem;word-break:break-all;margin-bottom:1rem" id="referral-link">Cargando...</div>
+          <button class="btn-primary" style="max-width:200px" onclick="copyReferralLink()">Copiar enlace</button>
+          <p style="color:var(--muted);font-size:0.8rem;margin-top:1rem">Por cada amigo que se suscriba usando tu enlace, recibes <strong style="color:var(--gn)">1 mes gratis</strong>.</p>
+        </div>
+        <div class="card">
+          <h3 style="font-family:'Syne',sans-serif;margin-bottom:1rem">Mis referidos</h3>
+          <div id="referrals-list" style="color:var(--muted);font-size:0.9rem;text-align:center;padding:2rem">
+            Aún no tienes referidos. ¡Comparte tu enlace!
+          </div>
+        </div>
+      </div>
+
+      <!-- AMBASSADOR PAGE -->
+      <div class="page" id="page-ambassador">
+        <div class="section-header">
+          <div class="section-title">Panel Embajador</div>
+          <div class="section-sub">Tu código y comisiones</div>
+        </div>
+        <div class="grid-2" style="margin-bottom:1.5rem">
+          <div class="amb-code-box card">
+            <p style="color:var(--muted);font-size:0.8rem;margin-bottom:0.5rem">TU CÓDIGO</p>
+            <div class="amb-code" id="amb-code-display">—</div>
+            <div class="amb-link" id="amb-link-display">—</div>
+            <button class="btn-primary" style="margin-top:1rem;max-width:180px" onclick="copyAmbLink()">Copiar enlace</button>
+          </div>
+          <div class="card">
+            <div class="grid-2">
+              <div class="stat-card" style="padding:1rem">
+                <div class="stat-value" style="color:var(--gn);font-size:1.5rem" id="amb-total-referrals">0</div>
+                <div class="stat-label">Clientes referidos</div>
+              </div>
+              <div class="stat-card" style="padding:1rem">
+                <div class="stat-value" style="color:var(--yw);font-size:1.5rem" id="amb-total-earned">$0</div>
+                <div class="stat-label">Total ganado</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <h3 style="font-family:'Syne',sans-serif;margin-bottom:1rem">Mis comisiones</h3>
+          <div id="commissions-list" style="color:var(--muted);font-size:0.9rem;text-align:center;padding:2rem">
+            Aún no hay comisiones registradas.
+          </div>
+        </div>
+      </div>
+
+      <!-- SUPPORT PAGE -->
+      <div class="page" id="page-support">
+        <div class="section-header">
+          <div class="section-title">Ayuda y soporte</div>
+        </div>
+        <div class="grid-2">
+          <div class="card card-glow-pu" style="cursor:pointer" onclick="toggleAxolin()">
+            <div style="font-size:2.5rem;margin-bottom:1rem">🦎</div>
+            <h3 style="font-family:'Syne',sans-serif;margin-bottom:0.5rem">Hablar con Axolín</h3>
+            <p style="color:var(--muted);font-size:0.85rem">Nuestro asistente puede responder tus preguntas al instante sobre la plataforma y tus soluciones.</p>
+          </div>
+          <div class="card">
+            <div style="font-size:2.5rem;margin-bottom:1rem">📧</div>
+            <h3 style="font-family:'Syne',sans-serif;margin-bottom:0.5rem">Correo directo</h3>
+            <p style="color:var(--muted);font-size:0.85rem;margin-bottom:1rem">¿Tienes una pregunta específica? Escríbenos directamente.</p>
+            <a href="mailto:D4tabl3@gmail.com" style="color:var(--cy);font-size:0.9rem">D4tabl3@gmail.com</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- ADMIN PAGE -->
+      <div class="page" id="page-admin">
+        <div class="section-header">
+          <div class="section-title">⚙️ Panel Admin</div>
+        </div>
+        <div class="grid-4" style="margin-bottom:2rem">
+          <div class="card stat-card">
+            <div class="stat-value" style="color:var(--cy)" id="admin-users">—</div>
+            <div class="stat-label">Usuarios totales</div>
+          </div>
+          <div class="card stat-card">
+            <div class="stat-value" style="color:var(--gn)" id="admin-active">—</div>
+            <div class="stat-label">Suscripciones activas</div>
+          </div>
+          <div class="card stat-card">
+            <div class="stat-value" style="color:var(--yw)" id="admin-revenue">—</div>
+            <div class="stat-label">Ingresos MRR</div>
+          </div>
+          <div class="card stat-card">
+            <div class="stat-value" style="color:var(--mg)" id="admin-ambassadors">—</div>
+            <div class="stat-label">Embajadores</div>
+          </div>
+        </div>
+        <div class="card">
+          <h3 style="font-family:'Syne',sans-serif;margin-bottom:1rem">Usuarios recientes</h3>
+          <div id="admin-users-list" style="color:var(--muted);text-align:center;padding:2rem">Cargando...</div>
+        </div>
+      </div>
+
+    </div><!-- /main -->
+  </div><!-- /dash-layout -->
+</div><!-- /dashboard -->
+
+<!-- PAYWALL MODAL -->
+<div id="paywall-modal">
+  <div class="paywall-box">
+    <div style="font-size:3rem;margin-bottom:0.5rem">🚀</div>
+    <h2 style="font-family:'Syne',sans-serif;font-size:1.5rem">Activa tu negocio digital</h2>
+    <div class="paywall-price">$499 <span>MXN/mes</span></div>
+    <div class="paywall-features">
+      <div class="paywall-feature">Diagnóstico completo con IA</div>
+      <div class="paywall-feature">Soluciones ilimitadas activas</div>
+      <div class="paywall-feature">CRM básico para gestión de clientes</div>
+      <div class="paywall-feature">Formularios de captura automáticos</div>
+      <div class="paywall-feature">Reportes y métricas de tu negocio</div>
+      <div class="paywall-feature">1 mes gratis por cada referido</div>
+    </div>
+    <button class="btn-primary" onclick="startCheckout()" style="font-size:1.1rem;padding:1.1rem">
+      Suscribirme ahora →
+    </button>
+    <p style="color:var(--muted);font-size:0.75rem;margin-top:1rem">Cancela cuando quieras • Sin permanencia</p>
+    <button onclick="document.getElementById('paywall-modal').classList.remove('open')" style="background:transparent;border:none;color:var(--muted);cursor:pointer;margin-top:0.75rem;font-size:0.85rem">Cerrar</button>
+  </div>
+</div>
+
+<!-- AXOLÍN -->
+<button id="axolin-btn" onclick="toggleAxolin()" title="Axolín - Asistente">
+  <svg width="28" height="28" viewBox="0 0 100 100" fill="none">
+    <ellipse cx="50" cy="60" rx="30" ry="25" fill="#C400FF" opacity="0.9"/>
+    <circle cx="50" cy="38" r="18" fill="#C400FF"/>
+    <circle cx="43" cy="35" r="5" fill="white"/>
+    <circle cx="57" cy="35" r="5" fill="white"/>
+    <circle cx="43" cy="35" r="2.5" fill="#00F0FF"/>
+    <circle cx="57" cy="35" r="2.5" fill="#00F0FF"/>
+    <path d="M 35 25 Q 25 10 20 5 Q 30 15 35 25" stroke="#FF00CC" stroke-width="3" fill="none"/>
+    <path d="M 65 25 Q 75 10 80 5 Q 70 15 65 25" stroke="#FF00CC" stroke-width="3" fill="none"/>
+    <path d="M 30 72 Q 20 85 15 95" stroke="#C400FF" stroke-width="4" stroke-linecap="round"/>
+    <path d="M 70 72 Q 80 85 85 95" stroke="#C400FF" stroke-width="4" stroke-linecap="round"/>
+  </svg>
+</button>
+<div id="axolin-chat">
+  <div class="axolin-header">
+    <div class="axolin-avatar">🦎</div>
+    <div>
+      <div class="axolin-name">Axolín</div>
+      <div class="axolin-status">● En línea</div>
+    </div>
+    <button onclick="toggleAxolin()" style="background:transparent;border:none;color:var(--muted);cursor:pointer;margin-left:auto;font-size:1.2rem">×</button>
+  </div>
+  <div class="axolin-messages" id="axolin-messages"></div>
+  <div class="axolin-input-row">
+    <input class="axolin-input" id="axolin-input" placeholder="Escribe tu pregunta..." onkeypress="if(event.key==='Enter')sendAxolin()">
+    <button class="axolin-send" onclick="sendAxolin()">➤</button>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div id="toast"></div>
+
+<script>
+const SUPABASE_URL = 'https://vronhuwjuyitlxcabkme.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZyb25odXdqdXlpdGx4Y2Fia21lIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMxNDY0MzgsImV4cCI6MjA4ODcyMjQzOH0._Tp_y1JMZoNbNXbftMo1PCVm6h95VrlgcVF-vKIegbY';
+const CLAUDE_API = 'https://api.anthropic.com/v1/messages';
+
+const { createClient } = supabase;
+const sb = createClient(SUPABASE_URL, SUPABASE_KEY);
+
+let currentUser = null;
+let currentProfile = null;
+let currentDiagnosis = null;
+
+// ── INIT ──
+window.addEventListener('DOMContentLoaded', async () => {
+  const { data: { session } } = await sb.auth.getSession();
+  if (session) {
+    currentUser = session.user;
+    await loadProfile();
+    showDashboard();
+  }
+  // Check ambassador code in URL
+  const params = new URLSearchParams(window.location.search);
+  if (params.get('ref')) {
+    document.getElementById('reg-code').value = params.get('ref');
+    switchTab('register');
+  }
+});
+
+// ── AUTH ──
+function switchTab(tab) {
+  document.getElementById('login-form').style.display = tab === 'login' ? 'block' : 'none';
+  document.getElementById('register-form').style.display = tab === 'register' ? 'block' : 'none';
+  document.querySelectorAll('.auth-tab').forEach((t,i) => {
+    t.classList.toggle('active', (i===0 && tab==='login') || (i===1 && tab==='register'));
+  });
+  hideAuthError();
+}
+
+function showAuthError(msg) {
+  const el = document.getElementById('auth-error');
+  el.textContent = msg; el.style.display = 'block';
+}
+function hideAuthError() { document.getElementById('auth-error').style.display = 'none'; }
+
+async function doLogin() {
+  const email = document.getElementById('login-email').value.trim();
+  const pass = document.getElementById('login-password').value;
+  if (!email || !pass) return showAuthError('Completa todos los campos');
+  const { data, error } = await sb.auth.signInWithPassword({ email, password: pass });
+  if (error) return showAuthError('Correo o contraseña incorrectos');
+  currentUser = data.user;
+  await loadProfile();
+  showDashboard();
+}
+
+async function doRegister() {
+  const name = document.getElementById('reg-name').value.trim();
+  const business = document.getElementById('reg-business').value.trim();
+  const email = document.getElementById('reg-email').value.trim();
+  const pass = document.getElementById('reg-password').value;
+  const code = document.getElementById('reg-code').value.trim().toUpperCase();
+  if (!name || !email || !pass) return showAuthError('Completa todos los campos');
+  if (pass.length < 6) return showAuthError('La contraseña debe tener al menos 6 caracteres');
+
+  const { data, error } = await sb.auth.signUp({
+    email, password: pass,
+    options: { data: { full_name: name } }
+  });
+  if (error) return showAuthError(error.message);
+
+  currentUser = data.user;
+
+  // Update profile with business name and ambassador code
+  setTimeout(async () => {
+    let updateData = { business_name: business, full_name: name };
+    if (code) {
+      // Find ambassador by code
+      const { data: amb } = await sb.from('profiles').select('id').eq('ambassador_code', code).single();
+      if (amb) updateData.referred_by = amb.id;
+    }
+    await sb.from('profiles').update(updateData).eq('id', currentUser.id);
+  }, 1000);
+
+  await loadProfile();
+  showDashboard();
+  showToast('¡Bienvenido a dªtªblɛ! 🎉', 'success');
+}
+
+async function doLogout() {
+  await sb.auth.signOut();
+  currentUser = null; currentProfile = null;
+  document.getElementById('dashboard').style.display = 'none';
+  document.getElementById('auth-screen').style.display = 'flex';
+}
+
+// ── PROFILE ──
+async function loadProfile() {
+  const { data } = await sb.from('profiles').select('*').eq('id', currentUser.id).single();
+  currentProfile = data;
+  if (!currentProfile) {
+    // Create profile if doesn't exist
+    await sb.from('profiles').insert({ id: currentUser.id, email: currentUser.email });
+    currentProfile = { id: currentUser.id, email: currentUser.email, role: 'client' };
+  }
+  updateUI();
+}
+
+function updateUI() {
+  if (!currentProfile) return;
+  const name = currentProfile.full_name || currentProfile.email?.split('@')[0] || 'Usuario';
+  const initials = name.split(' ').map(w=>w[0]).join('').substring(0,2).toUpperCase();
+  document.getElementById('user-avatar').textContent = initials;
+  document.getElementById('user-name-display').textContent = name;
+  document.getElementById('user-role-display').textContent = currentProfile.role || 'cliente';
+  document.getElementById('welcome-msg').textContent = `Hola, ${name.split(' ')[0]} 👋`;
+
+  // Days active
+  const days = currentProfile.created_at
+    ? Math.floor((Date.now() - new Date(currentProfile.created_at)) / 86400000)
+    : 0;
+  document.getElementById('stat-days').textContent = days;
+
+  // Role-based nav
+  if (currentProfile.role === 'admin') {
+    document.getElementById('admin-nav').style.display = 'flex';
+  }
+  if (currentProfile.role === 'ambassador' || currentProfile.ambassador_code) {
+    document.getElementById('ambassador-nav').style.display = 'flex';
+    loadAmbassadorData();
+  }
+
+  // Subscription badge
+  if (currentProfile.subscription_status === 'active') {
+    document.getElementById('plan-badge').textContent = 'Pro activo';
+    document.getElementById('plan-badge').className = 'badge-plan badge-active';
+    document.getElementById('upgrade-btn').style.display = 'none';
+  }
+
+  // Referral link
+  const refLink = `${window.location.origin}${window.location.pathname.replace('dashboard.html','')}index.html?ref=${currentProfile.id}`;
+  const el = document.getElementById('referral-link');
+  if (el) el.textContent = refLink;
+
+  loadSolutions();
+  loadAdminData();
+}
+
+// ── DASHBOARD SHOW ──
+function showDashboard() {
+  document.getElementById('auth-screen').style.display = 'none';
+  document.getElementById('dashboard').style.display = 'block';
+  axolinInit();
+}
+
+// ── NAVIGATION ──
+function showPage(page) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.getElementById('page-' + page).classList.add('active');
+  const titles = {
+    home:'Inicio', diagnosis:'Mi diagnóstico', solutions:'Mis soluciones',
+    billing:'Suscripción', referrals:'Referidos', ambassador:'Panel Embajador',
+    support:'Ayuda', admin:'Admin'
+  };
+  document.getElementById('page-title').textContent = titles[page] || page;
+  closeSidebar();
+}
+
+function toggleSidebar() {
+  document.getElementById('sidebar').classList.toggle('open');
+  document.getElementById('overlay').classList.toggle('show');
+}
+function closeSidebar() {
+  document.getElementById('sidebar').classList.remove('open');
+  document.getElementById('overlay').classList.remove('show');
+}
+
+// ── DIAGNOSIS ──
+function handleFileUpload(input) {
+  if (input.files.length > 0) {
+    document.getElementById('file-preview').style.display = 'block';
+  }
+}
+
+async function startDiagnosis() {
+  const description = document.getElementById('diag-description').value.trim();
+  if (!description || description.length < 20) {
+    showToast('Por favor describe tu negocio con más detalle', 'error'); return;
+  }
+  document.getElementById('diag-input-section').style.display = 'none';
+  document.getElementById('diag-loading').style.display = 'block';
+
+  try {
+    const response = await fetch(CLAUDE_API, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'anthropic-dangerous-direct-browser-access': 'true' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 1500,
+        system: `Eres el motor de diagnóstico de datable.com.mx, plataforma SaaS para digitalización de negocios en México.
+Analiza el negocio del usuario y responde SOLO en JSON con este formato exacto:
+{
+  "score": número del 0-100 (madurez digital),
+  "summary": "resumen breve del diagnóstico en 2-3 oraciones",
+  "areas": ["área1","área2","área3"] (3-4 áreas clave del negocio),
+  "recommendations": [
+    {
+      "title": "nombre corto de la solución",
+      "description": "descripción breve de qué hace y por qué ayuda",
+      "level": "instant" | "integration" | "advanced",
+      "type": "crm" | "form" | "reminder" | "page" | "analytics" | "custom",
+      "icon": "emoji relevante"
+    }
+  ]
+}
+Genera 6-8 recomendaciones mixtas. Las "instant" son activables de inmediato en la plataforma.`,
+        messages: [{ role: 'user', content: `Negocio: ${description}` }]
+      })
+    });
+    const data = await response.json();
+    const text = data.content[0].text;
+    const json = JSON.parse(text.replace(/```json|```/g, '').trim());
+    currentDiagnosis = json;
+
+    // Save to Supabase
+    await sb.from('diagnostics').insert({
+      user_id: currentUser.id,
+      business_description: description,
+      diagnosis_result: json,
+      business_type: json.areas?.[0] || 'general'
+    });
+
+    // Update score stat
+    document.getElementById('stat-score').textContent = json.score;
+
+    showDiagnosisResult(json);
+    generateSolutions(json.recommendations);
+  } catch(e) {
+    showToast('Error al analizar. Intenta de nuevo.', 'error');
+    document.getElementById('diag-input-section').style.display = 'block';
+  }
+  document.getElementById('diag-loading').style.display = 'none';
+}
+
+function showDiagnosisResult(json) {
+  document.getElementById('diag-result').style.display = 'block';
+  document.getElementById('diag-score').textContent = json.score + '/100';
+  document.getElementById('diag-summary').textContent = json.summary;
+
+  const colors = ['var(--cy)','var(--mg)','var(--gn)','var(--yw)'];
+  document.getElementById('diag-areas').innerHTML = json.areas.map((a,i) =>
+    `<span style="background:rgba(255,255,255,0.05);border:1px solid ${colors[i%4]}33;color:${colors[i%4]};padding:0.3rem 0.75rem;border-radius:20px;font-size:0.8rem">${a}</span>`
+  ).join('');
+
+  const recs = json.recommendations?.slice(0,3) || [];
+  document.getElementById('diag-recommendations').innerHTML = recs.map(r => renderSolutionCard(r, true)).join('');
+}
+
+function renderSolutionCard(sol, mini=false) {
+  const levelClass = { instant:'sol-instant', integration:'sol-integration', advanced:'sol-advanced' }[sol.level] || '';
+  const badgeClass = { instant:'badge-instant', integration:'badge-integration', advanced:'badge-advanced' }[sol.level] || '';
+  const badgeText = { instant:'Activable ahora', integration:'Requiere integración', advanced:'Proyecto avanzado' }[sol.level] || sol.level;
+  const btnClass = { instant:'btn-activate-green', integration:'btn-activate-cyan', advanced:'btn-activate-orange' }[sol.level] || '';
+  const btnText = { instant:'Activar gratis', integration:'Integrar', advanced:'Solicitar' }[sol.level] || 'Activar';
+
+  return `<div class="solution-card ${levelClass}">
+    <div class="solution-icon">${sol.icon || '⚡'}</div>
+    <div class="solution-info">
+      <div class="solution-title">${sol.title}</div>
+      <div class="solution-desc">${sol.description}</div>
+      <span class="solution-badge ${badgeClass}">${badgeText}</span>
+    </div>
+    <button class="btn-activate ${btnClass}" onclick="activateSolution(this,'${sol.level}','${(sol.title||'').replace(/'/g,"\\'")}','${sol.type||'custom'}')">${btnText}</button>
+  </div>`;
+}
+
+// ── SOLUTIONS ──
+async function loadSolutions() {
+  document.getElementById('solutions-loading').style.display = 'block';
+  document.getElementById('solutions-content').style.display = 'none';
+
+  const { data: solutionsData } = await sb.from('solutions').select('*').eq('user_id', currentUser.id);
+  const { data: diagData } = await sb.from('diagnostics').select('*').eq('user_id', currentUser.id).order('created_at', {ascending:false}).limit(1);
+
+  document.getElementById('solutions-loading').style.display = 'none';
+  document.getElementById('solutions-content').style.display = 'block';
+
+  const freeSolutionUsed = currentProfile?.free_solution_used;
+  const hasSubscription = currentProfile?.subscription_status === 'active';
+
+  if (!freeSolutionUsed) {
+    document.getElementById('free-solution-banner').style.display = 'flex';
+  }
+
+  let recommendations = [];
+  if (diagData && diagData.length > 0) {
+    recommendations = diagData[0].diagnosis_result?.recommendations || [];
+  } else {
+    // Default solutions
+    recommendations = getDefaultSolutions();
+  }
+
+  const instant = recommendations.filter(r => r.level === 'instant');
+  const integration = recommendations.filter(r => r.level === 'integration');
+  const advanced = recommendations.filter(r => r.level === 'advanced');
+
+  document.getElementById('instant-solutions').innerHTML = instant.map(r => renderSolutionCard(r)).join('') || '<p style="color:var(--muted);font-size:0.85rem">Realiza tu diagnóstico para ver soluciones personalizadas.</p>';
+  document.getElementById('integration-solutions').innerHTML = integration.map(r => renderSolutionCard(r)).join('') || '';
+  document.getElementById('advanced-solutions').innerHTML = advanced.map(r => renderSolutionCard(r)).join('') || '';
+
+  // Update stat
+  document.getElementById('stat-solutions').textContent = solutionsData?.filter(s=>s.status==='active').length || 0;
+}
+
+function getDefaultSolutions() {
+  return [
+    { title:'CRM básico de clientes', description:'Gestiona tu lista de clientes, guarda contactos y lleva seguimiento de conversaciones.', level:'instant', type:'crm', icon:'👥' },
+    { title:'Formulario de contacto', description:'Captura nuevos clientes desde tu sitio web o redes sociales automáticamente.', level:'instant', type:'form', icon:'📋' },
+    { title:'Recordatorios automáticos', description:'Envía recordatorios a tus clientes sobre citas, pagos o seguimientos pendientes.', level:'instant', type:'reminder', icon:'🔔' },
+    { title:'Integración WhatsApp', description:'Conecta WhatsApp Business para atender clientes y enviar mensajes automáticos.', level:'integration', type:'custom', icon:'💬' },
+    { title:'Página web básica', description:'Crea una presencia en línea profesional con tu información, servicios y formas de contacto.', level:'advanced', type:'page', icon:'🌐' },
+  ];
+}
+
+async function activateSolution(btn, level, title, type) {
+  const freeSolutionUsed = currentProfile?.free_solution_used;
+  const hasSubscription = currentProfile?.subscription_status === 'active';
+
+  if (level === 'advanced') {
+    showToast('Enviando solicitud a nuestro equipo...', 'success');
+    await sb.from('advanced_requests').insert({ user_id: currentUser.id, description: title });
+    btn.textContent = '✓ Solicitado';
+    btn.disabled = true;
+    return;
+  }
+
+  if (!freeSolutionUsed) {
+    // First solution free
+    btn.textContent = 'Activando...';
+    btn.disabled = true;
+    await sb.from('solutions').insert({
+      user_id: currentUser.id, title, level, solution_type: type, status: 'active', activated_at: new Date().toISOString()
+    });
+    await sb.from('profiles').update({ free_solution_used: true }).eq('id', currentUser.id);
+    currentProfile.free_solution_used = true;
+    btn.className = 'btn-activate btn-active-done';
+    btn.textContent = '✓ Activa';
+    document.getElementById('stat-solutions').textContent = parseInt(document.getElementById('stat-solutions').textContent || 0) + 1;
+    document.getElementById('free-solution-banner').style.display = 'none';
+    showToast(`✅ "${title}" activada exitosamente`, 'success');
+  } else if (!hasSubscription) {
+    showPaywall();
+  } else {
+    btn.textContent = 'Activando...';
+    btn.disabled = true;
+    await sb.from('solutions').insert({
+      user_id: currentUser.id, title, level, solution_type: type, status: 'active', activated_at: new Date().toISOString()
+    });
+    btn.className = 'btn-activate btn-active-done';
+    btn.textContent = '✓ Activa';
+    document.getElementById('stat-solutions').textContent = parseInt(document.getElementById('stat-solutions').textContent || 0) + 1;
+    showToast(`✅ "${title}" activada`, 'success');
+  }
+}
+
+function generateSolutions(recs) {
+  if (!recs) return;
+  // Store for solutions page
+  currentDiagnosis = { ...currentDiagnosis, recommendations: recs };
+  loadSolutions();
+}
+
+// ── AMBASSADOR ──
+async function loadAmbassadorData() {
+  const { data } = await sb.from('ambassadors').select('*').eq('user_id', currentUser.id).single();
+  if (data) {
+    const code = data.code || currentProfile?.ambassador_code;
+    document.getElementById('amb-code-display').textContent = code || '—';
+    const link = `${window.location.origin}${window.location.pathname.replace('dashboard.html','')}index.html?ref=${code}`;
+    document.getElementById('amb-link-display').textContent = link;
+    document.getElementById('amb-total-referrals').textContent = data.total_referrals || 0;
+    document.getElementById('amb-total-earned').textContent = `$${(data.total_earned || 0).toLocaleString()}`;
+  }
+}
+
+function copyAmbLink() {
+  const link = document.getElementById('amb-link-display').textContent;
+  navigator.clipboard.writeText(link);
+  showToast('Enlace copiado', 'success');
+}
+
+function copyReferralLink() {
+  const link = document.getElementById('referral-link').textContent;
+  navigator.clipboard.writeText(link);
+  showToast('Enlace copiado', 'success');
+}
+
+// ── ADMIN ──
+async function loadAdminData() {
+  if (currentProfile?.role !== 'admin') return;
+  const { count: usersCount } = await sb.from('profiles').select('*', {count:'exact',head:true});
+  const { count: activeCount } = await sb.from('profiles').select('*', {count:'exact',head:true}).eq('subscription_status','active');
+  const { count: ambCount } = await sb.from('ambassadors').select('*', {count:'exact',head:true});
+
+  document.getElementById('admin-users').textContent = usersCount || 0;
+  document.getElementById('admin-active').textContent = activeCount || 0;
+  document.getElementById('admin-revenue').textContent = `$${((activeCount||0)*499).toLocaleString()}`;
+  document.getElementById('admin-ambassadors').textContent = ambCount || 0;
+
+  const { data: users } = await sb.from('profiles').select('*').order('created_at',{ascending:false}).limit(10);
+  if (users && users.length > 0) {
+    document.getElementById('admin-users-list').innerHTML = `
+      <table class="data-table">
+        <thead><tr><th>Nombre</th><th>Email</th><th>Plan</th><th>Registro</th></tr></thead>
+        <tbody>${users.map(u=>`
+          <tr>
+            <td>${u.full_name||'—'}</td>
+            <td>${u.email||'—'}</td>
+            <td><span class="solution-badge ${u.subscription_status==='active'?'badge-instant':'badge-integration'}">${u.subscription_status||'free'}</span></td>
+            <td style="color:var(--muted)">${new Date(u.created_at).toLocaleDateString('es-MX')}</td>
+          </tr>`).join('')}
+        </tbody>
+      </table>`;
+  }
+}
+
+// ── PAYWALL ──
+function showPaywall() { document.getElementById('paywall-modal').classList.add('open'); }
+function startCheckout() {
+  showToast('Integración con Stripe próximamente', 'success');
+  document.getElementById('paywall-modal').classList.remove('open');
+}
+
+// ── AXOLÍN ──
+let axolinOpen = false;
+let axolinInited = false;
+
+function axolinInit() {
+  if (axolinInited) return;
+  axolinInited = true;
+  const name = currentProfile?.full_name?.split(' ')[0] || 'amigo';
+  addAxolinMsg(`¡Hola ${name}! Soy Axolín, tu asistente en dªtªblɛ 🦎\n\n¿En qué puedo ayudarte hoy?`, 'bot');
+}
+
+function toggleAxolin() {
+  axolinOpen = !axolinOpen;
+  document.getElementById('axolin-chat').classList.toggle('open', axolinOpen);
+}
+
+function addAxolinMsg(text, who) {
+  const div = document.createElement('div');
+  div.className = `axolin-msg ${who}`;
+  div.textContent = text;
+  document.getElementById('axolin-messages').appendChild(div);
+  document.getElementById('axolin-messages').scrollTop = 9999;
+}
+
+async function sendAxolin() {
+  const input = document.getElementById('axolin-input');
+  const msg = input.value.trim();
+  if (!msg) return;
+  input.value = '';
+  addAxolinMsg(msg, 'user');
+
+  const thinking = document.createElement('div');
+  thinking.className = 'axolin-msg bot';
+  thinking.textContent = '...';
+  document.getElementById('axolin-messages').appendChild(thinking);
+
+  try {
+    const response = await fetch(CLAUDE_API, {
+      method:'POST',
+      headers:{ 'Content-Type':'application/json', 'anthropic-dangerous-direct-browser-access':'true' },
+      body: JSON.stringify({
+        model:'claude-sonnet-4-20250514', max_tokens:400,
+        system:`Eres Axolín, asistente simpático de datable.com.mx, plataforma de digitalización para negocios mexicanos.
+Usuario: ${currentProfile?.full_name||'usuario'}, negocio: ${currentProfile?.business_name||'no especificado'}.
+Responde en máximo 3 oraciones, en español, de forma clara y amigable. 
+Si pide hablar con alguien, dile que puede escribir a D4tabl3@gmail.com.`,
+        messages:[{role:'user',content:msg}]
+      })
+    });
+    const data = await response.json();
+    thinking.textContent = data.content[0].text;
+  } catch(e) {
+    thinking.textContent = 'Ups, algo falló. Intenta de nuevo.';
+  }
+}
+
+// ── TOAST ──
+function showToast(msg, type='success') {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.className = `show ${type}`;
+  setTimeout(() => t.className = '', 3000);
+}
+</script>
+</body>
+</html>
