@@ -1,0 +1,935 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>dªtªblɛ — Tu herramienta lista</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,300&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#04040F;--mg:#FF00CC;--cy:#00F0FF;--gn:#1DFF8A;
+  --yw:#FFE500;--or:#FF6B1A;--pu:#C400FF;--bl:#3D7EFF;
+  --mu:rgba(255,255,255,.45);--card:rgba(255,255,255,.05);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:#fff;font-family:'DM Sans',sans-serif;min-height:100vh;line-height:1.6}
+canvas#bgC{position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.5}
+.wrap{max-width:680px;margin:0 auto;padding:0 clamp(16px,5vw,40px);position:relative;z-index:1}
+
+/* NAV */
+nav{position:sticky;top:0;z-index:100;background:rgba(4,4,15,.92);backdrop-filter:blur(20px);border-bottom:1px solid rgba(255,255,255,.07);padding:12px clamp(16px,5vw,40px);display:flex;align-items:center;justify-content:space-between}
+.logo{font-family:'Syne',sans-serif;font-weight:800;font-size:1.4rem;text-decoration:none}
+.logo span:nth-child(1){color:#FF00CC}.logo span:nth-child(2){color:#FF6B1A}.logo span:nth-child(3){color:#FFE500}.logo span:nth-child(4){color:#1DFF8A}.logo span:nth-child(5){color:#00F0FF}.logo span:nth-child(6){color:#3D7EFF}.logo span:nth-child(7){color:#C400FF}
+.code-badge{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);border-radius:8px;padding:5px 12px;font-size:.75rem;font-weight:700;color:var(--cy);font-family:monospace;letter-spacing:.1em}
+
+/* HERO */
+.hero{padding:clamp(30px,6vh,60px) 0 20px;text-align:center}
+.hero-tag{display:inline-flex;align-items:center;gap:7px;background:rgba(29,255,138,.08);border:1px solid rgba(29,255,138,.2);border-radius:50px;padding:5px 16px;font-size:.72rem;font-weight:700;color:var(--gn);letter-spacing:.08em;text-transform:uppercase;margin-bottom:18px}
+.hero-tag::before{content:'●';animation:blink 1.5s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.1}}
+.hero h1{font-family:'Syne',sans-serif;font-weight:800;font-size:clamp(1.6rem,5vw,2.8rem);line-height:1.08;letter-spacing:-.025em;margin-bottom:10px}
+.hero-sub{font-size:.9rem;color:var(--mu);max-width:420px;margin:0 auto 6px}
+.timer-bar{display:inline-flex;align-items:center;gap:8px;background:rgba(255,229,0,.07);border:1px solid rgba(255,229,0,.2);border-radius:50px;padding:6px 16px;font-size:.75rem;color:var(--yw);font-weight:600;margin-top:12px}
+
+/* CARDS */
+.card{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.09);border-radius:20px;padding:clamp(20px,4vw,32px);margin-bottom:16px;position:relative;overflow:hidden}
+.card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--ac,#fff),transparent);opacity:.35}
+.card-title{font-family:'Syne',sans-serif;font-weight:800;font-size:1rem;margin-bottom:6px;color:var(--ac,#fff)}
+.card-sub{font-size:.8rem;color:var(--mu);line-height:1.55;margin-bottom:16px}
+
+/* FORM INPUTS */
+.field{margin-bottom:13px}
+.field label{display:block;font-size:.77rem;font-weight:600;color:rgba(255,255,255,.65);margin-bottom:5px}
+.field input,.field textarea,.field select{width:100%;background:rgba(255,255,255,.05);border:1.5px solid rgba(255,255,255,.1);border-radius:10px;padding:10px 13px;color:#fff;font-family:'DM Sans',sans-serif;font-size:.88rem;outline:none;transition:border-color .2s}
+.field input:focus,.field textarea:focus,.field select:focus{border-color:var(--cy);box-shadow:0 0 16px rgba(0,240,255,.12)}
+.field input::placeholder,.field textarea::placeholder{color:rgba(255,255,255,.25)}
+.field textarea{resize:vertical;min-height:70px}
+.field select option{background:#09091C;color:#fff}
+.field-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+@media(max-width:500px){.field-row{grid-template-columns:1fr}}
+
+/* COLOR PICKER */
+.color-opts{display:flex;gap:8px;flex-wrap:wrap;margin-top:6px}
+.color-opt{width:32px;height:32px;border-radius:50%;cursor:pointer;border:3px solid transparent;transition:all .2s;position:relative}
+.color-opt.sel{border-color:#fff;transform:scale(1.2)}
+.color-opt.sel::after{content:'✓';position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:.6rem;font-weight:900;color:#fff}
+
+/* PREVIEW CANVAS AREA */
+.preview-wrap{background:#000;border-radius:14px;overflow:hidden;margin-bottom:14px;position:relative}
+.preview-label{position:absolute;top:8px;left:10px;font-size:.65rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.4);z-index:2}
+canvas#flyer-canvas{width:100%;display:block;max-height:340px;object-fit:contain}
+
+/* FORMAT BUTTONS */
+.fmt-btns{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:8px}
+.fmt-btn{padding:10px 6px;border-radius:10px;border:1.5px solid rgba(255,255,255,.15);background:rgba(255,255,255,.04);color:rgba(255,255,255,.7);font-size:.75rem;font-weight:600;cursor:pointer;text-align:center;transition:all .2s;font-family:'DM Sans',sans-serif}
+.fmt-btn:hover{border-color:var(--cy);color:var(--cy);background:rgba(0,240,255,.06)}
+.fmt-btn.active{border-color:var(--mg);color:var(--mg);background:rgba(255,0,204,.08)}
+.fmt-btn .fmt-icon{font-size:1.1rem;display:block;margin-bottom:3px}
+
+/* BOTONES */
+.btn-primary{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:14px;border:none;border-radius:14px;cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:700;font-size:.95rem;color:#fff;background:linear-gradient(135deg,var(--mg),var(--pu));box-shadow:0 0 24px rgba(255,0,204,.35);transition:all .2s}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 0 40px rgba(255,0,204,.55)}
+.btn-cy{background:linear-gradient(135deg,#00C8D4,#0075FF);box-shadow:0 0 24px rgba(0,240,255,.3)}
+.btn-cy:hover{box-shadow:0 0 40px rgba(0,240,255,.5)}
+.btn-gn{background:linear-gradient(135deg,#00C853,#1DFF8A);color:#000;box-shadow:0 0 24px rgba(29,255,138,.35)}
+.btn-gn:hover{box-shadow:0 0 40px rgba(29,255,138,.55)}
+.btn-ghost{display:flex;align-items:center;justify-content:center;gap:7px;width:100%;padding:12px;border:1px solid rgba(255,255,255,.15);border-radius:12px;background:none;color:rgba(255,255,255,.6);font-family:'DM Sans',sans-serif;font-size:.85rem;cursor:pointer;transition:all .2s;margin-top:8px}
+.btn-ghost:hover{background:rgba(255,255,255,.06);color:#fff}
+
+/* CRM TABLE */
+.crm-table{width:100%;border-collapse:collapse;font-size:.8rem;margin-bottom:12px}
+.crm-table th{background:rgba(255,255,255,.06);color:var(--mu);font-weight:600;padding:8px 10px;text-align:left;font-size:.72rem;letter-spacing:.05em}
+.crm-table td{padding:8px 10px;border-bottom:1px solid rgba(255,255,255,.05);vertical-align:middle}
+.crm-table tr:hover td{background:rgba(255,255,255,.03)}
+.crm-table input{background:transparent;border:none;color:#fff;font-family:'DM Sans',sans-serif;font-size:.8rem;width:100%;outline:none;padding:2px 4px;border-radius:4px}
+.crm-table input:focus{background:rgba(255,255,255,.07)}
+.status-pill{display:inline-block;padding:2px 8px;border-radius:20px;font-size:.67rem;font-weight:700}
+.status-nuevo{background:rgba(255,229,0,.12);color:var(--yw);border:1px solid rgba(255,229,0,.2)}
+.status-activo{background:rgba(29,255,138,.12);color:var(--gn);border:1px solid rgba(29,255,138,.2)}
+.status-inactivo{background:rgba(255,0,204,.12);color:var(--mg);border:1px solid rgba(255,0,204,.2)}
+
+/* PÁGINA PREVIEW */
+.page-preview{border:1.5px solid rgba(255,255,255,.1);border-radius:14px;overflow:hidden;margin-bottom:14px;background:#fff}
+.page-preview-bar{background:#f0f0f0;padding:7px 12px;display:flex;align-items:center;gap:6px}
+.ppb-dot{width:9px;height:9px;border-radius:50%}
+.page-preview iframe{width:100%;height:340px;border:none;display:block}
+
+/* TABS */
+.tool-tabs{display:flex;gap:6px;margin-bottom:20px;padding:5px;background:rgba(255,255,255,.04);border-radius:12px}
+.tab-btn{flex:1;padding:9px 6px;border:none;border-radius:9px;font-family:'DM Sans',sans-serif;font-size:.78rem;font-weight:600;cursor:pointer;background:none;color:rgba(255,255,255,.5);transition:all .2s}
+.tab-btn.active{background:rgba(255,255,255,.1);color:#fff}
+
+/* CLOSING CTA */
+.cta-wrap{padding:clamp(24px,5vw,40px);text-align:center;margin:20px 0 40px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);border-radius:22px;position:relative;overflow:hidden}
+.cta-wrap::before{content:'';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:400px;height:400px;border-radius:50%;background:radial-gradient(circle,rgba(255,0,204,.07),rgba(0,240,255,.04),transparent 70%);pointer-events:none}
+.cta-h{font-family:'Syne',sans-serif;font-weight:800;font-size:clamp(1.2rem,4vw,1.8rem);line-height:1.1;margin-bottom:10px}
+.cta-p{font-size:.85rem;color:var(--mu);max-width:420px;margin:0 auto 20px;line-height:1.65}
+
+/* LOADING */
+#loading-state{text-align:center;padding:60px 20px}
+.load-spinner{width:48px;height:48px;border:3px solid rgba(255,255,255,.1);border-top-color:var(--mg);border-radius:50%;animation:spin 1s linear infinite;margin:0 auto 16px}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* MINI STEPS */
+.steps-mini{display:flex;flex-direction:column;gap:6px;margin-bottom:16px}
+.step-mini{display:flex;align-items:center;gap:10px;font-size:.8rem;color:rgba(255,255,255,.6)}
+.step-mini.done{color:var(--gn)}
+.step-mini.act{color:#fff}
+.sm-dot{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.15);flex-shrink:0}
+.step-mini.done .sm-dot{background:var(--gn)}
+.step-mini.act .sm-dot{background:var(--mg);animation:pulse 1s ease infinite}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(255,0,204,.5)}50%{box-shadow:0 0 0 5px rgba(255,0,204,0)}}
+
+/* NOTA MANUAL */
+.manual-note{background:rgba(0,240,255,.05);border:1px solid rgba(0,240,255,.15);border-radius:12px;padding:14px;margin-bottom:14px;font-size:.8rem;color:rgba(255,255,255,.75);line-height:1.6}
+.manual-note strong{color:var(--cy)}
+</style>
+</head>
+<body>
+<canvas id="bgC"></canvas>
+
+<nav>
+  <a class="logo" href="index.html"><span>d</span><span>ª</span><span>t</span><span>ª</span><span>b</span><span>l</span><span>ɛ</span></a>
+  <div class="code-badge" id="nav-code">···</div>
+</nav>
+
+<div class="wrap">
+
+  <!-- LOADING STATE -->
+  <div id="loading-state" style="padding:80px 20px;text-align:center">
+    <div class="load-spinner"></div>
+    <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:1.1rem;margin-bottom:6px">Preparando tu herramienta...</div>
+    <div style="font-size:.82rem;color:var(--mu)">Un momento, estamos personalizando todo para ti</div>
+  </div>
+
+  <!-- MAIN CONTENT (hidden until loaded) -->
+  <div id="main-content" style="display:none">
+
+    <!-- HERO -->
+    <div class="hero">
+      <div class="hero-tag">⚡ Tu herramienta está lista</div>
+      <h1 id="hero-title">Tu primera herramienta<br>de digitalización</h1>
+      <p class="hero-sub" id="hero-sub">Personalízala con los datos de tu negocio y úsala desde hoy</p>
+      <div class="timer-bar">⏱ Disponible <strong id="hours-left" style="margin:0 4px">48</strong> horas · Código: <strong id="code-display" style="margin-left:4px;font-family:monospace;color:var(--cy)">···</strong></div>
+    </div>
+
+    <!-- TOOL TABS (si hay más de una) -->
+    <div id="tool-tabs-wrap" style="display:none">
+      <div class="tool-tabs" id="tool-tabs"></div>
+    </div>
+
+    <!-- ══ HERRAMIENTA: FLYER ══ -->
+    <div id="tool-flyer" style="display:none">
+      <div class="card" style="--ac:var(--mg)">
+        <div class="card-title">🎨 Diseña tu flyer / tarjeta</div>
+        <div class="card-sub">Llena los datos de tu negocio y el diseño se actualiza en tiempo real. Cuando estés listo, descárgalo para la red que quieras.</div>
+
+        <div class="field-row">
+          <div class="field">
+            <label>Nombre de tu negocio *</label>
+            <input type="text" id="f-negocio" placeholder="Ej: Estudio Salsa Viva" oninput="updateFlyer()">
+          </div>
+          <div class="field">
+            <label>Tu nombre *</label>
+            <input type="text" id="f-nombre" placeholder="Ej: Sandra Torres" oninput="updateFlyer()">
+          </div>
+        </div>
+        <div class="field">
+          <label>¿Qué ofreces? (servicios / clases / productos)</label>
+          <input type="text" id="f-servicio" placeholder="Ej: Clases de salsa principiantes y avanzados · Todos los niveles" oninput="updateFlyer()">
+        </div>
+        <div class="field-row">
+          <div class="field">
+            <label>Teléfono / WhatsApp</label>
+            <input type="text" id="f-tel" placeholder="Ej: 322 123 4567" oninput="updateFlyer()">
+          </div>
+          <div class="field">
+            <label>Ciudad / Ubicación</label>
+            <input type="text" id="f-ciudad" placeholder="Ej: Puerto Vallarta" oninput="updateFlyer()">
+          </div>
+        </div>
+        <div class="field">
+          <label>Algo especial que quieras destacar (opcional)</label>
+          <input type="text" id="f-extra" placeholder="Ej: ¡Primera clase gratis! · Grupos pequeños · 10 años de experiencia" oninput="updateFlyer()">
+        </div>
+
+        <!-- Color theme -->
+        <div class="field">
+          <label>Color principal</label>
+          <div class="color-opts" id="color-opts">
+            <div class="color-opt sel" data-color="#FF00CC" style="background:#FF00CC" onclick="selectColor(this)"></div>
+            <div class="color-opt" data-color="#00F0FF" style="background:#00F0FF" onclick="selectColor(this)"></div>
+            <div class="color-opt" data-color="#1DFF8A" style="background:#1DFF8A" onclick="selectColor(this)"></div>
+            <div class="color-opt" data-color="#FFE500" style="background:#FFE500" onclick="selectColor(this)"></div>
+            <div class="color-opt" data-color="#FF6B1A" style="background:#FF6B1A" onclick="selectColor(this)"></div>
+            <div class="color-opt" data-color="#C400FF" style="background:#C400FF" onclick="selectColor(this)"></div>
+            <div class="color-opt" data-color="#3D7EFF" style="background:#3D7EFF" onclick="selectColor(this)"></div>
+          </div>
+        </div>
+
+        <!-- Estilo flyer -->
+        <div class="field">
+          <label>Estilo</label>
+          <div class="tool-tabs" id="flyer-style-tabs" style="margin-bottom:0">
+            <button class="tab-btn active" onclick="setFlyerStyle('promo',this)">📢 Promocional</button>
+            <button class="tab-btn" onclick="setFlyerStyle('tarjeta',this)">💼 Tarjeta</button>
+            <button class="tab-btn" onclick="setFlyerStyle('evento',this)">🎉 Invitación</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- PREVIEW -->
+      <div class="card" style="--ac:var(--cy);padding:16px">
+        <div class="card-title" style="margin-bottom:10px">👀 Vista previa</div>
+        <div class="preview-wrap">
+          <div class="preview-label">PREVIEW</div>
+          <canvas id="flyer-canvas" width="1080" height="1080"></canvas>
+        </div>
+
+        <!-- Format selector -->
+        <div style="font-size:.72rem;font-weight:700;color:var(--mu);letter-spacing:.1em;text-transform:uppercase;margin-bottom:8px">¿Dónde lo vas a publicar?</div>
+        <div class="fmt-btns">
+          <button class="fmt-btn active" onclick="selectFormat('instagram',this)">
+            <span class="fmt-icon">📸</span>Instagram<br><span style="font-size:.62rem;opacity:.6">1080×1080</span>
+          </button>
+          <button class="fmt-btn" onclick="selectFormat('facebook',this)">
+            <span class="fmt-icon">📘</span>Facebook<br><span style="font-size:.62rem;opacity:.6">1200×630</span>
+          </button>
+          <button class="fmt-btn" onclick="selectFormat('whatsapp',this)">
+            <span class="fmt-icon">💬</span>WhatsApp<br><span style="font-size:.62rem;opacity:.6">512×512</span>
+          </button>
+        </div>
+
+        <button class="btn-primary" onclick="downloadFlyer()" style="margin-top:4px">
+          ⬇️ Descargar mi flyer
+        </button>
+
+        <div class="manual-note" style="margin-top:12px">
+          <strong>📖 Cómo usarlo:</strong> Descarga tu flyer y súbelo directamente a la red social que elegiste. El tamaño ya está optimizado. Para publicar en varias redes, descárgalo una vez por formato. Si quieres cambiar algo, edita los campos arriba — el diseño se actualiza solo.
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ HERRAMIENTA: PÁGINA ══ -->
+    <div id="tool-pagina" style="display:none">
+      <div class="card" style="--ac:var(--cy)">
+        <div class="card-title">🌐 Tu mini página de negocio</div>
+        <div class="card-sub">Llena los datos y te generamos una página lista para compartir. Puedes mandarla por WhatsApp, ponerla en tu bio de Instagram o en tus tarjetas.</div>
+
+        <div class="field">
+          <label>Nombre de tu negocio *</label>
+          <input type="text" id="p-negocio" placeholder="Ej: Estudio Salsa Viva" oninput="updatePagina()">
+        </div>
+        <div class="field">
+          <label>¿Qué haces? Descríbelo en 1-2 oraciones</label>
+          <textarea id="p-desc" placeholder="Ej: Clases de salsa para todos los niveles en Puerto Vallarta. Grupos pequeños, ambiente familiar y resultados reales desde la primera clase." oninput="updatePagina()"></textarea>
+        </div>
+        <div class="field">
+          <label>Tus servicios o productos (uno por línea)</label>
+          <textarea id="p-servicios" placeholder="Ej:&#10;Clases grupales — $200/clase&#10;Clases privadas — $400/hora&#10;Paquete mensual — $800/mes" oninput="updatePagina()" style="min-height:90px"></textarea>
+        </div>
+        <div class="field-row">
+          <div class="field">
+            <label>WhatsApp / Teléfono</label>
+            <input type="text" id="p-wa" placeholder="322 123 4567" oninput="updatePagina()">
+          </div>
+          <div class="field">
+            <label>Ciudad</label>
+            <input type="text" id="p-ciudad" placeholder="Puerto Vallarta" oninput="updatePagina()">
+          </div>
+        </div>
+        <div class="field">
+          <label>Función principal de tu página</label>
+          <select id="p-funcion" onchange="updatePagina()">
+            <option value="wa">💬 Que me escriban por WhatsApp</option>
+            <option value="reserva">📅 Que agenden una cita/clase</option>
+            <option value="info">ℹ️ Solo mostrar mi negocio e info</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- PREVIEW -->
+      <div class="card" style="--ac:var(--cy);padding:16px">
+        <div class="card-title" style="margin-bottom:10px">👀 Vista previa de tu página</div>
+        <div class="page-preview">
+          <div class="page-preview-bar">
+            <div class="ppb-dot" style="background:#ff5f57"></div>
+            <div class="ppb-dot" style="background:#febc2e"></div>
+            <div class="ppb-dot" style="background:#28c840"></div>
+            <div style="flex:1;background:#e0e0e0;border-radius:4px;height:16px;margin-left:8px;font-size:.6rem;display:flex;align-items:center;padding:0 8px;color:#999" id="page-url-bar">datable.com.mx/p/···</div>
+          </div>
+          <iframe id="page-preview-frame" sandbox="allow-scripts"></iframe>
+        </div>
+
+        <button class="btn-primary btn-cy" onclick="copyPageLink()">
+          🔗 Copiar link de mi página
+        </button>
+        <button class="btn-ghost" onclick="openPageNew()">↗ Ver en pantalla completa</button>
+
+        <div class="manual-note" style="margin-top:12px">
+          <strong>📖 Cómo usarlo:</strong> Copia el link y compártelo donde quieras — WhatsApp, Instagram bio, tarjetas de presentación, o mándalo directamente a tus clientes. Cualquier persona que abra el link verá tu página. Si cambias los datos arriba, el link se actualiza automáticamente.
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ HERRAMIENTA: CRM ══ -->
+    <div id="tool-crm" style="display:none">
+      <div class="card" style="--ac:var(--mg)">
+        <div class="card-title">👥 Tu registro de clientes</div>
+        <div class="card-sub">Agrega tus clientes aquí. Puedes anotar nombre, teléfono, qué compró o contrató, y en qué estado está el seguimiento. Todo guardado para ti.</div>
+
+        <div style="overflow-x:auto;margin-bottom:10px">
+          <table class="crm-table" id="crm-table">
+            <thead>
+              <tr>
+                <th>Nombre</th>
+                <th>Teléfono</th>
+                <th>Servicio/Producto</th>
+                <th>Estado</th>
+                <th>Notas</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody id="crm-body">
+              <!-- filled by JS -->
+            </tbody>
+          </table>
+        </div>
+
+        <button class="btn-ghost" onclick="addCrmRow()" style="margin-bottom:10px;border-style:dashed">
+          + Agregar cliente
+        </button>
+
+        <button class="btn-primary" onclick="exportCrm()">
+          ⬇️ Descargar mi lista en Excel
+        </button>
+
+        <div class="manual-note" style="margin-top:12px">
+          <strong>📖 Cómo usarlo:</strong> Agrega a tus clientes actuales uno por uno, o importa tu lista si ya tienes un Excel. Cambia el estado de cada uno conforme avanza el seguimiento. Cuando hagas clic en "Descargar", recibes un archivo Excel listo para abrir en cualquier dispositivo.
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ CIERRE: PRUEBA + REGISTRO ══ -->
+    <div class="cta-wrap" id="cta-final">
+      <div style="font-size:1.6rem;margin-bottom:8px">🙏</div>
+      <h2 class="cta-h">Por favor, <span style="background:linear-gradient(90deg,var(--mg),var(--cy));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">prueba tu herramienta</span></h2>
+      <p class="cta-p">
+        Sabemos lo importante que es en estos tiempos que un negocio como el tuyo se digitalice. Esta herramienta es tuya — sin costo, sin trampa. <strong style="color:#fff">Dinos si funciona.</strong> Tu opinión vale mucho para nosotros y queremos saber que estamos haciendo algo que realmente te sirve.
+      </p>
+
+      <div style="background:rgba(0,240,255,.05);border:1px solid rgba(0,240,255,.18);border-radius:14px;padding:16px;margin-bottom:20px;text-align:left">
+        <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:.95rem;color:var(--cy);margin-bottom:6px">📋 Tu diagnóstico completo te espera</div>
+        <div style="font-size:.83rem;color:rgba(255,255,255,.75);line-height:1.6">
+          El análisis completo de tu negocio ya está listo — con todas las áreas detectadas, el impacto estimado en pesos, y el plan de pasos a seguir. <strong style="color:#fff">Solo necesito saber a dónde enviártelo.</strong> No adivino tu correo, por eso necesito que te registres — es para saber a quién y a dónde lo mando.
+        </div>
+      </div>
+
+      <button class="btn-primary btn-gn" onclick="goRegister()" style="max-width:400px;margin:0 auto">
+        ✅ Dime a dónde enviar mi diagnóstico →
+      </button>
+      <div style="font-size:.72rem;color:var(--mu);margin-top:10px">Sin tarjeta · Sin compromiso · Solo para saber a dónde enviarlo</div>
+    </div>
+
+  </div><!-- /main-content -->
+</div><!-- /wrap -->
+
+<script>
+/* ══ CONFIG ══ */
+const SUPABASE_URL = 'https://vronhuwjuyitlxcabkme.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZyb25odXdqdXlpdGx4Y2Fia21lIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMxNDY0MzgsImV4cCI6MjA4ODcyMjQzOH0._Tp_y1JMZoNbNXbftMo1PCVm6h95VrlgcVF-vKIegbY';
+const CLAUDE_API = 'https://api.anthropic.com/v1/messages';
+
+/* ══ CANVAS BG ══ */
+const cv=document.getElementById('bgC'),ctx=cv.getContext('2d');
+let W,H;
+function rsz(){W=cv.width=window.innerWidth;H=cv.height=window.innerHeight}
+const blobs=[{x:.1,y:.2,r:.35,c:'#FF00CC',p:0},{x:.85,y:.15,r:.3,c:'#00F0FF',p:1.2},{x:.5,y:.75,r:.4,c:'#BF00FF',p:2.4}];
+let t=0;
+function draw(){ctx.clearRect(0,0,W,H);ctx.fillStyle='#04040F';ctx.fillRect(0,0,W,H);t+=.004;
+  blobs.forEach(b=>{const px=(b.x+Math.sin(t+b.p)*.1)*W,py=(b.y+Math.cos(t*.7+b.p)*.09)*H,r=b.r*Math.min(W,H)*.7;
+    const g=ctx.createRadialGradient(px,py,0,px,py,r);g.addColorStop(0,b.c+'18');g.addColorStop(1,'transparent');
+    ctx.fillStyle=g;ctx.beginPath();ctx.arc(px,py,r,0,Math.PI*2);ctx.fill();});requestAnimationFrame(draw);}
+rsz();draw();window.addEventListener('resize',rsz);
+
+/* ══ STATE ══ */
+let sessionCode = '';
+let sessionData = null;
+let flyerColor = '#FF00CC';
+let flyerStyle = 'promo';
+let flyerFormat = 'instagram';
+let pageContent = {};
+let crmRows = [];
+
+/* ══ INIT ══ */
+window.addEventListener('DOMContentLoaded', async () => {
+  const params = new URLSearchParams(window.location.search);
+  sessionCode = params.get('code') || generateCode();
+  const tipo = params.get('tipo') || 'flyer';
+
+  document.getElementById('nav-code').textContent = sessionCode;
+  document.getElementById('code-display').textContent = sessionCode;
+  document.getElementById('nav-code').title = 'Tu código de acceso — guárdalo';
+
+  // Try to load from Supabase
+  let loaded = false;
+  if(params.get('code')){
+    loaded = await loadSession(sessionCode);
+  }
+
+  if(!loaded){
+    // New session — show the tool based on tipo param
+    sessionData = { tipo, code: sessionCode, creado: Date.now() };
+    showTool(tipo);
+  }
+
+  updateTimer();
+  setInterval(updateTimer, 60000);
+  document.getElementById('loading-state').style.display = 'none';
+  document.getElementById('main-content').style.display = 'block';
+});
+
+function generateCode(){
+  const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+  let code = 'D4T-';
+  for(let i=0;i<4;i++) code += chars[Math.floor(Math.random()*chars.length)];
+  return code;
+}
+
+async function loadSession(code){
+  try {
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/herramientas_gratis?code=eq.${code}&select=*`, {
+      headers: { 'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + SUPABASE_KEY }
+    });
+    const data = await res.json();
+    if(data && data.length > 0){
+      sessionData = data[0];
+      // Restore filled data if any
+      if(sessionData.datos_cliente){
+        const d = sessionData.datos_cliente;
+        if(d.negocio) document.getElementById('f-negocio').value = d.negocio;
+        if(d.nombre) document.getElementById('f-nombre').value = d.nombre;
+        if(d.servicio) document.getElementById('f-servicio').value = d.servicio;
+        if(d.tel) document.getElementById('f-tel').value = d.tel;
+        if(d.ciudad) document.getElementById('f-ciudad').value = d.ciudad;
+      }
+      showTool(sessionData.tipo || 'flyer');
+      return true;
+    }
+  } catch(e){ console.log('Session load error', e); }
+  return false;
+}
+
+async function saveSession(){
+  const datos = {
+    negocio: document.getElementById('f-negocio')?.value || document.getElementById('p-negocio')?.value || '',
+    nombre: document.getElementById('f-nombre')?.value || '',
+    servicio: document.getElementById('f-servicio')?.value || '',
+    tel: document.getElementById('f-tel')?.value || document.getElementById('p-wa')?.value || '',
+    ciudad: document.getElementById('f-ciudad')?.value || document.getElementById('p-ciudad')?.value || ''
+  };
+  const expira = new Date(Date.now() + 7*24*60*60*1000).toISOString();
+  try {
+    await fetch(`${SUPABASE_URL}/rest/v1/herramientas_gratis`, {
+      method: 'POST',
+      headers: {
+        'apikey': SUPABASE_KEY,
+        'Authorization': 'Bearer ' + SUPABASE_KEY,
+        'Content-Type': 'application/json',
+        'Prefer': 'resolution=merge-duplicates'
+      },
+      body: JSON.stringify({
+        code: sessionCode,
+        tipo: sessionData?.tipo || 'flyer',
+        datos_cliente: datos,
+        diagnostico: sessionData?.diagnostico || null,
+        expira_at: expira,
+        registrado: false
+      })
+    });
+  } catch(e){ console.log('Save error', e); }
+}
+
+/* ══ SHOW TOOL ══ */
+function showTool(tipo){
+  document.getElementById('tool-flyer').style.display = 'none';
+  document.getElementById('tool-pagina').style.display = 'none';
+  document.getElementById('tool-crm').style.display = 'none';
+
+  if(tipo === 'flyer' || tipo === 'flyer_tarjeta' || tipo === 'flyer_evento'){
+    document.getElementById('tool-flyer').style.display = 'block';
+    flyerStyle = tipo === 'flyer_tarjeta' ? 'tarjeta' : tipo === 'flyer_evento' ? 'evento' : 'promo';
+    // Set tab active
+    document.querySelectorAll('#flyer-style-tabs .tab-btn').forEach((b,i)=>{
+      b.classList.toggle('active', (i===0&&flyerStyle==='promo')||(i===1&&flyerStyle==='tarjeta')||(i===2&&flyerStyle==='evento'));
+    });
+    updateHeroText('flyer');
+    setTimeout(()=>updateFlyer(), 200);
+  } else if(tipo === 'pagina' || tipo.startsWith('pagina')){
+    document.getElementById('tool-pagina').style.display = 'block';
+    updateHeroText('pagina');
+    setTimeout(()=>updatePagina(), 200);
+  } else if(tipo === 'crm'){
+    document.getElementById('tool-crm').style.display = 'block';
+    updateHeroText('crm');
+    initCrm();
+  }
+}
+
+function updateHeroText(tipo){
+  const titles = {
+    flyer: 'Tu flyer está listo<br>para personalizar',
+    pagina: 'Tu mini página<br>está lista',
+    crm: 'Tu registro de<br>clientes está listo'
+  };
+  const subs = {
+    flyer: 'Llena tus datos y descarga tu flyer para Instagram, Facebook o WhatsApp',
+    pagina: 'Llena los datos y obtén un link real para compartir con tus clientes',
+    crm: 'Agrega tus clientes y lleva el control de seguimientos y pagos'
+  };
+  document.getElementById('hero-title').innerHTML = titles[tipo] || titles.flyer;
+  document.getElementById('hero-sub').textContent = subs[tipo] || subs.flyer;
+}
+
+/* ══ TIMER ══ */
+function updateTimer(){
+  const created = sessionData?.creado_at ? new Date(sessionData.creado_at).getTime() : Date.now();
+  const expira = created + 48*60*60*1000;
+  const diff = expira - Date.now();
+  const hours = Math.max(0, Math.floor(diff / 3600000));
+  const mins = Math.max(0, Math.floor((diff % 3600000) / 60000));
+  const el = document.getElementById('hours-left');
+  if(el) el.textContent = hours > 0 ? `${hours}h ${mins}m` : 'menos de 1h';
+}
+
+/* ══ FLYER CANVAS ══ */
+let flyerDebounce;
+function updateFlyer(){
+  clearTimeout(flyerDebounce);
+  flyerDebounce = setTimeout(drawFlyer, 80);
+}
+
+function setFlyerStyle(s, btn){
+  flyerStyle = s;
+  document.querySelectorAll('#flyer-style-tabs .tab-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  drawFlyer();
+}
+
+function selectColor(el){
+  document.querySelectorAll('.color-opt').forEach(c=>c.classList.remove('sel'));
+  el.classList.add('sel');
+  flyerColor = el.dataset.color;
+  drawFlyer();
+}
+
+function selectFormat(fmt, btn){
+  flyerFormat = fmt;
+  document.querySelectorAll('.fmt-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  const canvas = document.getElementById('flyer-canvas');
+  const dims = { instagram:[1080,1080], facebook:[1200,630], whatsapp:[512,512] };
+  const [w,h] = dims[fmt];
+  canvas.width = w; canvas.height = h;
+  drawFlyer();
+}
+
+function drawFlyer(){
+  const canvas = document.getElementById('flyer-canvas');
+  if(!canvas) return;
+  const ctx = canvas.getContext('2d');
+  const W = canvas.width, H = canvas.height;
+  const negocio = document.getElementById('f-negocio')?.value || 'Tu Negocio';
+  const nombre = document.getElementById('f-nombre')?.value || '';
+  const servicio = document.getElementById('f-servicio')?.value || 'Tus servicios aquí';
+  const tel = document.getElementById('f-tel')?.value || '';
+  const ciudad = document.getElementById('f-ciudad')?.value || '';
+  const extra = document.getElementById('f-extra')?.value || '';
+  const color = flyerColor;
+
+  // Parse color to RGB for gradients
+  const hexToRgb = h => { const r=parseInt(h.slice(1,3),16),g=parseInt(h.slice(3,5),16),b=parseInt(h.slice(5,7),16); return `${r},${g},${b}`; };
+  const rgb = hexToRgb(color);
+
+  ctx.clearRect(0,0,W,H);
+
+  if(flyerStyle === 'promo'){
+    // Dark background with gradient
+    const bg = ctx.createLinearGradient(0,0,W,H);
+    bg.addColorStop(0, '#04040F');
+    bg.addColorStop(0.5, `rgba(${rgb},.12)`);
+    bg.addColorStop(1, '#09091C');
+    ctx.fillStyle = bg;
+    ctx.fillRect(0,0,W,H);
+
+    // Top accent bar
+    const bar = ctx.createLinearGradient(0,0,W,0);
+    bar.addColorStop(0, color);
+    bar.addColorStop(0.5, '#ffffff');
+    bar.addColorStop(1, color);
+    ctx.fillStyle = bar;
+    ctx.fillRect(0, 0, W, H*0.025);
+
+    // Decorative circle
+    ctx.beginPath();
+    ctx.arc(W*0.85, H*0.2, H*0.28, 0, Math.PI*2);
+    ctx.fillStyle = `rgba(${rgb},.08)`;
+    ctx.fill();
+    ctx.beginPath();
+    ctx.arc(W*0.85, H*0.2, H*0.22, 0, Math.PI*2);
+    ctx.fillStyle = `rgba(${rgb},.06)`;
+    ctx.fill();
+
+    // Business name
+    const nameSize = Math.min(W*0.065, 72);
+    ctx.font = `900 ${nameSize}px 'Syne', sans-serif`;
+    ctx.fillStyle = '#FFFFFF';
+    ctx.textAlign = 'left';
+    wrapText(ctx, negocio.toUpperCase(), W*0.07, H*0.22, W*0.8, nameSize*1.2);
+
+    // Divider
+    ctx.fillStyle = color;
+    ctx.fillRect(W*0.07, H*0.33, W*0.12, 4);
+
+    // Service
+    const srvSize = Math.min(W*0.035, 38);
+    ctx.font = `400 ${srvSize}px 'DM Sans', sans-serif`;
+    ctx.fillStyle = 'rgba(255,255,255,.8)';
+    wrapText(ctx, servicio, W*0.07, H*0.4, W*0.78, srvSize*1.5);
+
+    // Extra highlight
+    if(extra){
+      const exSize = Math.min(W*0.03, 32);
+      ctx.font = `700 ${exSize}px 'DM Sans', sans-serif`;
+      ctx.fillStyle = color;
+      ctx.fillRect(W*0.05, H*0.57, 6, exSize*1.4);
+      ctx.fillStyle = '#fff';
+      wrapText(ctx, extra, W*0.1, H*0.58, W*0.78, exSize*1.5);
+    }
+
+    // Bottom contact area
+    ctx.fillStyle = `rgba(${rgb},.15)`;
+    roundRect(ctx, W*0.05, H*0.75, W*0.9, H*0.17, 16);
+    ctx.fill();
+
+    const ctcSize = Math.min(W*0.032, 34);
+    ctx.font = `600 ${ctcSize}px 'DM Sans', sans-serif`;
+    ctx.fillStyle = '#fff';
+    ctx.textAlign = 'left';
+    if(tel) ctx.fillText('📞 ' + tel, W*0.09, H*0.83);
+    if(ciudad) { ctx.textAlign = 'right'; ctx.fillText('📍 ' + ciudad, W*0.91, H*0.83); ctx.textAlign = 'left'; }
+    if(nombre) { ctx.font = `300 ${ctcSize*.85}px 'DM Sans', sans-serif`; ctx.fillStyle = 'rgba(255,255,255,.6)'; ctx.fillText(nombre, W*0.09, H*0.9); }
+
+    // Bottom bar
+    const bar2 = ctx.createLinearGradient(0,0,W,0);
+    bar2.addColorStop(0, color); bar2.addColorStop(1, '#ffffff');
+    ctx.fillStyle = bar2;
+    ctx.fillRect(0, H*0.975, W, H*0.025);
+
+  } else if(flyerStyle === 'tarjeta'){
+    // Business card style — horizontal feel even on square
+    ctx.fillStyle = '#0A0A1A';
+    ctx.fillRect(0,0,W,H);
+
+    // Left color band
+    const band = ctx.createLinearGradient(0,0,0,H);
+    band.addColorStop(0, color);
+    band.addColorStop(1, `rgba(${rgb},.3)`);
+    ctx.fillStyle = band;
+    ctx.fillRect(0, 0, W*0.08, H);
+
+    // Name large
+    const nSize = Math.min(W*0.07, 76);
+    ctx.font = `800 ${nSize}px 'Syne', sans-serif`;
+    ctx.fillStyle = '#fff';
+    ctx.textAlign = 'left';
+    wrapText(ctx, negocio, W*0.13, H*0.28, W*0.8, nSize*1.3);
+
+    if(nombre){ ctx.font = `300 ${nSize*.5}px 'DM Sans', sans-serif`; ctx.fillStyle = color; ctx.fillText(nombre, W*0.13, H*0.44); }
+
+    // Thin line
+    ctx.strokeStyle = `rgba(${rgb},.3)`;
+    ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.moveTo(W*0.13, H*0.5); ctx.lineTo(W*0.87, H*0.5); ctx.stroke();
+
+    const infoSize = Math.min(W*0.034, 36);
+    ctx.font = `400 ${infoSize}px 'DM Sans', sans-serif`;
+    ctx.fillStyle = 'rgba(255,255,255,.75)';
+    wrapText(ctx, servicio, W*0.13, H*0.6, W*0.8, infoSize*1.5);
+
+    ctx.font = `500 ${infoSize*.9}px 'DM Sans', sans-serif`;
+    ctx.fillStyle = 'rgba(255,255,255,.55)';
+    let y = H*0.78;
+    if(tel){ ctx.fillText('📞 ' + tel, W*0.13, y); y+=infoSize*1.6; }
+    if(ciudad) ctx.fillText('📍 ' + ciudad, W*0.13, y);
+
+  } else { // evento
+    // Event / invitation style
+    const bg2 = ctx.createRadialGradient(W/2, H/2, 0, W/2, H/2, W*.7);
+    bg2.addColorStop(0, `rgba(${rgb},.18)`);
+    bg2.addColorStop(0.6, '#06061A');
+    bg2.addColorStop(1, '#04040F');
+    ctx.fillStyle = bg2;
+    ctx.fillRect(0,0,W,H);
+
+    // Border frame
+    ctx.strokeStyle = `rgba(${rgb},.4)`;
+    ctx.lineWidth = Math.max(3, W*0.006);
+    ctx.strokeRect(W*0.04, H*0.04, W*0.92, H*0.92);
+    ctx.strokeStyle = `rgba(${rgb},.15)`;
+    ctx.lineWidth = 1;
+    ctx.strokeRect(W*0.055, H*0.055, W*0.89, H*0.89);
+
+    // TE INVITA label
+    const tagSize = Math.min(W*0.025, 26);
+    ctx.font = `600 ${tagSize}px 'DM Sans', sans-serif`;
+    ctx.fillStyle = color;
+    ctx.textAlign = 'center';
+    ctx.fillText('— TE INVITA —', W/2, H*0.18);
+
+    // Business name
+    const evSize = Math.min(W*0.075, 80);
+    ctx.font = `800 ${evSize}px 'Syne', sans-serif`;
+    ctx.fillStyle = '#fff';
+    wrapTextCenter(ctx, negocio.toUpperCase(), W/2, H*0.3, W*0.82, evSize*1.25);
+
+    // Servicio
+    const evSrv = Math.min(W*0.037, 40);
+    ctx.font = `300 ${evSrv}px 'DM Sans', sans-serif`;
+    ctx.fillStyle = 'rgba(255,255,255,.75)';
+    wrapTextCenter(ctx, servicio, W/2, H*0.52, W*0.78, evSrv*1.5);
+
+    if(extra){
+      ctx.fillStyle = color;
+      ctx.font = `700 ${evSrv*.9}px 'DM Sans', sans-serif`;
+      ctx.fillText(extra, W/2, H*0.68);
+    }
+
+    // Bottom info
+    ctx.font = `500 ${tagSize*1.1}px 'DM Sans', sans-serif`;
+    ctx.fillStyle = 'rgba(255,255,255,.6)';
+    let bInfo = [tel, ciudad].filter(Boolean).join('  ·  ');
+    if(bInfo) ctx.fillText(bInfo, W/2, H*0.82);
+    if(nombre){ ctx.font = `300 ${tagSize}px 'DM Sans', sans-serif`; ctx.fillStyle = 'rgba(255,255,255,.4)'; ctx.fillText(nombre, W/2, H*0.87); }
+  }
+
+  // Auto-save debounced
+  clearTimeout(window._saveDebounce);
+  window._saveDebounce = setTimeout(saveSession, 2000);
+}
+
+// Canvas text helpers
+function wrapText(ctx, text, x, y, maxW, lineH){
+  const words = text.split(' ');
+  let line = '';
+  for(let n=0;n<words.length;n++){
+    const test = line + words[n] + ' ';
+    if(ctx.measureText(test).width > maxW && n > 0){ ctx.fillText(line, x, y); line = words[n]+' '; y += lineH; }
+    else line = test;
+  }
+  ctx.fillText(line, x, y);
+}
+function wrapTextCenter(ctx, text, cx, y, maxW, lineH){
+  const words = text.split(' ');
+  let line = '';
+  for(let n=0;n<words.length;n++){
+    const test = line + words[n] + ' ';
+    if(ctx.measureText(test).width > maxW && n > 0){ ctx.fillText(line.trim(), cx, y); line = words[n]+' '; y += lineH; }
+    else line = test;
+  }
+  ctx.fillText(line.trim(), cx, y);
+}
+function roundRect(ctx, x, y, w, h, r){
+  ctx.beginPath();
+  ctx.moveTo(x+r,y);ctx.lineTo(x+w-r,y);ctx.quadraticCurveTo(x+w,y,x+w,y+r);
+  ctx.lineTo(x+w,y+h-r);ctx.quadraticCurveTo(x+w,y+h,x+w-r,y+h);
+  ctx.lineTo(x+r,y+h);ctx.quadraticCurveTo(x,y+h,x,y+h-r);
+  ctx.lineTo(x,y+r);ctx.quadraticCurveTo(x,y,x+r,y);ctx.closePath();
+}
+
+function downloadFlyer(){
+  const canvas = document.getElementById('flyer-canvas');
+  const negocio = document.getElementById('f-negocio')?.value || 'flyer';
+  const fmtLabels = { instagram:'instagram', facebook:'facebook', whatsapp:'whatsapp' };
+  const link = document.createElement('a');
+  link.download = `${negocio.replace(/\s/g,'_')}_${fmtLabels[flyerFormat]}.png`;
+  link.href = canvas.toDataURL('image/png');
+  link.click();
+  saveSession();
+}
+
+/* ══ PÁGINA ══ */
+let pageDebounce;
+function updatePagina(){
+  clearTimeout(pageDebounce);
+  pageDebounce = setTimeout(buildPagina, 120);
+}
+
+function buildPagina(){
+  const negocio = document.getElementById('p-negocio')?.value || 'Tu Negocio';
+  const desc = document.getElementById('p-desc')?.value || 'Descripción de tu negocio';
+  const serviciosTxt = document.getElementById('p-servicios')?.value || '';
+  const wa = document.getElementById('p-wa')?.value || '';
+  const ciudad = document.getElementById('p-ciudad')?.value || '';
+  const funcion = document.getElementById('p-funcion')?.value || 'wa';
+
+  const servicios = serviciosTxt.split('\n').filter(s=>s.trim());
+  const waClean = wa.replace(/\D/g,'');
+  const ctaBtns = {
+    wa: `<a href="https://wa.me/52${waClean}?text=Hola, vi tu página y me interesa saber más" style="display:inline-block;background:#25D366;color:#fff;text-decoration:none;padding:14px 32px;border-radius:50px;font-weight:700;font-size:1rem;margin-top:20px">💬 Escríbenos por WhatsApp</a>`,
+    reserva: `<a href="https://wa.me/52${waClean}?text=Hola, quiero agendar una cita" style="display:inline-block;background:linear-gradient(135deg,#FF00CC,#C400FF);color:#fff;text-decoration:none;padding:14px 32px;border-radius:50px;font-weight:700;font-size:1rem;margin-top:20px">📅 Agendar una cita</a>`,
+    info: `<a href="https://wa.me/52${waClean}" style="display:inline-block;background:#333;color:#fff;text-decoration:none;padding:14px 32px;border-radius:50px;font-weight:700;font-size:1rem;margin-top:20px">📞 Contáctanos</a>`
+  };
+
+  const pageHTML = `<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${negocio}</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}body{font-family:'DM Sans',sans-serif;background:#08081A;color:#fff;min-height:100vh}
+.hero{background:linear-gradient(135deg,#04040F,rgba(255,0,204,.1),#09091C);padding:60px 20px;text-align:center;border-bottom:1px solid rgba(255,255,255,.08)}
+h1{font-family:'Syne',sans-serif;font-weight:800;font-size:clamp(1.8rem,6vw,3.2rem);line-height:1.1;margin-bottom:14px;background:linear-gradient(90deg,#FF00CC,#00F0FF);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.sub{font-size:clamp(.9rem,2vw,1.1rem);color:rgba(255,255,255,.7);max-width:500px;margin:0 auto 24px;line-height:1.7}
+.badge{display:inline-block;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);border-radius:50px;padding:5px 16px;font-size:.75rem;color:rgba(255,255,255,.6);margin-bottom:18px}
+section{padding:50px 20px;max-width:600px;margin:0 auto}
+h2{font-family:'Syne',sans-serif;font-weight:800;font-size:1.4rem;margin-bottom:20px;color:#fff}
+.svc-grid{display:flex;flex-direction:column;gap:10px}
+.svc-item{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:16px 18px;font-size:.9rem;color:rgba(255,255,255,.8);line-height:1.5}
+.contact-box{background:rgba(255,0,204,.06);border:1px solid rgba(255,0,204,.2);border-radius:18px;padding:28px;text-align:center;margin-top:10px}
+footer{padding:24px 20px;text-align:center;border-top:1px solid rgba(255,255,255,.07);font-size:.75rem;color:rgba(255,255,255,.3)}
+</style></head><body>
+<div class="hero">
+  <div class="badge">📍 ${ciudad || 'México'}</div>
+  <h1>${negocio}</h1>
+  <p class="sub">${desc}</p>
+  ${ctaBtns[funcion] || ctaBtns.wa}
+</div>
+${servicios.length ? `<section><h2>Nuestros servicios</h2><div class="svc-grid">${servicios.map(s=>`<div class="svc-item">✦ ${s}</div>`).join('')}</div></section>` : ''}
+<section class="contact-box"><h2>¿Listo para empezar?</h2><p style="font-size:.9rem;color:rgba(255,255,255,.65);margin-bottom:10px">Contáctanos y con gusto te atendemos</p>${ctaBtns[funcion] || ctaBtns.wa}${wa ? `<p style="margin-top:14px;font-size:.8rem;color:rgba(255,255,255,.4)">📞 ${wa}${ciudad?' · 📍 '+ciudad:''}</p>` : ''}</section>
+<footer>Hecho con dªtªblɛ · datable.com.mx</footer>
+</body></html>`;
+
+  const frame = document.getElementById('page-preview-frame');
+  if(frame){ frame.srcdoc = pageHTML; }
+  document.getElementById('page-url-bar').textContent = `datable.com.mx/p/${sessionCode}`;
+  pageContent.html = pageHTML;
+  clearTimeout(window._saveDebounce);
+  window._saveDebounce = setTimeout(saveSession, 2000);
+}
+
+function copyPageLink(){
+  const link = `https://datable.com.mx/p/${sessionCode}`;
+  navigator.clipboard.writeText(link).then(()=>{
+    const btn = event.target;
+    const orig = btn.textContent;
+    btn.textContent = '✅ ¡Link copiado!';
+    setTimeout(()=>btn.textContent=orig, 2500);
+  }).catch(()=>alert('Tu link: ' + `https://datable.com.mx/p/${sessionCode}`));
+}
+
+function openPageNew(){
+  const w = window.open();
+  w.document.write(pageContent.html || '<p>Llena los datos primero</p>');
+  w.document.close();
+}
+
+/* ══ CRM ══ */
+function initCrm(){
+  crmRows = [
+    {nombre:'', tel:'', servicio:'', estado:'nuevo', notas:''},
+    {nombre:'', tel:'', servicio:'', estado:'nuevo', notas:''},
+    {nombre:'', tel:'', servicio:'', estado:'nuevo', notas:''}
+  ];
+  renderCrm();
+}
+
+function renderCrm(){
+  const body = document.getElementById('crm-body');
+  if(!body) return;
+  body.innerHTML = crmRows.map((r,i)=>`
+    <tr>
+      <td><input value="${r.nombre}" placeholder="Nombre cliente" onchange="crmRows[${i}].nombre=this.value"></td>
+      <td><input value="${r.tel}" placeholder="Teléfono" onchange="crmRows[${i}].tel=this.value"></td>
+      <td><input value="${r.servicio}" placeholder="Qué contrató" onchange="crmRows[${i}].servicio=this.value"></td>
+      <td>
+        <select style="background:transparent;border:none;color:#fff;font-family:inherit;font-size:.8rem;cursor:pointer" onchange="crmRows[${i}].estado=this.value;renderCrm()">
+          <option value="nuevo" ${r.estado==='nuevo'?'selected':''}>Nuevo</option>
+          <option value="activo" ${r.estado==='activo'?'selected':''}>Activo</option>
+          <option value="inactivo" ${r.estado==='inactivo'?'selected':''}>Inactivo</option>
+        </select>
+      </td>
+      <td><input value="${r.notas}" placeholder="Notas..." onchange="crmRows[${i}].notas=this.value"></td>
+      <td><button onclick="crmRows.splice(${i},1);renderCrm()" style="background:none;border:none;color:rgba(255,0,100,.5);cursor:pointer;font-size:.9rem">✕</button></td>
+    </tr>`).join('');
+}
+
+function addCrmRow(){
+  crmRows.push({nombre:'',tel:'',servicio:'',estado:'nuevo',notas:''});
+  renderCrm();
+  clearTimeout(window._saveDebounce);
+  window._saveDebounce = setTimeout(saveSession, 2000);
+}
+
+function exportCrm(){
+  const headers = ['Nombre','Teléfono','Servicio/Producto','Estado','Notas'];
+  const rows = crmRows.filter(r=>r.nombre||r.tel||r.servicio);
+  if(!rows.length){ alert('Agrega al menos un cliente primero'); return; }
+  const csv = [headers, ...rows.map(r=>[r.nombre,r.tel,r.servicio,r.estado,r.notas])]
+    .map(r=>r.map(c=>`"${c}"`).join(',')).join('\n');
+  const blob = new Blob(['\ufeff'+csv], {type:'text/csv;charset=utf-8'});
+  const link = document.createElement('a');
+  link.href = URL.createObjectURL(blob);
+  link.download = `clientes_${sessionCode}.csv`;
+  link.click();
+}
+
+/* ══ REGISTRO ══ */
+function goRegister(){
+  saveSession();
+  const diagData = (() => { try { return JSON.parse(localStorage.getItem('d4tabl3_pending_diag')||'{}'); } catch(e){ return {}; } })();
+  localStorage.setItem('d4tabl3_pending_diag', JSON.stringify({...diagData, herramienta_code: sessionCode}));
+  window.location.href = `dashboard.html?action=register&code=${sessionCode}`;
+}
+</script>
+</body>
+</html>
