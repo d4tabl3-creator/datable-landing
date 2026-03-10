@@ -260,7 +260,7 @@ footer{border-top:1px solid rgba(255,255,255,.06);padding:36px clamp(16px,5vw,60
 }
 #ajolote-bubble{
   background:#0D0D24;border:1.5px solid var(--mg);border-radius:20px 20px 4px 20px;
-  padding:13px 16px;max-width:230px;font-size:.83rem;line-height:1.5;color:#fff;
+  padding:13px 16px;max-width:270px;width:270px;font-size:.83rem;line-height:1.5;color:#fff;
   box-shadow:0 0 24px rgba(255,0,204,.3);position:relative;
   animation:bubbleIn .4s ease;
 }
@@ -813,7 +813,7 @@ footer{border-top:1px solid rgba(255,255,255,.06);padding:36px clamp(16px,5vw,60
     <a href="#detecta">Qué resolvemos</a>
     <a href="#vendedores">Gana con nosotros</a>
     <a href="#precios">Precios</a>
-    <a href="/cdn-cgi/l/email-protection#c6aea9aaa786a2a7b2a7a4aaa3e8a5a9abe8abbe">Contacto</a>
+    <a href="mailto:D4tabl3@gmail.com">Contacto</a>
   </div>
   <div style="color:var(--mu);font-size:.76rem">© 2026 dªtªblɛ</div>
 </footer>
@@ -824,7 +824,12 @@ footer{border-top:1px solid rgba(255,255,255,.06);padding:36px clamp(16px,5vw,60
 <div id="ajolote-wrap">
   <div id="ajolote-bubble" style="display:none">
     <button class="ab-close" onclick="closeAjo()">✕</button>
-    <div id="ajo-msg">¡Hola! 👋 Soy Axol, tu guía. ¿Quieres saber qué está fallando en tu negocio? ¡Es gratis!</div>
+    <div id="ajo-msg" style="margin-bottom:6px;padding-right:16px">¡Hola! 👋 Soy Axol, tu guía. ¿Quieres saber qué está fallando en tu negocio? ¡Es gratis!</div>
+    <div id="ajo-chat" style="max-height:160px;overflow-y:auto;margin-bottom:8px;display:flex;flex-direction:column;gap:2px"></div>
+    <div id="ajo-input-wrap" style="display:none;gap:6px;align-items:center">
+      <input id="ajo-input" type="text" placeholder="Escríbeme algo..." style="flex:1;background:rgba(255,255,255,.08);border:1px solid rgba(255,0,204,.3);border-radius:20px;padding:6px 12px;color:#fff;font-size:.76rem;outline:none;font-family:'DM Sans',sans-serif">
+      <button onclick="sendAjoMsg()" style="background:linear-gradient(135deg,var(--mg),var(--pu));border:none;border-radius:50%;width:28px;height:28px;cursor:pointer;color:#fff;font-size:.8rem;display:flex;align-items:center;justify-content:center;flex-shrink:0">→</button>
+    </div>
   </div>
   <button id="ajolote-btn" onclick="toggleAjo()" title="¡Habla conmigo!">
 <svg width="56" height="56" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -1008,7 +1013,7 @@ footer{border-top:1px solid rgba(255,255,255,.06);padding:36px clamp(16px,5vw,60
   </div>
 </div>
 
-<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+<script>
 /* ══ CANVAS FONDO ══ */
 const cv=document.getElementById('bgC'),ctx=cv.getContext('2d');
 let W,H;
@@ -1034,33 +1039,39 @@ function draw(){
 rsz();draw();window.addEventListener('resize',rsz);
 
 /* ══ MARQUEE LIGHTS ══ */
-function makeLights(containerId, count, colorVar){
+function makeLights(containerId, count){
   const c=document.getElementById(containerId);
-  if(!c)return;
-  const rect_w=c.parentElement.offsetWidth||200;
-  const rect_h=c.parentElement.offsetHeight||48;
-  const perSide=Math.max(3,Math.floor((rect_w+rect_h)/(count||16)));
+  if(!c||c.dataset.lit)return;
+  c.dataset.lit='1';
+  // Clear previous
+  c.innerHTML='';
+  const btn=c.parentElement;
+  const rect_w=btn.offsetWidth||200;
+  const rect_h=btn.offsetHeight||52;
+  const total=Math.max(10,Math.round((rect_w*2+rect_h*2)/18));
   const positions=[];
-  // top
-  for(let i=0;i<perSide;i++) positions.push({left:(i/(perSide-1))*100+'%',top:'-6px'});
-  // right
-  for(let i=1;i<perSide;i++) positions.push({right:'-6px',top:(i/(perSide-1))*100+'%'});
-  // bottom
-  for(let i=perSide-2;i>=0;i--) positions.push({left:(i/(perSide-1))*100+'%',bottom:'-6px'});
-  // left
-  for(let i=perSide-2;i>0;i--) positions.push({right:'auto',left:'-6px',top:(i/(perSide-1))*100+'%'});
+  const steps=Math.ceil(total/4);
+  for(let i=0;i<steps;i++) positions.push({left:(i/(steps-1||1))*100+'%',top:'-7px'});
+  for(let i=1;i<steps;i++) positions.push({right:'-7px',top:(i/(steps-1||1))*100+'%'});
+  for(let i=steps-2;i>=0;i--) positions.push({left:(i/(steps-1||1))*100+'%',bottom:'-7px'});
+  for(let i=steps-2;i>0;i--) positions.push({left:'-7px',top:(i/(steps-1||1))*100+'%'});
   positions.forEach((pos,idx)=>{
     const s=document.createElement('span');
-    Object.assign(s.style,pos,{position:'absolute',animationDelay:(idx*0.12)+'s'});
+    Object.assign(s.style,{position:'absolute',width:'7px',height:'7px',borderRadius:'50%',
+      background:'#fff',animationDelay:(idx*(1.2/positions.length))+'s',...pos});
     c.appendChild(s);
   });
 }
 
-// Init all marquee buttons after DOM ready
+function initAllLights(){
+  document.querySelectorAll('.btn-marquee .lights').forEach(el=>makeLights(el.id,14));
+}
+
 window.addEventListener('load',()=>{
-  ['nav-lights','hero-lights','ucard-lights','demo-lights','agent-lights',
-   'free-lights','pro-lights','ent-lights','cta-lights','modal-lights',
-   'res-lights1','res-lights2'].forEach(id=>makeLights(id,14));
+  initAllLights();
+  // Re-run after modal opens
+  const origOpen=window.openModal;
+  window.openModal=function(){origOpen&&origOpen();setTimeout(initAllLights,120);};
 });
 
 /* ══ SCROLL REVEAL ══ */
@@ -1069,40 +1080,118 @@ const io=new IntersectionObserver(es=>es.forEach(e=>{
 }),{threshold:.07,rootMargin:'0px 0px -40px 0px'});
 document.querySelectorAll('.rv').forEach(r=>io.observe(r));
 
-/* ══ AJOLOTE ══ */
-const ajoMsgs=[
-  "¡Hola! 👋 Soy Axol. ¿Quieres saber qué está fallando en tu negocio? ¡Es gratis!",
-  "👆 ¿Ya viste el botón de arriba? ¡Tócalo! Te damos tu análisis sin costo.",
-  "🤔 ¿Tienes dudas? Mándanos un mensaje y te respondemos en minutos.",
-  "💡 No necesitas saber de tecnología. Solo cuéntanos cómo funciona tu negocio.",
-  "🎯 Cientos de negocios como el tuyo ya se organizaron con nosotros. ¡Tú puedes también!",
+/* ══ AJOLOTE con IA real ══ */
+let ajoConversation=[];
+let ajoTyping=false;
+
+const ajoWelcomeMsgs=[
+  "¡Hola! 👋 Soy Axol, tu guía de d4tabl3. ¿Quieres saber qué está fallando en tu negocio? ¡Es gratis!",
+  "👆 ¿Tienes un minuto? Cuéntame cómo funciona tu negocio y te digo cómo mejorarlo.",
+  "🤔 ¿Tienes dudas sobre d4tabl3? ¡Pregúntame lo que sea!",
+  "💡 Muchos negocios como el tuyo ya se organizaron con nosotros. ¿Quieres saber cómo?",
 ];
-let ajoIdx=0;
+let ajoWelcomeIdx=0;
+
 function toggleAjo(){
-  const b=document.getElementById('ajolote-bubble');
-  if(b.style.display==='none'||!b.style.display){
-    b.style.display='block';
-    document.getElementById('ajo-msg').textContent=ajoMsgs[ajoIdx%ajoMsgs.length];
+  const wrap=document.getElementById('ajolote-bubble');
+  const isHidden=wrap.style.display==='none'||!wrap.style.display;
+  if(isHidden){
+    wrap.style.display='block';
+    if(ajoConversation.length===0){
+      document.getElementById('ajo-msg').textContent=ajoWelcomeMsgs[ajoWelcomeIdx%ajoWelcomeMsgs.length];
+      // Show input after 1s
+      setTimeout(()=>{
+        document.getElementById('ajo-input-wrap').style.display='flex';
+      },800);
+    }
   } else {
-    b.style.display='none';
+    wrap.style.display='none';
   }
 }
 function closeAjo(){document.getElementById('ajolote-bubble').style.display='none'}
 
+async function sendAjoMsg(){
+  const inp=document.getElementById('ajo-input');
+  const msg=inp.value.trim();
+  if(!msg||ajoTyping)return;
+  inp.value='';
+  ajoTyping=true;
+
+  // Show user message
+  const chat=document.getElementById('ajo-chat');
+  const userDiv=document.createElement('div');
+  userDiv.style.cssText='text-align:right;margin:6px 0';
+  userDiv.innerHTML=`<span style="background:rgba(0,240,255,.15);border:1px solid rgba(0,240,255,.3);border-radius:12px 12px 2px 12px;padding:6px 11px;font-size:.78rem;display:inline-block;max-width:85%;color:#fff">${msg}</span>`;
+  chat.appendChild(userDiv);
+
+  // Typing indicator
+  const typDiv=document.createElement('div');
+  typDiv.id='ajo-typing';
+  typDiv.style.cssText='margin:6px 0';
+  typDiv.innerHTML=`<span style="background:rgba(255,255,255,.07);border-radius:2px 12px 12px 12px;padding:6px 11px;font-size:.78rem;display:inline-block;color:rgba(255,255,255,.5)">Axol está pensando...</span>`;
+  chat.appendChild(typDiv);
+  chat.scrollTop=chat.scrollHeight;
+
+  // Update main msg
+  document.getElementById('ajo-msg').textContent='';
+
+  ajoConversation.push({role:'user',content:msg});
+
+  try{
+    const res=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        model:'claude-sonnet-4-20250514',
+        max_tokens:1000,
+        system:`Eres Axol, la mascota ajolote de d4tabl3, una plataforma mexicana que ayuda a pequeños negocios a organizarse con IA por solo $499 MXN/mes.
+Tu personalidad: amigable, cálida, directa, usa lenguaje mexicano casual. Usas emojis moderadamente.
+Tu objetivo: responder dudas sobre d4tabl3, animar a hacer el análisis gratis, y orientar al visitante.
+Sobre d4tabl3: diagnóstico gratis de negocio en 30 segundos, dashboard con automatizaciones y métricas, $499 MXN/mes, sistema de vendedores con comisiones.
+Mantén respuestas cortas (máx 2-3 oraciones). Si preguntan sobre precios, di $499 MXN/mes. Si quieren empezar, invítalos a hacer clic en "Análisis gratis".`,
+        messages:ajoConversation
+      })
+    });
+    const data=await res.json();
+    const reply=data.content?.[0]?.text||'¡Ups! Algo falló. ¿Puedes intentar de nuevo?';
+    ajoConversation.push({role:'assistant',content:reply});
+
+    document.getElementById('ajo-typing')?.remove();
+    const botDiv=document.createElement('div');
+    botDiv.style.cssText='margin:6px 0';
+    botDiv.innerHTML=`<span style="background:rgba(255,0,204,.1);border:1px solid rgba(255,0,204,.25);border-radius:2px 12px 12px 12px;padding:6px 11px;font-size:.78rem;display:inline-block;max-width:90%;color:#fff;line-height:1.5">${reply}</span>`;
+    chat.appendChild(botDiv);
+    chat.scrollTop=chat.scrollHeight;
+  }catch(e){
+    document.getElementById('ajo-typing')?.remove();
+    const errDiv=document.createElement('div');
+    errDiv.innerHTML=`<span style="background:rgba(255,255,255,.07);border-radius:2px 12px 12px 12px;padding:6px 11px;font-size:.78rem;display:inline-block;color:rgba(255,255,255,.5)">¡Ups! Error de conexión. Intenta de nuevo 😅</span>`;
+    chat.appendChild(errDiv);
+    chat.scrollTop=chat.scrollHeight;
+  }
+  ajoTyping=false;
+}
+
+document.addEventListener('DOMContentLoaded',()=>{
+  const inp=document.getElementById('ajo-input');
+  if(inp) inp.addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendAjoMsg();}});
+});
+
 // Auto-show after 5s
 setTimeout(()=>{
   document.getElementById('ajolote-bubble').style.display='block';
+  document.getElementById('ajo-input-wrap').style.display='flex';
 },5000);
 
-// Change msg on scroll
+// Change welcome msg on scroll
 let lastScroll=0;
 window.addEventListener('scroll',()=>{
   const sy=window.scrollY;
-  if(sy-lastScroll>400){
-    lastScroll=sy;ajoIdx++;
+  if(sy-lastScroll>400&&ajoConversation.length===0){
+    lastScroll=sy;ajoWelcomeIdx++;
     const b=document.getElementById('ajolote-bubble');
     if(b.style.display!=='none'){
-      document.getElementById('ajo-msg').textContent=ajoMsgs[ajoIdx%ajoMsgs.length];
+      document.getElementById('ajo-msg').textContent=ajoWelcomeMsgs[ajoWelcomeIdx%ajoWelcomeMsgs.length];
       b.style.animation='none';b.offsetHeight;b.style.animation='bubbleIn .4s ease';
     }
   }
@@ -1149,36 +1238,103 @@ function startDiag(){
   }
   document.getElementById('m-up').style.display='none';
   document.getElementById('m-load').classList.add('on');
-  const seq=[{id:'d1',d:400},{id:'d2',d:950},{id:'d3',d:1600},{id:'d4',d:2300},{id:'d5',d:3000}];
+
+  // Animate steps while AI processes
+  const seq=[{id:'d1',d:400},{id:'d2',d:900},{id:'d3',d:1500},{id:'d4',d:2100},{id:'d5',d:2700}];
   let prev=null;
   seq.forEach(({id,d})=>setTimeout(()=>{
     if(prev){const p=document.getElementById(prev);p.classList.remove('act');p.classList.add('done');p.querySelector('.dstep-i').textContent='✓'}
     const cur=document.getElementById(id);cur.classList.add('act');cur.querySelector('.dstep-i').textContent='·';prev=id;
   },d));
-  setTimeout(()=>{
+
+  // Call real Claude AI
+  runAIDiagnosis(desc, file).then(result=>{
     const last=document.getElementById('d5');last.classList.remove('act');last.classList.add('done');last.querySelector('.dstep-i').textContent='✓';
-    const dlen=(document.getElementById('desc').value||'').length;
-    const hasF=!!document.getElementById('fi').files[0];
-    const score=hasF?76:Math.min(88,50+Math.floor(dlen/7));
-    const niv=score>70?'Alto':score>50?'Medio-Alto':'Medio';
-    const nivc=score>70?'var(--mg)':'var(--yw)';
-    const areas=score>70?'5 cosas que mejorar':'3 cosas que mejorar';
-    document.getElementById('r-score').textContent=score;
-    document.getElementById('r-niv').textContent=niv;
-    document.getElementById('r-niv').style.color=nivc;
-    document.getElementById('r-areas').textContent=areas;
-    const items=[
-      {l:'Seguimiento de clientes',c:'var(--mg)',bg:'rgba(255,0,204,',pct:score>70?'Urgente':'Alto'},
-      {l:'Información regada en varios lugares',c:'var(--cy)',bg:'rgba(0,240,255,',pct:score>60?'Alto':'Medio'},
-      {l:'Tareas que se repiten a mano',c:'var(--yw)',bg:'rgba(255,229,0,',pct:'Medio'},
-      {l:'Todo depende de una persona',c:'var(--gn)',bg:'rgba(29,255,138,',pct:score>65?'Alto':'Bajo'},
-    ];
-    document.getElementById('r-items').innerHTML=items.map(i=>`
-      <div class="res-ri">
-        <div class="ri-dot" style="background:${i.c};color:${i.c}"></div>
-        <div class="ri-lbl">${i.l}</div>
-        <div class="ri-pill" style="border-color:${i.c};color:${i.c};background:${i.bg}.08)">${i.pct}</div>
-      </div>`).join('');
+    document.getElementById('r-score').textContent=result.score;
+    document.getElementById('r-niv').textContent=result.nivel;
+    document.getElementById('r-niv').style.color=result.score>70?'var(--mg)':result.score>50?'var(--yw)':'var(--gn)';
+    document.getElementById('r-areas').textContent=result.areas.length+' cosas que mejorar';
+    document.getElementById('r-items').innerHTML=result.areas.map((a,i)=>{
+      const colors=['var(--mg)','var(--cy)','var(--yw)','var(--gn)','var(--or)'];
+      const bgs=['rgba(255,0,204,','rgba(0,240,255,','rgba(255,229,0,','rgba(29,255,138,','rgba(255,107,26,'];
+      const c=colors[i%colors.length];const bg=bgs[i%bgs.length];
+      return `<div class="res-ri">
+        <div class="ri-dot" style="background:${c}"></div>
+        <div class="ri-lbl">${a.problema}</div>
+        <div class="ri-pill" style="border-color:${c};color:${c};background:${bg}.08)">${a.urgencia}</div>
+      </div>`;
+    }).join('');
+    if(result.recomendacion){
+      document.getElementById('r-items').innerHTML+=`<div style="margin-top:12px;padding:10px 12px;background:rgba(0,240,255,.06);border:1px solid rgba(0,240,255,.2);border-radius:10px;font-size:.77rem;color:rgba(255,255,255,.8);line-height:1.5">💡 <strong style="color:var(--cy)">Axol dice:</strong> ${result.recomendacion}</div>`;
+    }
     document.getElementById('m-load').classList.remove('on');
     document.getElementById('m-res').classList.add('on');
-    setTimeout(()=>{makeLights('res-lights1',12);m
+    setTimeout(()=>{initAllLights();},100);
+  }).catch(()=>{
+    // Fallback to static result
+    const last=document.getElementById('d5');last.classList.remove('act');last.classList.add('done');last.querySelector('.dstep-i').textContent='✓';
+    showStaticResult();
+  });
+}
+
+async function runAIDiagnosis(desc, file){
+  let userContent=`Analiza este negocio y dame un diagnóstico: "${desc}"`;
+  let messages=[{role:'user',content:userContent}];
+
+  // If file is an image, send it
+  if(file&&file.type.startsWith('image/')){
+    const b64=await new Promise(res=>{const r=new FileReader();r.onload=()=>res(r.result.split(',')[1]);r.readAsDataURL(file);});
+    messages=[{role:'user',content:[
+      {type:'image',source:{type:'base64',media_type:file.type,data:b64}},
+      {type:'text',text:userContent||'Analiza esta imagen de mi negocio y dame un diagnóstico.'}
+    ]}];
+  }
+
+  const res=await fetch('https://api.anthropic.com/v1/messages',{
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({
+      model:'claude-sonnet-4-20250514',
+      max_tokens:1000,
+      system:`Eres el motor de análisis de d4tabl3. Dado lo que el usuario comparte sobre su negocio, genera un diagnóstico estructurado.
+Responde SOLO con JSON válido, sin markdown, sin explicaciones extra:
+{
+  "score": número del 45 al 90 (qué tan desorganizado está, más alto = más caótico),
+  "nivel": "Alto" | "Medio-Alto" | "Medio",
+  "areas": [
+    {"problema": "descripción corta del problema en español mexicano", "urgencia": "Urgente" | "Alto" | "Medio"},
+    ... (3-5 áreas)
+  ],
+  "recomendacion": "1-2 oraciones de recomendación principal personalizada para este negocio"
+}`,
+      messages
+    })
+  });
+  const data=await res.json();
+  const text=data.content?.[0]?.text||'{}';
+  return JSON.parse(text.replace(/```json|```/g,'').trim());
+}
+
+function showStaticResult(){
+  document.getElementById('r-score').textContent=68;
+  document.getElementById('r-niv').textContent='Medio-Alto';
+  document.getElementById('r-niv').style.color='var(--yw)';
+  document.getElementById('r-areas').textContent='4 cosas que mejorar';
+  const items=[
+    {problema:'Seguimiento de clientes',urgencia:'Urgente'},
+    {problema:'Información en varios lugares',urgencia:'Alto'},
+    {problema:'Tareas repetitivas manuales',urgencia:'Alto'},
+    {problema:'Todo depende de una persona',urgencia:'Medio'},
+  ];
+  document.getElementById('r-items').innerHTML=items.map((a,i)=>{
+    const colors=['var(--mg)','var(--cy)','var(--yw)','var(--gn)'];
+    const bgs=['rgba(255,0,204,','rgba(0,240,255,','rgba(255,229,0,','rgba(29,255,138,'];
+    const c=colors[i];const bg=bgs[i];
+    return `<div class="res-ri"><div class="ri-dot" style="background:${c}"></div><div class="ri-lbl">${a.problema}</div><div class="ri-pill" style="border-color:${c};color:${c};background:${bg}.08)">${a.urgencia}</div></div>`;
+  }).join('');
+  document.getElementById('m-load').classList.remove('on');
+  document.getElementById('m-res').classList.add('on');
+  setTimeout(()=>{initAllLights();},100);
+}</script>
+</body>
+</html>
