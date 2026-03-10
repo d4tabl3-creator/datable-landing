@@ -803,6 +803,9 @@ window.addEventListener('DOMContentLoaded', async () => {
     document.getElementById('reg-code').value = params.get('ref');
     switchTab('register');
   }
+  if (params.get('action') === 'register') {
+    switchTab('register');
+  }
 });
 
 // ── AUTH ──
@@ -863,6 +866,21 @@ async function doRegister() {
   await loadProfile();
   showDashboard();
   showToast('¡Bienvenido a dªtªblɛ! 🎉', 'success');
+
+  // Load pending diagnosis from landing
+  const pendingDiag = localStorage.getItem('d4tabl3_pending_diag');
+  if (pendingDiag) {
+    try {
+      const diag = JSON.parse(pendingDiag);
+      await sb.from('diagnostics').insert({
+        user_id: data.user.id,
+        business_description: 'Diagnóstico desde landing',
+        diagnosis_result: diag
+      });
+      localStorage.removeItem('d4tabl3_pending_diag');
+      setTimeout(() => showPage('solutions'), 1500);
+    } catch(e) {}
+  }
 }
 
 async function doLogout() {
