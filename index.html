@@ -1407,23 +1407,6 @@ function goRegister() {
   window.location.href = 'dashboard.html?action=register';
 }
 
-// Hook into existing diagnosis result display
-const origShowResult = window.showStaticResult;
-const origRunAI = window.runAIDiagnosis;
-
-// Patch the result display to also show activation
-document.addEventListener('DOMContentLoaded', () => {
-  const origStartDiag = window.startDiag;
-  if (origStartDiag) {
-    window.startDiag = function() {
-      origStartDiag.apply(this, arguments);
-    };
-  }
-});
-
-// Override to trigger activation when result shows
-const _origMRes = document.getElementById.bind(document);
-
 /* ══ DRAWER MENU ══ */
 function toggleMenu(){
   const d = document.getElementById('nav-drawer');
