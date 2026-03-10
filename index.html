@@ -391,6 +391,10 @@ nav .nav-logo{font-family:'Syne',sans-serif;font-weight:800;font-size:2.2rem;tex
 .m-note{text-align:center;font-size:.72rem;color:var(--mu);margin-top:8px}
 /* Loading state */
 #m-loading{display:none;text-align:center;padding:20px 0}
+.m-load{display:none}
+.m-res{display:none}
+.m-load.on{display:block}
+.m-res.on{display:block}
 .m-load-title{font-family:'Syne',sans-serif;font-weight:800;font-size:1.1rem;margin-bottom:6px}
 .m-load-sub{font-size:.83rem;color:var(--mu);margin-bottom:20px}
 .m-steps{display:flex;flex-direction:column;gap:10px;text-align:left}
@@ -1014,11 +1018,11 @@ nav .nav-logo:hover span {
           <div style="font-size:.8rem;color:var(--mu)">Esto encontramos en tu negocio</div>
         </div>
         <div style="display:flex;align-items:center;gap:14px;background:rgba(255,255,255,.04);border-radius:14px;padding:14px;margin-bottom:12px">
-          <div id="r-score" style="font-family:'Syne',sans-serif;font-weight:800;font-size:2.8rem;line-height:1;min-width:64px;text-align:center;color:var(--mg);text-shadow:0 0 20px var(--mg)">68</div>
+          <div id="r-score" style="font-family:'Syne',sans-serif;font-weight:800;font-size:2.8rem;line-height:1;min-width:64px;text-align:center;color:var(--mg);text-shadow:0 0 20px var(--mg)"></div>
           <div>
             <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:.95rem;color:#fff;margin-bottom:3px">Potencial de mejora</div>
-            <div style="font-size:.79rem;color:var(--mu)">Nivel <span id="r-niv" style="color:var(--yw);font-weight:700">Medio-Alto</span></div>
-            <div style="font-size:.75rem;color:var(--mu);margin-top:2px"><span id="r-areas">4 áreas identificadas</span></div>
+            <div style="font-size:.79rem;color:var(--mu)">Nivel <span id="r-niv" style="color:var(--yw);font-weight:700"></span></div>
+            <div style="font-size:.75rem;color:var(--mu);margin-top:2px"><span id="r-areas"></span></div>
           </div>
         </div>
         <div style="font-size:.7rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--mu);margin-bottom:7px">📋 Lo que encontramos en tu negocio</div>
