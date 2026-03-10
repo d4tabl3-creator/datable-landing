@@ -1013,28 +1013,37 @@ nav .nav-logo:hover span {
 
       <!-- ══ FASE 1: DIAGNÓSTICO COMPLETO ══ -->
       <div id="fase-diag">
-        <div style="text-align:center;margin-bottom:10px">
+        <div style="text-align:center;margin-bottom:14px">
           <div style="font-size:1.3rem;margin-bottom:4px">✅ Tu diagnóstico está listo</div>
-          <div style="font-size:.8rem;color:var(--mu)">Esto encontramos en tu negocio</div>
+          <div id="r-tipo" style="font-size:.8rem;color:var(--cy);font-weight:600"></div>
         </div>
-        <div style="display:flex;align-items:center;gap:14px;background:rgba(255,255,255,.04);border-radius:14px;padding:14px;margin-bottom:12px">
+
+        <!-- Score -->
+        <div style="display:flex;align-items:center;gap:14px;background:rgba(255,255,255,.04);border-radius:14px;padding:14px;margin-bottom:14px">
           <div id="r-score" style="font-family:'Syne',sans-serif;font-weight:800;font-size:2.8rem;line-height:1;min-width:64px;text-align:center;color:var(--mg);text-shadow:0 0 20px var(--mg)"></div>
           <div>
-            <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:.95rem;color:#fff;margin-bottom:3px">Potencial de mejora</div>
-            <div style="font-size:.79rem;color:var(--mu)">Nivel <span id="r-niv" style="color:var(--yw);font-weight:700"></span></div>
-            <div style="font-size:.75rem;color:var(--mu);margin-top:2px"><span id="r-areas"></span></div>
+            <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:.92rem;color:#fff;margin-bottom:2px">Potencial de digitalización</div>
+            <div style="font-size:.78rem;color:var(--mu)">Nivel <span id="r-niv" style="color:var(--yw);font-weight:700"></span></div>
+            <div style="font-size:.74rem;color:var(--mu);margin-top:2px"><span id="r-areas"></span></div>
           </div>
         </div>
-        <div style="font-size:.7rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--mu);margin-bottom:7px">📋 Lo que encontramos en tu negocio</div>
+
+        <!-- Narrativa personalizada -->
+        <div id="r-narrativa" style="background:rgba(0,240,255,.05);border:1px solid rgba(0,240,255,.18);border-radius:12px;padding:14px;margin-bottom:14px;font-size:.84rem;color:rgba(255,255,255,.88);line-height:1.65"></div>
+
+        <!-- Áreas con impacto -->
+        <div style="font-size:.68rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--mu);margin-bottom:8px">📋 Lo que encontramos en tu negocio</div>
         <div id="r-items"></div>
-        <div id="r-rec" style="margin-top:10px;padding:12px;background:rgba(0,240,255,.06);border:1px solid rgba(0,240,255,.2);border-radius:10px;font-size:.8rem;color:rgba(255,255,255,.85);line-height:1.55;display:none">
-          💡 <strong style="color:var(--cy)">Axolín dice:</strong> <span id="r-rec-text"></span>
-        </div>
-        <div style="margin-top:20px;text-align:center;padding:18px;background:linear-gradient(135deg,rgba(255,0,204,.07),rgba(196,0,255,.07));border:1px solid rgba(255,0,204,.2);border-radius:16px">
-          <div style="font-family:'Syne',sans-serif;font-weight:800;font-size:1.1rem;margin-bottom:6px">✨ ¿Empezamos la magia?</div>
-          <div style="font-size:.82rem;color:rgba(255,255,255,.65);margin-bottom:14px;line-height:1.5">Elige con cuál proceso quieres que empecemos a digitalizar tu negocio — gratis, ahora mismo.</div>
+
+        <!-- Herramienta recomendada preview -->
+        <div id="r-herramienta-rec" style="margin-top:12px;padding:12px 14px;background:rgba(255,229,0,.05);border:1px solid rgba(255,229,0,.2);border-radius:11px;font-size:.8rem;color:rgba(255,255,255,.8);line-height:1.55"></div>
+
+        <!-- CTA empezar magia -->
+        <div style="margin-top:18px;text-align:center;padding:20px 16px;background:linear-gradient(135deg,rgba(255,0,204,.08),rgba(196,0,255,.08));border:1px solid rgba(255,0,204,.22);border-radius:16px">
+          <div style="font-family:'Syne',sans-serif;font-weight:800;font-size:1.15rem;margin-bottom:8px">✨ ¿Empezamos la magia?</div>
+          <div style="font-size:.82rem;color:rgba(255,255,255,.6);margin-bottom:16px;line-height:1.55">La primera parte del proceso va por nuestra cuenta — sin costo, sin registro. Solo queremos que veas que esto funciona de verdad.</div>
           <button class="btn-marquee" onclick="mostrarFase2()" style="width:100%;justify-content:center;font-size:.95rem">
-            🚀 Sí, ¡comenzar ahora! →
+            🚀 Sí, ¡empezar ahora! →
             <div class="lights" id="res-lights-fase1"></div>
           </button>
         </div>
@@ -1058,17 +1067,21 @@ nav .nav-logo:hover span {
           <div style="font-size:.8rem;color:var(--mu);margin-top:4px">Disponible <strong style="color:var(--yw)">48 horas</strong> gratis</div>
         </div>
         <div id="activation-result" style="font-size:.84rem;color:#E8E8F0;line-height:1.6;margin-bottom:14px"></div>
-        <div style="background:rgba(255,229,0,.06);border:1px solid rgba(255,229,0,.2);border-radius:12px;padding:12px;margin-bottom:14px;font-size:.79rem;color:rgba(255,255,255,.8);line-height:1.5">
-          🎁 <strong style="color:var(--yw)">Bonus si te registras ahora:</strong> recibes tu diagnóstico completo en PDF descargable + tu herramienta activa de forma permanente.
+        <!-- Mensaje humano: prueba la herramienta -->
+        <div style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:14px;margin-bottom:14px;font-size:.82rem;color:rgba(255,255,255,.8);line-height:1.6">
+          Sabemos lo importante que es en estos tiempos que un negocio como el tuyo se digitalice y se automatice. <strong style="color:#fff">Por favor prueba la herramienta — dinos si funciona.</strong> Nos importa que realmente te sirva, no nada más entregarte algo bonito. Tu opinión vale mucho para nosotros. 🙏
         </div>
+
+        <!-- Diagnóstico PDF: copy inteligente -->
+        <div style="background:rgba(0,240,255,.05);border:1px solid rgba(0,240,255,.18);border-radius:12px;padding:14px;margin-bottom:16px;font-size:.82rem;color:rgba(255,255,255,.8);line-height:1.6">
+          Tu diagnóstico completo ya está listo — lo tengo aquí guardado. <strong style="color:var(--cy)">Solo necesito saber a dónde enviártelo.</strong> En cuanto te registres, lo tengo listo en PDF para que lo puedas guardar, imprimir o compartir con quien quieras.
+        </div>
+
         <button class="btn-marquee btn-gn-mq" style="width:100%;justify-content:center;font-size:.95rem;margin-bottom:8px" onclick="goRegister()">
-          ✅ Registrarme y conservar todo →
+          ✅ Dime a dónde envío tu diagnóstico →
           <div class="lights" id="res-lights1"></div>
         </button>
-        <button onclick="goRegister()" style="width:100%;background:none;border:1px solid rgba(255,255,255,.15);color:rgba(255,255,255,.6);border-radius:12px;padding:10px;font-size:.8rem;cursor:pointer;font-family:'DM Sans',sans-serif;margin-top:2px">
-          📋 Quiero mi diagnóstico en PDF →
-        </button>
-        <p style="font-size:.7rem;color:var(--mu);text-align:center;margin-top:8px">Sin tarjeta · Sin compromiso · Cancela cuando quieras</p>
+        <p style="font-size:.7rem;color:var(--mu);text-align:center;margin-top:8px">Sin tarjeta · Sin compromiso · Solo para saber a dónde enviarlo</p>
       </div>
 
     </div>
@@ -1338,14 +1351,9 @@ function startDiag(){
     document.getElementById('r-niv').textContent=result.nivel;
     document.getElementById('r-niv').style.color=result.score>70?'var(--mg)':result.score>50?'var(--yw)':'var(--gn)';
     document.getElementById('r-areas').textContent=result.areas.length+' cosas que mejorar';
-    renderDiagItems(result.areas);
-    if(result.recomendacion){
-      document.getElementById('r-rec').style.display='block';
-      document.getElementById('r-rec-text').textContent=result.recomendacion;
-    }
+    renderDiagFull(result);
     document.getElementById('m-load').classList.remove('on');
     document.getElementById('m-res').classList.add('on');
-    // Reset phases
     document.getElementById('fase-diag').style.display='block';
     document.getElementById('fase-elige').style.display='none';
     document.getElementById('fase-activa').style.display='none';
@@ -1377,16 +1385,32 @@ async function runAIDiagnosis(desc, file){
     body:JSON.stringify({
       model:'claude-sonnet-4-20250514',
       max_tokens:1000,
-      system:`Eres el motor de análisis de d4tabl3. Dado lo que el usuario comparte sobre su negocio, genera un diagnóstico estructurado.
-Responde SOLO con JSON válido, sin markdown, sin explicaciones extra:
+      system:`Eres consultor experto de digitalización de d4tabl3, especializado en negocios pequeños mexicanos. Haces diagnósticos REALES y PERSONALIZADOS, como un experto con 20 años de experiencia.
+
+REGLAS:
+- NUNCA des respuestas genéricas. Cada diagnóstico debe ser específico para el negocio descrito.
+- Si es maestra de salsa: habla de clases, alumnos, pagos de mensualidades, horarios, WhatsApp.
+- Si es taller mecánico: habla de órdenes de trabajo, refacciones, citas, clientes que regresan.
+- Si es restaurante: habla de mesas, pedidos, proveedores, personal, reservaciones.
+- Calcula impacto real: estima cuánto dinero/tiempo pierde al mes por cada problema.
+- Habla en español mexicano cálido y directo, como un amigo consultor.
+- La "narrativa" son 3-4 oraciones que explican: qué está pasando HOY en su negocio, qué le está costando en dinero o tiempo, y qué cambia concreto al digitalizarse.
+- "herramienta_recomendada": elige "flyer" si necesita conseguir más clientes/promoción, "pagina" si necesita presencia digital/mostrar servicios, "crm" si tiene muchos clientes y necesita seguimiento/control/cobros.
+
+Responde SOLO con JSON válido sin markdown:
 {
-  "score": número del 45 al 90 (qué tan desorganizado está, más alto = más caótico),
+  "score": número 45-92,
   "nivel": "Alto" | "Medio-Alto" | "Medio",
+  "tipo_negocio": "nombre corto del tipo de negocio",
+  "narrativa": "3-4 oraciones personalizadas y específicas. Menciona su giro exacto, qué está perdiendo en dinero o tiempo, qué cambia al digitalizarse. Cálidos, directos, reales.",
   "areas": [
-    {"problema": "descripción corta del problema en español mexicano", "urgencia": "Urgente" | "Alto" | "Medio"},
-    ... (3-5 áreas)
+    {"problema": "problema MUY específico de este negocio", "impacto": "cuánto pierde o qué consecuencia tiene", "urgencia": "Urgente" | "Alto" | "Medio"},
+    {"problema": "...", "impacto": "...", "urgencia": "..."},
+    {"problema": "...", "impacto": "...", "urgencia": "..."},
+    {"problema": "...", "impacto": "...", "urgencia": "..."}
   ],
-  "recomendacion": "1-2 oraciones de recomendación principal personalizada para este negocio"
+  "herramienta_recomendada": "flyer" | "pagina" | "crm",
+  "herramienta_razon": "1 oración: por qué esta herramienta específica ayuda a ESTE negocio"
 }`,
       messages
     })
@@ -1407,29 +1431,75 @@ function showStaticResult(){
     {problema:'Tareas repetitivas manuales',urgencia:'Alto'},
     {problema:'Todo depende de una persona',urgencia:'Medio'},
   ];
-  renderDiagItems(items);
+  const staticResult = {
+    score:68, nivel:'Medio-Alto', tipo_negocio:'Negocio pequeño',
+    narrativa:'Tu negocio tiene potencial real de crecer, pero hay procesos que te están costando tiempo y clientes cada mes. Sin un sistema de seguimiento, es fácil perder ventas que ya estaban casi cerradas. Digitalizar los puntos clave puede liberarte horas cada semana y ayudarte a crecer sin depender todo el tiempo de ti.',
+    areas:items.map(i=>({...i, impacto:'Revisa con tu equipo el impacto mensual de esta área'})),
+    herramienta_recomendada:'flyer',
+    herramienta_razon:'La promoción digital es el punto de entrada más rápido para conseguir nuevos clientes.'
+  };
+  renderDiagFull(staticResult);
   document.getElementById('m-load').classList.remove('on');
   document.getElementById('m-res').classList.add('on');
   document.getElementById('fase-diag').style.display='block';
   document.getElementById('fase-elige').style.display='none';
   document.getElementById('fase-activa').style.display='none';
-  lastDiagResult = {score:68,areas:items};
+  lastDiagResult = staticResult;
   setTimeout(()=>initAllLights(),100);
 }
 
 
-/* ══ RENDER DIAG ITEMS (all visible in fase 1) ══ */
-function renderDiagItems(areas){
+/* ══ RENDER DIAGNÓSTICO COMPLETO PERSONALIZADO ══ */
+function renderDiagFull(result){
   const colors=['var(--mg)','var(--cy)','var(--yw)','var(--gn)','var(--or)'];
   const bgs=['rgba(255,0,204,','rgba(0,240,255,','rgba(255,229,0,','rgba(29,255,138,','rgba(255,107,26,'];
-  document.getElementById('r-items').innerHTML = areas.map((a,i)=>{
+
+  // Score y nivel
+  const scoreEl = document.getElementById('r-score');
+  if(scoreEl) scoreEl.textContent = result.score || '';
+  const nivEl = document.getElementById('r-niv');
+  if(nivEl){ nivEl.textContent = result.nivel || ''; nivEl.style.color = result.score > 70 ? 'var(--mg)' : result.score > 55 ? 'var(--yw)' : 'var(--gn)'; }
+  const areasEl = document.getElementById('r-areas');
+  if(areasEl) areasEl.textContent = (result.areas?.length || 0) + ' áreas identificadas';
+
+  // Tipo de negocio
+  const tipoEl = document.getElementById('r-tipo');
+  if(tipoEl && result.tipo_negocio) tipoEl.textContent = result.tipo_negocio;
+
+  // Narrativa personalizada
+  const narEl = document.getElementById('r-narrativa');
+  if(narEl && result.narrativa) narEl.innerHTML = '💬 ' + result.narrativa;
+
+  // Áreas con impacto
+  document.getElementById('r-items').innerHTML = (result.areas||[]).map((a,i)=>{
     const c=colors[i%colors.length]; const bg=bgs[i%bgs.length];
-    return `<div class="res-ri" style="margin-bottom:7px">
-      <div class="ri-dot" style="background:${c}"></div>
-      <div class="ri-lbl">${a.problema}</div>
-      <div class="ri-pill" style="border-color:${c};color:${c};background:${bg}.08)">${a.urgencia}</div>
+    return `<div class="res-ri" style="margin-bottom:8px;flex-direction:column;align-items:flex-start;gap:4px">
+      <div style="display:flex;align-items:center;gap:8px;width:100%">
+        <div class="ri-dot" style="background:${c}"></div>
+        <div class="ri-lbl" style="font-weight:600">${a.problema}</div>
+        <div class="ri-pill" style="border-color:${c};color:${c};background:${bg}.08);margin-left:auto">${a.urgencia}</div>
+      </div>
+      ${a.impacto ? `<div style="font-size:.75rem;color:rgba(255,255,255,.5);padding-left:18px;line-height:1.4">→ ${a.impacto}</div>` : ''}
     </div>`;
   }).join('');
+
+  // Herramienta recomendada
+  const herramientaMap = {
+    'flyer': '🎨 Te preparamos un <strong style="color:var(--yw)">flyer/tarjeta digital</strong> personalizado para que empieces a promocionarte hoy mismo en redes sociales.',
+    'pagina': '🌐 Te armamos una <strong style="color:var(--cy)">mini página de tu negocio</strong> con tu info, servicios y contacto — lista para compartir.',
+    'crm': '👥 Te activamos un <strong style="color:var(--mg)">registro de clientes</strong> donde puedes llevar el control de quién te debe, quién sigue activo y quién necesita seguimiento.'
+  };
+  const recEl = document.getElementById('r-herramienta-rec');
+  if(recEl){
+    const h = result.herramienta_recomendada || 'flyer';
+    recEl.innerHTML = (herramientaMap[h] || herramientaMap['flyer']) +
+      (result.herramienta_razon ? `<div style="margin-top:5px;color:rgba(255,255,255,.5);font-size:.75rem">${result.herramienta_razon}</div>` : '');
+  }
+}
+
+/* ══ RENDER DIAG ITEMS (fallback) ══ */
+function renderDiagItems(areas){
+  renderDiagFull({areas});
 }
 
 /* ══ FASE 2: mostrar opciones de herramientas ══ */
