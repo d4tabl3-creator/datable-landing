@@ -899,9 +899,13 @@ function updateUI() {
     : 0;
   document.getElementById('stat-days').textContent = days;
 
-  // Role-based nav
-  if (currentProfile.role === 'admin') {
+  // Role-based nav — also check email directly as fallback
+  const isAdmin = currentProfile.role === 'admin' || 
+    currentUser?.email?.toLowerCase() === 'd4tabl3@gmail.com';
+  if (isAdmin) {
     document.getElementById('admin-nav').style.display = 'flex';
+    currentProfile.role = 'admin';
+    document.getElementById('user-role-display').textContent = 'admin';
   }
   if (currentProfile.role === 'ambassador' || currentProfile.ambassador_code) {
     document.getElementById('ambassador-nav').style.display = 'flex';
