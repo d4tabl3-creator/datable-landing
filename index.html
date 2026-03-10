@@ -1031,6 +1031,15 @@ nav .nav-logo:hover span {
 </div>
 
 <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+/* ══ MENU — declarado primero para evitar ReferenceError ══ */
+function toggleMenu(){
+  const d=document.getElementById('nav-drawer');
+  const opening=!d.classList.contains('on');
+  if(opening){d.style.display='flex';requestAnimationFrame(()=>d.classList.add('on'));document.body.style.overflow='hidden';}
+  else{d.classList.remove('on');document.body.style.overflow='';setTimeout(()=>d.style.display='none',300);}
+}
+function closeMenuBg(e){if(e.target===document.getElementById('nav-drawer'))toggleMenu();}
+
 /* ══ CANVAS FONDO ══ */
 const cv=document.getElementById('bgC'),ctx=cv.getContext('2d');
 let W,H;
@@ -1421,7 +1430,6 @@ function toggleMenu(){
     setTimeout(()=> d.style.display = 'none', 300);
   }
 }
-
 function closeMenuBg(e){
   if(e.target===document.getElementById('nav-drawer')) toggleMenu();
 }
