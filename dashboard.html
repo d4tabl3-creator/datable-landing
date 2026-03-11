@@ -683,7 +683,7 @@ textarea:focus { outline:none; border-color:var(--cy); }
             <div style="font-size:2.5rem;margin-bottom:1rem">📧</div>
             <h3 style="font-family:'Syne',sans-serif;margin-bottom:0.5rem">Correo directo</h3>
             <p style="color:var(--muted);font-size:0.85rem;margin-bottom:1rem">¿Tienes una pregunta específica? Escríbenos directamente.</p>
-            <a href="/cdn-cgi/l/email-protection#0145357560636d3241666c60686d2f626e6c" style="color:var(--cy);font-size:0.9rem"><span class="__cf_email__" data-cfemail="5410602035363867143339353d387a373b39">[email&#160;protected]</span></a>
+            <a href="/cdn-cgi/l/email-protection#f8bccc8c999a94cbb89f95999194d69b9795" style="color:var(--cy);font-size:0.9rem"><span class="__cf_email__" data-cfemail="3b7f0f4f5a5957087b5c565a525715585456">[email&#160;protected]</span></a>
           </div>
         </div>
       </div>
@@ -780,6 +780,8 @@ textarea:focus { outline:none; border-color:var(--cy); }
 <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
 const SUPABASE_URL = 'https://vronhuwjuyitlxcabkme.supabase.co';
 const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZyb25odXdqdXlpdGx4Y2Fia21lIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMxNDY0MzgsImV4cCI6MjA4ODcyMjQzOH0._Tp_y1JMZoNbNXbftMo1PCVm6h95VrlgcVF-vKIegbY';
+const CLAUDE_API = 'https://api.anthropic.com/v1/messages';
+
 const { createClient } = supabase;
 const sb = createClient(SUPABASE_URL, SUPABASE_KEY);
 
@@ -990,14 +992,11 @@ async function startDiagnosis() {
   document.getElementById('diag-loading').style.display = 'block';
 
   try {
-    const response = await fetch(`${SUPABASE_URL}/functions/v1/chat-claude`, {
+    const response = await fetch(CLAUDE_API, {
       method: 'POST',
-      headers: { 
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${SUPABASE_KEY}`,
-        'apikey': SUPABASE_KEY
-      },
+      headers: { 'Content-Type': 'application/json', 'anthropic-dangerous-direct-browser-access': 'true' },
       body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
         max_tokens: 1500,
         system: `Eres el motor de diagnóstico de datable.com.mx, plataforma SaaS para digitalización de negocios en México.
 Analiza el negocio del usuario y responde SOLO en JSON con este formato exacto:
@@ -1005,7 +1004,7 @@ Analiza el negocio del usuario y responde SOLO en JSON con este formato exacto:
   "score": número del 0-100 (madurez digital),
   "summary": "resumen breve del diagnóstico en 2-3 oraciones",
   "areas": ["área1","área2","área3"] (3-4 áreas clave del negocio),
-  "recommendations":[
+  "recommendations": [
     {
       "title": "nombre corto de la solución",
       "description": "descripción breve de qué hace y por qué ayuda",
@@ -1016,16 +1015,15 @@ Analiza el negocio del usuario y responde SOLO en JSON con este formato exacto:
   ]
 }
 Genera 6-8 recomendaciones mixtas. Las "instant" son activables de inmediato en la plataforma.`,
-        messages:[{ role: 'user', content: `Negocio: ${description}` }]
+        messages: [{ role: 'user', content: `Negocio: ${description}` }]
       })
     });
     const data = await response.json();
     const text = data.content[0].text;
-    
-    const match = text.match(/\{[\s\S]*\}/);
-    const json = JSON.parse(match ? match[0] : '{}');
+    const json = JSON.parse(text.replace(/```json|```/g, '').trim());
     currentDiagnosis = json;
 
+    // Save to Supabase
     await sb.from('diagnostics').insert({
       user_id: currentUser.id,
       business_description: description,
@@ -1033,7 +1031,9 @@ Genera 6-8 recomendaciones mixtas. Las "instant" son activables de inmediato en 
       business_type: json.areas?.[0] || 'general'
     });
 
+    // Update score stat
     document.getElementById('stat-score').textContent = json.score;
+
     showDiagnosisResult(json);
     generateSolutions(json.recommendations);
   } catch(e) {
@@ -1228,8 +1228,9 @@ async function loadAdminData() {
 // ── PAYWALL ──
 function showPaywall() { document.getElementById('paywall-modal').classList.add('open'); }
 function startCheckout() {
-  showToast('Integración con Stripe próximamente', 'success');
-  document.getElementById('paywall-modal').classList.remove('open');
+  const stripeUrl = 'https://buy.stripe.com/6oU3cu1Xi5pS5mgbLv67S00';
+  const email = currentUser?.email ? '?prefilled_email=' + encodeURIComponent(currentUser.email) : '';
+  window.open(stripeUrl + email, '_blank');
 }
 
 // ── AXOLÍN ──
@@ -1269,11 +1270,11 @@ async function sendAxolin() {
   document.getElementById('axolin-messages').appendChild(thinking);
 
   try {
-    const response = await fetch(`${SUPABASE_URL}/functions/v1/chat-claude`, {
+    const response = await fetch(CLAUDE_API, {
       method:'POST',
-      headers:{ 'Content-Type':'application/json', 'Authorization': `Bearer ${SUPABASE_KEY}`, 'apikey': SUPABASE_KEY },
+      headers:{ 'Content-Type':'application/json', 'anthropic-dangerous-direct-browser-access':'true' },
       body: JSON.stringify({
-        max_tokens: 400,
+        model:'claude-sonnet-4-20250514', max_tokens:400,
         system:`Eres Axolín, asistente simpático de datable.com.mx, plataforma de digitalización para negocios mexicanos.
 Usuario: ${currentProfile?.full_name||'usuario'}, negocio: ${currentProfile?.business_name||'no especificado'}.
 Responde en máximo 3 oraciones, en español, de forma clara y amigable. 
