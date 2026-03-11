@@ -380,7 +380,6 @@ canvas#flyer-canvas{width:100%;display:block;max-height:340px;object-fit:contain
 /* ══ CONFIG ══ */
 const SUPABASE_URL = 'https://vronhuwjuyitlxcabkme.supabase.co';
 const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZyb25odXdqdXlpdGx4Y2Fia21lIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMxNDY0MzgsImV4cCI6MjA4ODcyMjQzOH0._Tp_y1JMZoNbNXbftMo1PCVm6h95VrlgcVF-vKIegbY';
-const CLAUDE_API = 'https://api.anthropic.com/v1/messages';
 
 /* ══ CANVAS BG ══ */
 const cv=document.getElementById('bgC'),ctx=cv.getContext('2d');
@@ -477,7 +476,7 @@ async function saveSession(){
       headers: {
         'apikey': SUPABASE_KEY,
         'Authorization': 'Bearer ' + SUPABASE_KEY,
-        'Content-Type': 'application/json', 'x-api-key': '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', 'anthropic-version': '2023-06-01', 'anthropic-dangerous-direct-browser-access': 'true',
+        'Content-Type': 'application/json',
         'Prefer': 'resolution=merge-duplicates'
       },
       body: JSON.stringify({
