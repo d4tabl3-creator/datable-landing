@@ -1272,14 +1272,20 @@ async function axolThinkAndRespond(userMsg){
   hist.appendChild(thinking);
   hist.scrollTop = hist.scrollHeight;
 
+  const SUPABASE_URL = 'https://vronhuwjuyitlxcabkme.supabase.co';
+  const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZyb25odXdqdXlpdGx4Y2Fia21lIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMxNDY0MzgsImV4cCI6MjA4ODcyMjQzOH0._Tp_y1JMZoNbNXbftMo1PCVm6h95VrlgcVF-vKIegbY';
+
   try {
-    const resp = await fetch('https://api.anthropic.com/v1/messages', {
+    const resp = await fetch(`${SUPABASE_URL}/functions/v1/chat-claude`, {
       method:'POST',
-      headers:{'Content-Type':'application/json'},
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${SUPABASE_KEY}`,
+        'apikey': SUPABASE_KEY
+      },
       body: JSON.stringify({
-        model:'claude-sonnet-4-20250514',
-        max_tokens:300,
-        system:`Eres Axolín, la mascota y guía interactiva de dªtªblɛ — una plataforma que digitaliza negocios pequeños y medianos en México. Tu personalidad: amigable, entusiasta, claro, directo, sin tecnicismos. Hablas como un amigo que sabe de negocios digitales. Nunca menciones que eres IA. Tus respuestas son cortas (máx 3 frases). Si alguien quiere hablar con una persona, diles que pueden escribir a D4tabl3@gmail.com o dar clic en "Análisis gratis" para que el equipo los contacte. Si preguntan precios: $499 MXN/mes. Si preguntan qué hace datable: organiza tu negocio, automatiza procesos, da diagnóstico de tu operación en 30 segundos.`,
+        max_tokens: 300,
+        system:`Eres Axolín, la mascota y guía interactiva de dªtªblɛ — una plataforma que digitaliza negocios pequeños y medianos en México. Tu personalidad: amigable, entusiasta, claro, directo, sin tecnicismos. Nunca menciones que eres IA. Tus respuestas son cortas (máx 3 frases). Si alguien quiere hablar con una persona, diles que pueden escribir a D4tabl3@gmail.com.`,
         messages:[{role:'user', content: userMsg}]
       })
     });
@@ -1367,56 +1373,51 @@ function startDiag(){
 }
 
 async function runAIDiagnosis(desc, file){
-  let userContent=`Analiza este negocio y dame un diagnóstico: "${desc}"`;
-  let messages=[{role:'user',content:userContent}];
+  let userContent = `Analiza este negocio y dame un diagnóstico: "${desc}"`;
+  let messages = [{role:'user', content: userContent}];
 
-  // If file is an image, send it
-  if(file&&file.type.startsWith('image/')){
-    const b64=await new Promise(res=>{const r=new FileReader();r.onload=()=>res(r.result.split(',')[1]);r.readAsDataURL(file);});
-    messages=[{role:'user',content:[
-      {type:'image',source:{type:'base64',media_type:file.type,data:b64}},
-      {type:'text',text:userContent||'Analiza esta imagen de mi negocio y dame un diagnóstico.'}
+  // Si envían imagen
+  if(file && file.type.startsWith('image/')){
+    const b64 = await new Promise(res=>{const r=new FileReader();r.onload=()=>res(r.result.split(',')[1]);r.readAsDataURL(file);});
+    messages = [{role:'user', content:[
+      {type:'image', source:{type:'base64', media_type:file.type, data:b64}},
+      {type:'text', text: userContent || 'Analiza esta imagen de mi negocio y dame un diagnóstico.'}
     ]}];
   }
 
-  const res=await fetch('https://api.anthropic.com/v1/messages',{
-    method:'POST',
-    headers:{'Content-Type':'application/json'},
-    body:JSON.stringify({
-      model:'claude-sonnet-4-20250514',
-      max_tokens:1000,
-      system:`Eres consultor experto de digitalización de d4tabl3, especializado en negocios pequeños mexicanos. Haces diagnósticos REALES y PERSONALIZADOS, como un experto con 20 años de experiencia.
+  // Llamada SEGURA a Supabase
+  const SUPABASE_URL = 'https://vronhuwjuyitlxcabkme.supabase.co';
+  const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZyb25odXdqdXlpdGx4Y2Fia21lIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMxNDY0MzgsImV4cCI6MjA4ODcyMjQzOH0._Tp_y1JMZoNbNXbftMo1PCVm6h95VrlgcVF-vKIegbY';
 
+  const res = await fetch(`${SUPABASE_URL}/functions/v1/chat-claude`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${SUPABASE_KEY}`,
+      'apikey': SUPABASE_KEY
+    },
+    body: JSON.stringify({
+      max_tokens: 1000,
+      system: `Eres consultor experto de digitalización de d4tabl3, especializado en negocios pequeños mexicanos. Haces diagnósticos REALES y PERSONALIZADOS, como un experto con 20 años de experiencia.
 REGLAS:
 - NUNCA des respuestas genéricas. Cada diagnóstico debe ser específico para el negocio descrito.
-- Si es maestra de salsa: habla de clases, alumnos, pagos de mensualidades, horarios, WhatsApp.
-- Si es taller mecánico: habla de órdenes de trabajo, refacciones, citas, clientes que regresan.
-- Si es restaurante: habla de mesas, pedidos, proveedores, personal, reservaciones.
 - Calcula impacto real: estima cuánto dinero/tiempo pierde al mes por cada problema.
-- Habla en español mexicano cálido y directo, como un amigo consultor.
-- La "narrativa" son 3-4 oraciones que explican: qué está pasando HOY en su negocio, qué le está costando en dinero o tiempo, y qué cambia concreto al digitalizarse.
-- "herramienta_recomendada": elige "flyer" si necesita conseguir más clientes/promoción, "pagina" si necesita presencia digital/mostrar servicios, "crm" si tiene muchos clientes y necesita seguimiento/control/cobros.
-
+- Habla en español mexicano cálido y directo.
 Responde SOLO con JSON válido sin markdown:
 {
   "score": número 45-92,
   "nivel": "Alto" | "Medio-Alto" | "Medio",
-  "tipo_negocio": "nombre corto del tipo de negocio",
-  "narrativa": "3-4 oraciones personalizadas y específicas. Menciona su giro exacto, qué está perdiendo en dinero o tiempo, qué cambia al digitalizarse. Cálidos, directos, reales.",
-  "areas": [
-    {"problema": "problema MUY específico de este negocio", "impacto": "cuánto pierde o qué consecuencia tiene", "urgencia": "Urgente" | "Alto" | "Medio"},
-    {"problema": "...", "impacto": "...", "urgencia": "..."},
-    {"problema": "...", "impacto": "...", "urgencia": "..."},
-    {"problema": "...", "impacto": "...", "urgencia": "..."}
-  ],
+  "tipo_negocio": "nombre corto del negocio",
+  "narrativa": "3-4 oraciones personalizadas.",
+  "areas":[{"problema": "...", "impacto": "...", "urgencia": "Urgente" | "Alto" | "Medio"}],
   "herramienta_recomendada": "flyer" | "pagina" | "crm",
-  "herramienta_razon": "1 oración: por qué esta herramienta específica ayuda a ESTE negocio"
+  "herramienta_razon": "1 oración del por qué."
 }`,
       messages
     })
   });
-  const data=await res.json();
-  const text=data.content?.[0]?.text||'{}';
+  const data = await res.json();
+  const text = data.content?.[0]?.text || '{}';
   return JSON.parse(text.replace(/```json|```/g,'').trim());
 }
 
