@@ -1078,10 +1078,10 @@ nav .nav-logo:hover span {
         </div>
 
         <button class="btn-marquee btn-gn-mq" style="width:100%;justify-content:center;font-size:.95rem;margin-bottom:8px" onclick="goRegister()">
-          ✅ Dime a dónde envío tu diagnóstico →
+          ⚡ Abrir mi herramienta gratis →
           <div class="lights" id="res-lights1"></div>
         </button>
-        <p style="font-size:.7rem;color:var(--mu);text-align:center;margin-top:8px">Sin tarjeta · Sin compromiso · Solo para saber a dónde enviarlo</p>
+        <p style="font-size:.7rem;color:var(--mu);text-align:center;margin-top:8px">Sin tarjeta · Sin registro · Lista en segundos</p>
       </div>
 
     </div>
@@ -1594,7 +1594,15 @@ function elegirHerramienta(idx){
   }
 
   const expiry = Date.now() + (48*60*60*1000);
-  localStorage.setItem('d4tabl3_free_tool', JSON.stringify({title:tool.name, expiry, diag:lastDiagResult}));
+
+  // Determine tipo for herramienta.html routing
+  let tipo = 'crm';
+  if(tool.icon === '📅') tipo = 'agenda';
+  else if(tool.icon === '💳') tipo = 'pagos';
+  else if(tool.icon === '👥') tipo = 'crm';
+  else tipo = 'flyer';
+
+  localStorage.setItem('d4tabl3_free_tool', JSON.stringify({title:tool.name, expiry, diag:lastDiagResult, tipo}));
   document.getElementById('activation-result').innerHTML =
     `<strong style="color:#fff;font-size:.95rem">${tool.icon} ${tool.name}</strong>
     <div style="font-size:.78rem;color:rgba(255,255,255,.5);margin-top:4px;margin-bottom:10px">Regístrate para activarla con tus datos reales</div>
@@ -1690,20 +1698,40 @@ function activateInstantSolution(diagResult) {
   }
 
   const expiry = Date.now() + (48*60*60*1000);
-  localStorage.setItem('d4tabl3_free_tool', JSON.stringify({title:tool.name,expiry,diag:diagResult}));
+
+  // Determine tipo for herramienta.html routing
+  let tipo = 'crm';
+  if(tool.icon === '📅') tipo = 'agenda';
+  else if(tool.icon === '💰') tipo = 'pagos';
+  else if(tool.icon === '👥') tipo = 'crm';
+  else tipo = 'flyer';
+
+  localStorage.setItem('d4tabl3_free_tool', JSON.stringify({title:tool.name,expiry,diag:diagResult,tipo}));
 
   document.getElementById('activation-result').innerHTML = 
     `<strong style="color:#fff">${tool.icon} ${tool.name}</strong> — lista para ti<br>
-    <span style="font-size:.78rem;color:rgba(255,255,255,.55)">Haz clic en "Registrarme" para activarla con tus datos reales</span>
+    <span style="font-size:.78rem;color:rgba(255,255,255,.55)">Haz clic en el botón para abrirla →</span>
     ${tool.preview}`;
 }
 
 function goRegister() {
-  // Save diagnosis to pass to dashboard
-  if (lastDiagResult) {
-    localStorage.setItem('d4tabl3_pending_diag', JSON.stringify(lastDiagResult));
+  // Save diagnosis to pass to herramienta
+  const toolData = (() => { try { return JSON.parse(localStorage.getItem('d4tabl3_free_tool')||'{}'); } catch(e){ return {}; } })();
+  const diagResult = lastDiagResult || toolData.diag || null;
+  if (diagResult) {
+    localStorage.setItem('d4tabl3_pending_diag', JSON.stringify(diagResult));
   }
-  window.location.href = 'dashboard.html?action=register';
+
+  // Generate unique client code
+  const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+  let code = 'D4T-';
+  for(let i=0;i<4;i++) code += chars[Math.floor(Math.random()*chars.length)];
+
+  // Get the tool type selected
+  const tipo = toolData.tipo || 'flyer';
+
+  // Redirect to herramienta.html with code and tipo
+  window.location.href = `herramienta.html?code=${code}&tipo=${tipo}`;
 }
 
 /* ══ DETECCIÓN AUTOMÁTICA DE IDIOMA ══ */
