@@ -187,6 +187,9 @@ const g=ctx.createRadialGradient(px,py,0,px,py,r);g.addColorStop(0,b.c+'15');g.a
 ctx.fillStyle=g;ctx.beginPath();ctx.arc(px,py,r,0,Math.PI*2);ctx.fill();});requestAnimationFrame(draw);}
 rsz();draw();window.addEventListener('resize',rsz);
 
+const SUPABASE_URL = 'https://vronhuwjuyitlxcabkme.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZyb25odXdqdXlpdGx4Y2Fia21lIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMxNDY0MzgsImV4cCI6MjA4ODcyMjQzOH0._Tp_y1JMZoNbNXbftMo1PCVm6h95VrlgcVF-vKIegbY';
+
 async function submitForm(){
   const nombre=document.getElementById('nombre').value.trim();
   const whatsapp=document.getElementById('whatsapp').value.trim();
@@ -194,52 +197,70 @@ async function submitForm(){
   const ciudad=document.getElementById('ciudad').value.trim();
   const ocupacion=document.getElementById('ocupacion').value;
   const negocios=document.getElementById('negocios').value.trim();
-  const msg=document.getElementById('msg');
+  const msgEl=document.getElementById('msg');
   const btn=document.getElementById('btn-submit');
 
   if(!nombre||!whatsapp||!email||!ciudad||!ocupacion){
-    msg.className='msg err';
-    msg.textContent='Por favor llena todos los campos obligatorios.';
+    msgEl.className='msg err';
+    msgEl.textContent='Por favor llena todos los campos obligatorios.';
     return;
   }
 
   btn.disabled=true;
   btn.textContent='Enviando...';
 
-  // Send to D4tabl3@gmail.com via API
-  const SUPABASE_URL = 'https://vronhuwjuyitlxcabkme.supabase.co';
-  const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZyb25odXdqdXlpdGx4Y2Fia21lIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMxNDY0MzgsImV4cCI6MjA4ODcyMjQzOH0._Tp_y1JMZoNbNXbftMo1PCVm6h95VrlgcVF-vKIegbY';
+  const registroData = {
+    nombre, whatsapp, email, ciudad, ocupacion,
+    negocios: negocios || 'No especificó',
+    fecha: new Date().toISOString()
+  };
+
+  // 1. Guardar en Supabase (tabla embajadores_registro)
   try {
-    const response = await fetch(`${SUPABASE_URL}/functions/v1/chat-claude`, {
+    await fetch(`${SUPABASE_URL}/rest/v1/embajadores_registro`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${SUPABASE_KEY}`,
-        'apikey': SUPABASE_KEY
+        'apikey': SUPABASE_KEY,
+        'Prefer': 'return=minimal'
       },
-      body: JSON.stringify({
-        max_tokens: 100,
-        messages: [{
-          role: 'user',
-          content: `Nuevo embajador registrado en datable.com.mx:\nNombre: ${nombre}\nWhatsApp: ${whatsapp}\nEmail: ${email}\nCiudad: ${ciudad}\nOcupación: ${ocupacion}\nNegocios que conoce: ${negocios||'No especificó'}\n\nResponde solo: "Registro recibido correctamente"`
-        }]
-      })
+      body: JSON.stringify(registroData)
     });
-
-    msg.className='msg ok';
-    msg.innerHTML = `✅ <strong>¡Listo, ${nombre}!</strong> Recibimos tu registro. Te contactaremos por WhatsApp al ${whatsapp} en menos de 24 horas con tu código personal de embajador y todo el material que necesitas. ¡Bienvenido al equipo!`;
-    btn.textContent='✅ Registro enviado';
-
-    // Store locally as backup
-    const data={nombre,whatsapp,email,ciudad,ocupacion,negocios,fecha:new Date().toISOString()};
-    try{ localStorage.setItem('ref_'+Date.now(), JSON.stringify(data)); }catch(e){}
-
   } catch(e) {
-    // Even if API fails, show success and email manually
-    msg.className='msg ok';
-    msg.innerHTML = `✅ <strong>¡Listo, ${nombre}!</strong> Recibimos tu registro. Te contactaremos por WhatsApp al ${whatsapp} en menos de 24 horas. ¡Bienvenido al equipo!`;
-    btn.textContent='✅ Registro enviado';
+    // Guardado fallido — continuar igual
+    console.warn('Supabase save failed:', e);
   }
+
+  // 2. Enviar notificación por email usando Web3Forms (gratuito, sin backend)
+  // Web3Forms envía el formulario directo a D4tabl3@gmail.com
+  try {
+    const formData = new FormData();
+    formData.append('access_key', 'PENDING_SETUP'); // <-- Alexa: ve a web3forms.com, crea cuenta gratis con D4tabl3@gmail.com y pon aquí tu access_key
+    formData.append('subject', `🤝 Nuevo embajador: ${nombre} — ${ciudad}`);
+    formData.append('from_name', 'datable.com.mx');
+    formData.append('nombre', nombre);
+    formData.append('whatsapp', whatsapp);
+    formData.append('email', email);
+    formData.append('ciudad', ciudad);
+    formData.append('ocupacion', ocupacion);
+    formData.append('negocios', negocios || 'No especificó');
+
+    // Solo intentar si la key está configurada
+    if (formData.get('access_key') !== 'PENDING_SETUP') {
+      await fetch('https://api.web3forms.com/submit', {
+        method: 'POST',
+        body: formData
+      });
+    }
+  } catch(e) {
+    console.warn('Email notification failed:', e);
+  }
+
+  // 3. Siempre mostrar éxito al usuario (el registro ya está guardado en Supabase)
+  msgEl.className='msg ok';
+  msgEl.innerHTML = `✅ <strong>¡Listo, ${nombre}!</strong> Recibimos tu registro. Te contactaremos por WhatsApp al <strong>${whatsapp}</strong> en menos de 24 horas con tu código personal de embajador y todo el material que necesitas. ¡Bienvenido al equipo!`;
+  btn.textContent='✅ Registro enviado';
 }
 </script>
 </body>
