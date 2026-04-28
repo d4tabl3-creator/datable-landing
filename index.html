@@ -3,1796 +3,1033 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>dªtªblɛ — Tu negocio, organizado de una vez</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,300&display=swap" rel="stylesheet">
+<title>Dªtªblɛ — Cartografía Digital</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
-:root{
-  --bg:#04040F;--mg:#FF00CC;--cy:#00F0FF;--gn:#1DFF8A;
-  --yw:#FFE500;--or:#FF6B1A;--pu:#C400FF;--bl:#3D7EFF;--pk:#FF3DAA;
-  --mu:rgba(255,255,255,.45);--card:rgba(255,255,255,.05);
+:root {
+  --bg:     #0B1A0E;
+  --bg2:    #0F2212;
+  --bg3:    #132816;
+  --card:   rgba(255,255,255,0.05);
+  --card2:  rgba(255,255,255,0.08);
+  --green:  #2EFF7A;
+  --green2: #1ACC5C;
+  --gold:   #F0C040;
+  --orange: #FF7A2E;
+  --white:  #FFFFFF;
+  --text:   rgba(255,255,255,0.85);
+  --muted:  rgba(255,255,255,0.55);
+  --bord:   rgba(255,255,255,0.1);
+  --bord2:  rgba(46,255,122,0.2);
 }
-*{box-sizing:border-box;margin:0;padding:0}
-html{scroll-behavior:smooth}
-body{background:var(--bg);color:#fff;font-family:'DM Sans',sans-serif;overflow-x:hidden;line-height:1.6}
-::-webkit-scrollbar{width:4px}
-::-webkit-scrollbar-track{background:var(--bg)}
-::-webkit-scrollbar-thumb{background:linear-gradient(var(--mg),var(--cy));border-radius:2px}
 
-/* CANVAS */
-#bgC{position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.6}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
 
-/* ══ MARQUEE BUTTON (luces de cine) ══ */
-.btn-marquee{
-  position:relative;display:inline-flex;align-items:center;justify-content:center;
-  gap:8px;padding:16px 36px;border:none;border-radius:16px;cursor:pointer;
-  font-family:'DM Sans',sans-serif;font-weight:700;font-size:1rem;
-  color:#fff;text-decoration:none;
-  background:linear-gradient(135deg,var(--mg),var(--pu));
-  transition:transform .15s;
-  box-shadow:0 0 30px rgba(255,0,204,.5),0 5px 0 rgba(100,0,80,.8);
+body{
+  background:var(--bg);
+  color:var(--white);
+  font-family:'Rajdhani',sans-serif;
+  overflow-x:hidden;
 }
-.btn-marquee:hover{transform:translateY(-3px);box-shadow:0 0 50px rgba(255,0,204,.8),0 8px 0 rgba(100,0,80,.8)}
-.btn-marquee:active{transform:translateY(2px);box-shadow:0 0 20px rgba(255,0,204,.4),0 2px 0 rgba(100,0,80,.8)}
-/* las bolitas de cine alrededor */
-.btn-marquee .lights{
-  position:absolute;inset:-8px;border-radius:22px;pointer-events:none;
+
+body::before{
+  content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
+  background:
+    radial-gradient(ellipse 80% 60% at 0% 0%, rgba(46,255,122,.06) 0%,transparent 50%),
+    radial-gradient(ellipse 60% 60% at 100% 100%, rgba(240,192,64,.04) 0%,transparent 50%),
+    radial-gradient(ellipse 40% 40% at 50% 50%, rgba(46,255,122,.02) 0%,transparent 70%);
 }
-.btn-marquee .lights span{
-  position:absolute;width:7px;height:7px;border-radius:50%;background:#fff;
-  box-shadow:0 0 6px #fff,0 0 12px var(--mg);
-  animation:lightbulb 1.2s steps(1) infinite;
-}
-@keyframes lightbulb{0%,100%{opacity:1;background:#fff;box-shadow:0 0 8px #fff,0 0 16px var(--mg)}50%{opacity:.2;background:rgba(255,255,255,.3);box-shadow:none}}
 
-.btn-cy-mq{background:linear-gradient(135deg,#00C8D4,#0075FF);box-shadow:0 0 30px rgba(0,240,255,.5),0 5px 0 rgba(0,40,80,.8)}
-.btn-cy-mq:hover{box-shadow:0 0 50px rgba(0,240,255,.8),0 8px 0 rgba(0,40,80,.8)}
-.btn-cy-mq .lights span{box-shadow:0 0 6px #fff,0 0 12px var(--cy)}
-@keyframes lightbulb-cy{0%,100%{opacity:1;background:#fff;box-shadow:0 0 8px #fff,0 0 16px var(--cy)}50%{opacity:.2}}
-.btn-cy-mq .lights span{animation:lightbulb-cy 1.2s steps(1) infinite}
-
-.btn-gn-mq{background:linear-gradient(135deg,#00C853,#1DFF8A);color:#000;box-shadow:0 0 30px rgba(29,255,138,.5),0 5px 0 rgba(0,60,20,.8)}
-.btn-gn-mq:hover{box-shadow:0 0 50px rgba(29,255,138,.8),0 8px 0 rgba(0,60,20,.8)}
-.btn-gn-mq .lights span{box-shadow:0 0 6px #fff,0 0 12px var(--gn);animation-name:lightbulb-gn}
-@keyframes lightbulb-gn{0%,100%{opacity:1;background:#fff;box-shadow:0 0 8px #fff,0 0 16px var(--gn)}50%{opacity:.2}}
-
-/* helper plain button */
-.btn-ghost{display:inline-flex;align-items:center;gap:7px;border-radius:50px;
-  padding:13px 26px;font-size:.9rem;font-weight:600;font-family:'DM Sans',sans-serif;
-  cursor:pointer;border:1.5px solid rgba(255,255,255,.2);
-  background:rgba(255,255,255,.07);color:#fff;text-decoration:none;transition:all .2s}
-.btn-ghost:hover{background:rgba(255,255,255,.14)}
-
-/* NAV */
-nav{position:fixed;top:0;left:0;right:0;z-index:200;
+/* ─── TOPBAR ─── */
+#top{
+  position:sticky;top:0;z-index:200;
+  height:60px;padding:0 5%;
   display:flex;align-items:center;justify-content:space-between;
-  padding:14px clamp(16px,5vw,60px);
-  background:rgba(4,4,15,.8);backdrop-filter:blur(24px);
-  border-bottom:1px solid rgba(255,255,255,.06)}
-.logo{font-family:'Syne',sans-serif;font-weight:800;font-size:1.35rem;text-decoration:none}
-.logo span:nth-child(1){color:var(--mg);text-shadow:0 0 12px var(--mg)}
-.logo span:nth-child(2){color:var(--or);text-shadow:0 0 12px var(--or)}
-.logo span:nth-child(3){color:var(--yw);text-shadow:0 0 12px var(--yw)}
-.logo span:nth-child(4){color:var(--gn);text-shadow:0 0 12px var(--gn)}
-.logo span:nth-child(5){color:var(--cy);text-shadow:0 0 12px var(--cy)}
-.logo span:nth-child(6){color:var(--bl);text-shadow:0 0 12px var(--bl)}
-.logo span:nth-child(7){color:var(--pu);text-shadow:0 0 12px var(--pu)}
-.nav-links{display:flex;align-items:center;gap:24px}
-.nav-links a{color:var(--mu);text-decoration:none;font-size:.86rem;font-weight:500;transition:color .2s}
-.nav-links a:hover{color:#fff}
-.nav-r{display:flex;align-items:center;gap:9px}
-@media(max-width:680px){.nav-links{display:none}}
-
-/* MAIN & SECTIONS */
-main{position:relative;z-index:1}
-section{position:relative;overflow:hidden}
-.wrap{max-width:1100px;margin:0 auto;padding:0 clamp(16px,5vw,60px)}
-.sec{padding:clamp(70px,12vh,140px) 0}
-.st-ey{font-size:.67rem;letter-spacing:.2em;text-transform:uppercase;color:var(--mu);font-weight:600;margin-bottom:10px}
-.st-h2{font-family:'Syne',sans-serif;font-weight:800;font-size:clamp(1.9rem,5vw,3.6rem);line-height:1.04;letter-spacing:-.025em;margin-bottom:14px}
-.st-p{color:var(--mu);font-size:clamp(.9rem,2vw,1.08rem);font-weight:300;max-width:540px;line-height:1.7}
-
-/* REVEAL */
-.rv{opacity:1;transform:none}
-@media(min-width:769px){
-  .rv{opacity:0;transform:translateY(26px);transition:opacity .7s,transform .7s}
-  .rv.on{opacity:1;transform:translateY(0)}
+  background:rgba(11,26,14,.95);
+  backdrop-filter:blur(20px);
+  border-bottom:1px solid var(--bord);
 }
+.logo{
+  font-family:'Orbitron',sans-serif;font-size:1.3rem;font-weight:900;
+  background:linear-gradient(135deg,var(--green),var(--gold));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  background-clip:text;letter-spacing:.04em;
+}
+.nav-links{
+  display:flex;gap:28px;list-style:none;
+}
+.nav-links a{
+  font-family:'Rajdhani',sans-serif;font-size:.9rem;font-weight:600;
+  letter-spacing:.08em;text-transform:uppercase;
+  color:var(--muted);text-decoration:none;transition:color .2s;
+}
+.nav-links a:hover{color:var(--white);}
+@media(max-width:680px){.nav-links{display:none;}}
+#clk{font-family:'Orbitron',sans-serif;text-align:right;}
+#ct{font-size:.9rem;font-weight:700;color:var(--green);}
+#cd{font-size:.58rem;color:var(--muted);letter-spacing:.06em;}
 
-/* HERO */
-#hero{min-height:100vh;display:flex;flex-direction:column;
-  justify-content:center;align-items:center;text-align:center;
-  padding:110px clamp(16px,6vw,80px) 70px}
-.eyebrow{display:inline-flex;align-items:center;gap:8px;
-  background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);
-  border-radius:50px;padding:6px 18px;font-size:.75rem;font-weight:600;
-  color:var(--cy);letter-spacing:.09em;text-transform:uppercase;
-  margin-bottom:26px;backdrop-filter:blur(10px)}
-.eyebrow::before{content:'●';font-size:.45rem;animation:blink 1.5s infinite}
-@keyframes blink{0%,100%{opacity:1}50%{opacity:.15}}
-.hero-h1{font-family:'Syne',sans-serif;font-weight:800;
-  font-size:clamp(2.4rem,8vw,6.8rem);line-height:.97;letter-spacing:-.03em;margin-bottom:20px}
-.h1-wh{display:block;color:#fff}
-.h1-grad{display:block;background:linear-gradient(90deg,var(--mg),var(--cy),var(--gn));
-  background-size:200%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;
-  background-clip:text;animation:gsh 4s ease infinite}
-@keyframes gsh{0%,100%{background-position:0%}50%{background-position:100%}}
-.hero-p{font-size:clamp(.95rem,2.2vw,1.18rem);color:var(--mu);max-width:560px;
-  margin:0 auto 36px;line-height:1.75;font-weight:300}
-.hero-p strong{color:#fff;font-weight:600}
-.hero-btns{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;margin-bottom:50px}
+/* ─── WRAPPER ─── */
+.wrap{position:relative;z-index:1;max-width:1000px;margin:0 auto;padding:0 5%;}
 
-/* UPLOAD CARD */
-.ucard{width:100%;max-width:620px;
-  background:rgba(255,255,255,.04);border:1.5px solid rgba(255,255,255,.12);
-  border-radius:26px;padding:clamp(22px,5vw,40px);backdrop-filter:blur(20px);
+/* ─── HERO ─── */
+#hero{
+  min-height:100vh;
+  display:flex;align-items:center;justify-content:center;
+  padding:80px 5% 60px;
   position:relative;overflow:hidden;
-  box-shadow:0 0 60px rgba(255,0,204,.1),0 0 120px rgba(0,240,255,.06)}
-.ucard::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;
-  background:linear-gradient(90deg,transparent,var(--mg),var(--cy),var(--gn),transparent)}
-.ucard-emoji{font-size:3rem;margin-bottom:8px;display:block}
-.ucard-title{font-family:'Syne',sans-serif;font-weight:800;font-size:1.25rem;margin-bottom:6px}
-.ucard-sub{font-size:.88rem;color:rgba(255,255,255,.65);margin-bottom:16px;line-height:1.6}
-.fmt-row{display:flex;gap:7px;justify-content:center;flex-wrap:wrap;margin-bottom:18px}
-.fmt{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.14);
-  border-radius:20px;padding:5px 13px;font-size:.75rem;font-weight:600;color:rgba(255,255,255,.7)}
-/* textarea always visible in ucard */
-.ucard-ta{width:100%;background:rgba(255,255,255,.05);border:1.5px solid rgba(255,255,255,.12);
-  border-radius:14px;padding:12px 14px;color:#fff;font-family:'DM Sans',sans-serif;
-  font-size:.9rem;resize:none;min-height:80px;outline:none;margin-bottom:16px;
-  transition:border-color .2s;line-height:1.6}
-.ucard-ta:focus{border-color:var(--cy);box-shadow:0 0 20px rgba(0,240,255,.15)}
-.ucard-ta::placeholder{color:rgba(255,255,255,.28)}
-
-/* HSTATS */
-.hstats{display:flex;gap:clamp(18px,5vw,54px);justify-content:center;flex-wrap:wrap;margin-top:36px}
-.hs{text-align:center}
-.hs-n{font-family:'Syne',sans-serif;font-weight:800;font-size:clamp(1.7rem,5vw,2.8rem);line-height:1;text-shadow:0 0 22px currentColor}
-.hs-l{font-size:.73rem;color:var(--mu);margin-top:3px;font-weight:500}
-
-/* GLASS & NEON CARDS */
-.gc{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.09);
-  border-radius:20px;padding:24px 22px;position:relative;overflow:hidden;transition:all .3s}
-.gc:hover{border-color:rgba(255,255,255,.18);transform:translateY(-5px)}
-.gc::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;
-  background:linear-gradient(90deg,transparent,var(--ac,#fff),transparent);opacity:.4}
-.nc{border-radius:18px;padding:20px 18px;border:1.5px solid var(--ac);
-  background:rgba(0,0,0,.2);position:relative;overflow:hidden;transition:all .3s}
-.nc:hover{box-shadow:0 0 36px color-mix(in srgb,var(--ac) 35%,transparent);transform:translateY(-4px)}
-.nc::after{content:'';position:absolute;top:0;left:0;right:0;height:35%;
-  background:linear-gradient(180deg,rgba(255,255,255,.1),transparent);pointer-events:none}
-
-/* STEP CARDS */
-.step-card .sc-num{font-family:'Syne',sans-serif;font-weight:800;font-size:3rem;
-  line-height:1;color:var(--ac,var(--mg));opacity:.22;margin-bottom:12px;text-shadow:0 0 18px var(--ac,var(--mg))}
-.step-card .sc-icon{font-size:1.9rem;margin-bottom:9px;display:block}
-.step-card .sc-title{font-family:'Syne',sans-serif;font-weight:700;font-size:1rem;margin-bottom:6px}
-.step-card .sc-desc{font-size:.82rem;color:var(--mu);line-height:1.6}
-.step-tag{display:inline-flex;align-items:center;gap:5px;margin-top:12px;
-  font-size:.7rem;font-weight:600;color:var(--ac,var(--mg));
-  background:rgba(255,255,255,.05);border:1px solid var(--ac,var(--mg));
-  border-radius:20px;padding:3px 12px}
-
-/* DETECT GRID */
-.dg{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:48px}
-@media(max-width:580px){.dg{grid-template-columns:1fr}}
-.dc{border-radius:18px;padding:20px 18px;border:1.5px solid;position:relative;overflow:hidden;transition:all .3s}
-.dc:hover{transform:translateY(-4px)}
-.dc::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at 0% 0%,var(--ac) 0%,transparent 55%);opacity:.07}
-.dc-icon{font-size:1.7rem;margin-bottom:9px;display:block}
-.dc h3{font-size:.95rem;font-weight:700;margin-bottom:6px;color:var(--ac);text-shadow:0 0 10px var(--ac)}
-.dc p{font-size:.8rem;color:var(--mu);line-height:1.55}
-
-/* DEMO */
-.demo-wrap{display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:center;margin-top:50px}
-@media(max-width:760px){.demo-wrap{grid-template-columns:1fr}}
-.phone{background:rgba(255,255,255,.04);border:1.5px solid rgba(255,255,255,.1);
-  border-radius:22px;overflow:hidden;box-shadow:0 0 60px rgba(0,240,255,.1),0 0 120px rgba(255,0,204,.07)}
-.phone-bar{padding:10px 15px;background:rgba(255,255,255,.05);border-bottom:1px solid rgba(255,255,255,.07);display:flex;align-items:center;gap:7px}
-.pdot{width:8px;height:8px;border-radius:50%}
-.phone-body{padding:16px}
-.score-ring{width:86px;height:86px;margin:0 auto 10px;position:relative;display:flex;align-items:center;justify-content:center}
-.score-ring svg{position:absolute;inset:0;width:100%;height:100%;transform:rotate(-90deg)}
-.score-ring circle{fill:none;stroke-width:6;stroke-linecap:round}
-.sr-bg{stroke:rgba(255,255,255,.07)}.sr-fg{stroke:url(#sg);stroke-dasharray:226;stroke-dashoffset:68}
-.score-n{font-family:'Syne',sans-serif;font-weight:800;font-size:1.65rem;color:var(--cy);text-shadow:0 0 16px var(--cy);z-index:1}
-.di{display:flex;align-items:center;gap:8px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:9px;padding:8px 10px;margin-bottom:7px}
-.di-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
-.di-lbl{font-size:.74rem;font-weight:500;flex:1}
-.di-bar{height:4px;border-radius:2px;width:52px;flex-shrink:0}
-.di-pct{font-size:.68rem;font-weight:700;min-width:28px;text-align:right}
-.pitem{display:flex;align-items:center;gap:8px;border-radius:8px;padding:7px 9px;margin-bottom:6px;font-size:.72rem}
-
-/* AGENTS */
-.ag-grid{display:grid;grid-template-columns:1fr 1fr;gap:13px;margin-top:50px}
-@media(max-width:620px){.ag-grid{grid-column:1fr}}
-.ag-card{border-radius:18px;padding:22px;position:relative;overflow:hidden;
-  border:1.5px solid rgba(255,255,255,.1);background:rgba(255,255,255,.04);transition:all .3s}
-.ag-card:hover{transform:translateY(-5px);border-color:rgba(255,255,255,.2)}
-.ag-card::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at 100% 0%,var(--ac) 0%,transparent 50%);opacity:.06}
-.comm-row{display:flex;align-items:center;gap:10px;background:rgba(0,0,0,.25);border-radius:10px;padding:10px 13px;margin-bottom:8px}
-.comm-n{font-family:'Syne',sans-serif;font-weight:800;font-size:1.45rem;line-height:1;text-shadow:0 0 16px currentColor}
-
-/* PRICE */
-.price-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:50px;align-items:start}
-@media(max-width:700px){.price-grid{grid-template-columns:1fr}}
-.pc{border-radius:22px;overflow:hidden;border:2px solid;backdrop-filter:blur(14px);position:relative;transition:transform .3s}
-.pc:hover{transform:translateY(-8px)}
-.pc-head{padding:20px 20px 14px;position:relative;overflow:hidden}
-.pc-head::before{content:'';position:absolute;top:0;left:0;right:0;height:50%;background:rgba(255,255,255,.12);pointer-events:none}
-.pc-name{font-family:'Syne',sans-serif;font-weight:800;font-size:.76rem;letter-spacing:.1em;text-transform:uppercase;margin-bottom:7px}
-.pc-n{font-family:'Syne',sans-serif;font-weight:800;font-size:2.4rem;line-height:1;text-shadow:0 0 24px currentColor}
-.pc-n sup{font-size:.95rem;vertical-align:super;opacity:.7}
-.pc-period{font-size:.68rem;color:rgba(255,255,255,.42);margin-top:3px}
-.pc-body{background:rgba(0,0,0,.45);padding:18px 20px}
-.pc-feat{display:flex;flex-direction:column;gap:8px;margin-bottom:18px}
-.pf{display:flex;align-items:flex-start;gap:8px;font-size:.8rem;color:rgba(255,255,255,.74)}
-.pc-badge{position:absolute;top:12px;right:12px;background:linear-gradient(135deg,var(--mg),var(--pu));
-  border-radius:20px;padding:3px 10px;font-size:.59rem;font-weight:700;color:#fff;box-shadow:0 0 14px rgba(255,0,204,.5)}
-
-/* CASES */
-.cases-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px;margin-top:50px}
-.case-card{background:var(--card);border:1px solid rgba(255,255,255,.09);border-radius:20px;padding:24px;position:relative;overflow:hidden;transition:all .3s}
-.case-card:hover{transform:translateY(-5px);border-color:rgba(255,255,255,.18)}
-.case-card::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at 0% 100%,var(--ac) 0%,transparent 55%);opacity:.06}
-.case-stat{font-family:'Syne',sans-serif;font-weight:800;font-size:2.4rem;line-height:1;color:var(--ac);text-shadow:0 0 22px var(--ac);margin-bottom:4px}
-
-/* CTA FINAL */
-#cta-f{padding:clamp(90px,15vh,180px) clamp(16px,5vw,60px);text-align:center;position:relative;overflow:hidden}
-#cta-f::before{content:'';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
-  width:700px;height:700px;border-radius:50%;
-  background:radial-gradient(circle,rgba(255,0,204,.1),rgba(0,240,255,.07),transparent 68%);pointer-events:none}
-.cta-h2{font-family:'Syne',sans-serif;font-weight:800;font-size:clamp(1.9rem,6vw,4.6rem);letter-spacing:-.025em;line-height:1.04;margin-bottom:16px}
-.cta-p{font-size:clamp(.9rem,2vw,1.08rem);color:var(--mu);max-width:480px;margin:0 auto 36px;line-height:1.7;font-weight:300}
-
-/* FOOTER */
-footer{border-top:1px solid rgba(255,255,255,.06);padding:36px clamp(16px,5vw,60px);
-  display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:13px}
-.fl a{color:var(--mu);text-decoration:none;font-size:.8rem;margin-right:18px;transition:color .2s}
-.fl a:hover{color:#fff}
-
-/* ══════════════════════════════════
-   AJOLOTE MASCOTA
-══════════════════════════════════ */
-/* ══ AXOLÍN ══ */
-#axol-wrap{position:fixed;bottom:24px;right:20px;z-index:500;display:flex;flex-direction:column;align-items:flex-end;gap:12px}
-#axol-btn{width:68px;height:68px;border-radius:50%;border:none;cursor:pointer;background:radial-gradient(circle at 35% 35%,#a78bfa,#5b21b6);box-shadow:0 0 0 4px rgba(167,139,250,.25),0 4px 20px rgba(167,139,250,.5);padding:6px;transition:transform .2s,box-shadow .2s;position:relative;animation:axolFloat 3s ease-in-out infinite}
-#axol-btn:hover{transform:scale(1.1);box-shadow:0 0 0 6px rgba(167,139,250,.4),0 6px 28px rgba(167,139,250,.8)}
-#axol-svg{width:100%;height:100%;filter:drop-shadow(0 0 8px rgba(167,139,250,.7))}
-@keyframes axolFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
-
-/* bounce-in animation */
-@keyframes axolBounceIn{0%{transform:scale(0) translateY(20px);opacity:0}60%{transform:scale(1.2) translateY(-4px);opacity:1}80%{transform:scale(.92) translateY(2px)}100%{transform:scale(1) translateY(0)}}
-.axol-bounce{animation:axolBounceIn .6s cubic-bezier(.36,.07,.19,.97) forwards!important}
-
-/* sparkle ring */
-#axol-sparks-ring{position:absolute;bottom:0;right:0;width:68px;height:68px;pointer-events:none;border-radius:50%;z-index:499}
-.spark-dot{position:absolute;width:7px;height:7px;border-radius:50%;animation:sparkOut .7s ease-out forwards}
-@keyframes sparkOut{0%{transform:translate(0,0) scale(1);opacity:1}100%{transform:translate(var(--tx),var(--ty)) scale(0);opacity:0}}
-
-/* notification dot */
-.axol-notif{position:absolute;top:-2px;right:-2px;width:18px;height:18px;background:var(--gn);border-radius:50%;border:2px solid var(--bg);font-size:.65rem;font-weight:800;color:#000;display:flex;align-items:center;justify-content:center;animation:pulse 1.5s ease-in-out infinite}
-@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(29,255,138,.6)}50%{box-shadow:0 0 0 6px rgba(29,255,138,0)}}
-
-/* bubble */
-#axol-bubble{background:#0D0D22;border:1.5px solid rgba(167,139,250,.35);border-radius:20px 20px 4px 20px;padding:20px 18px 14px;width:300px;max-height:480px;display:flex;flex-direction:column;gap:10px;box-shadow:0 0 40px rgba(167,139,250,.2);display:none;animation:bubbleIn .3s ease}
-@keyframes bubbleIn{from{opacity:0;transform:translateY(10px) scale(.96)}to{opacity:1;transform:translateY(0) scale(1)}}
-#axol-bubble.on{display:flex}
-.axol-close{background:none;border:none;color:rgba(255,255,255,.4);cursor:pointer;font-size:.9rem;align-self:flex-end;padding:0;line-height:1;transition:color .2s}
-.axol-close:hover{color:#fff}
-.axol-intro-name{font-family:'Syne',sans-serif;font-weight:800;font-size:1.1rem;color:#fff;margin-bottom:8px}
-.axol-intro-name strong{color:#FF9EDB}
-.axol-intro-text{font-size:.83rem;color:rgba(255,255,255,.75);line-height:1.55}
-.axol-intro-btns{display:flex;flex-direction:column;gap:6px;margin-top:12px}
-.axol-qbtn{background:rgba(255,110,199,.1);border:1px solid rgba(255,110,199,.25);color:rgba(255,255,255,.85);border-radius:10px;padding:8px 12px;font-size:.78rem;font-family:'DM Sans',sans-serif;cursor:pointer;text-align:left;transition:all .2s}
-.axol-qbtn:hover{background:rgba(255,110,199,.2);border-color:rgba(255,110,199,.5);color:#fff}
-.axol-qbtn:last-child{background:rgba(29,255,138,.1);border-color:rgba(29,255,138,.3);color:var(--gn)}
-#axol-chat-history{max-height:180px;overflow-y:auto;display:flex;flex-direction:column;gap:8px;font-size:.82rem}
-.axol-msg-user{background:rgba(255,255,255,.08);border-radius:10px 10px 2px 10px;padding:8px 11px;color:rgba(255,255,255,.9);align-self:flex-end;max-width:90%}
-.axol-msg-axol{background:rgba(255,110,199,.1);border:1px solid rgba(255,110,199,.2);border-radius:10px 10px 10px 2px;padding:8px 11px;color:rgba(255,255,255,.85);align-self:flex-start;max-width:95%;line-height:1.5}
-.axol-input-row{display:flex;gap:8px;margin-top:4px}
-#axol-input{flex:1;background:rgba(255,255,255,.06);border:1.5px solid rgba(255,255,255,.12);border-radius:10px;padding:9px 12px;color:#fff;font-family:'DM Sans',sans-serif;font-size:.83rem;outline:none;transition:border-color .2s}
-#axol-input:focus{border-color:rgba(255,110,199,.5)}
-#axol-input::placeholder{color:rgba(255,255,255,.25)}
-.axol-send{background:linear-gradient(135deg,#FF6EC7,#c0306a);border:none;border-radius:10px;padding:0 14px;color:#fff;font-size:1rem;cursor:pointer;transition:opacity .2s}
-.axol-send:hover{opacity:.85}
-
-/* ══ NAV ══ */
-nav{position:fixed;top:0;left:0;right:0;z-index:300;display:flex;align-items:center;justify-content:space-between;padding:0 16px;height:60px;background:rgba(4,4,15,.95);backdrop-filter:blur(14px);border-bottom:1px solid rgba(255,255,255,.07);box-sizing:border-box;overflow:visible}
-nav .nav-logo{font-family:'Syne',sans-serif;font-weight:800;font-size:2.2rem;text-decoration:none;line-height:1;flex-shrink:0}
-.nav-ham{background:rgba(255,255,255,.1);border:1.5px solid rgba(255,255,255,.2);border-radius:12px;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;padding:8px 14px 6px;flex-shrink:0;min-width:56px}
-.nav-ham span{display:block;width:22px;height:2.5px;background:#fff;border-radius:3px}
-.ham-label{font-size:.55rem;font-weight:800;letter-spacing:.1em;color:rgba(255,255,255,.75);text-transform:uppercase;line-height:1}
-
-/* Drawer overlay — HIDDEN BY DEFAULT */
-#nav-drawer {
-  position: fixed; inset: 0; z-index: 400;
-  background: rgba(0,0,0,.72);
-  backdrop-filter: blur(6px);
-  display: none;
-  justify-content: flex-end;
+  text-align:center;
 }
-#nav-drawer.on { display: flex; }
-
-/* Drawer panel */
-.drawer-panel {
-  background: #09091C;
-  width: min(300px, 85vw);
-  height: 100%;
-  padding: 28px 22px;
-  overflow-y: auto;
-  border-left: 1px solid rgba(255,255,255,.08);
-  transform: translateX(100%);
-  transition: transform .3s ease;
+#hero::after{
+  content:'';position:absolute;inset:0;z-index:0;pointer-events:none;
+  background:radial-gradient(ellipse 90% 70% at 50% 40%, rgba(46,255,122,.07) 0%,transparent 65%);
 }
-#nav-drawer.on .drawer-panel { transform: translateX(0); }
-
-.drawer-close {
-  background: none; border: 1px solid rgba(255,255,255,.15);
-  color: #fff; border-radius: 50%; width: 32px; height: 32px;
-  cursor: pointer; display: flex; align-items: center;
-  justify-content: center; font-size: .9rem;
-  float: right; margin-bottom: 8px; transition: background .2s;
+.hero-content{
+  position:relative;z-index:2;
+  max-width:900px;width:100%;
 }
-.drawer-close:hover { background: rgba(255,0,204,.2); }
-
-.drawer-links {
-  display: flex; flex-direction: column; gap: 4px; clear: both; margin-top: 12px;
+.hero-badge{
+  display:inline-flex;align-items:center;gap:8px;
+  padding:6px 20px;border-radius:40px;
+  border:1px solid var(--bord2);
+  background:rgba(46,255,122,.06);
+  font-size:.68rem;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--green);margin-bottom:36px;
 }
-.drawer-links a {
-  color: rgba(255,255,255,.7); text-decoration: none;
-  font-size: .95rem; padding: 12px 14px; border-radius: 12px;
-  transition: all .2s; font-weight: 500; display: block;
+.bdot{
+  width:6px;height:6px;border-radius:50%;
+  background:var(--green);box-shadow:0 0 8px var(--green);
+  animation:bl 1.6s ease-in-out infinite;
 }
-.drawer-links a:hover { background: rgba(255,255,255,.07); color: #fff; }
-.drawer-sep { height: 1px; background: rgba(255,255,255,.08); margin: 10px 0; }
-.drawer-cta {
-  background: linear-gradient(135deg,var(--mg),var(--pu)) !important;
-  color: #fff !important; text-align: center;
-  font-weight: 700 !important;
-  box-shadow: 0 0 20px rgba(255,0,204,.3);
+@keyframes bl{0%,100%{opacity:1}50%{opacity:.15}}
+
+#hero h1{
+  font-family:'Orbitron',sans-serif;
+  font-size:clamp(2.8rem,8vw,6rem);
+  font-weight:900;line-height:1.05;
+  margin-bottom:28px;
+  color:var(--white);
+  letter-spacing:-.01em;
 }
-.drawer-ref { color: var(--gn) !important; border: 1px solid rgba(29,255,138,.2); background: rgba(29,255,138,.05) !important; }
-.drawer-item { border: 1px solid rgba(255,255,255,.08) !important; }
-
-
-
-/* Result items with blur on last */
-.res-ri{display:flex;align-items:center;gap:10px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:10px 12px;margin-bottom:7px;position:relative}
-.res-ri.blurred{filter:blur(4px);pointer-events:none;user-select:none}
-.res-ri.blurred::after{content:'🔒 Regístrate para ver';position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:.72rem;font-weight:700;color:rgba(255,255,255,.6);filter:none}
-.ri-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0}
-.ri-lbl{font-size:.82rem;font-weight:500;flex:1;color:#fff}
-.ri-pill{font-size:.68rem;font-weight:700;padding:2px 9px;border-radius:20px;border:1px solid;flex-shrink:0}
-
-/* ══ MODAL ══ */
-#ov{position:fixed;inset:0;z-index:500;background:rgba(0,0,0,.8);backdrop-filter:blur(8px);display:none;align-items:center;justify-content:center;padding:20px}
-#ov.on{display:flex}
-.modal{background:#0D0D22;border:1.5px solid rgba(255,0,204,.25);border-radius:24px;padding:28px 24px;width:100%;max-width:520px;max-height:90vh;overflow-y:auto;position:relative}
-.modal::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--mg),var(--cy),var(--gn));border-radius:24px 24px 0 0}
-.mc{position:absolute;top:14px;right:14px;background:none;border:1px solid rgba(255,255,255,.2);color:#fff;border-radius:50%;width:30px;height:30px;cursor:pointer;font-size:.85rem;display:flex;align-items:center;justify-content:center}
-.modal-t{font-family:'Syne',sans-serif;font-weight:800;font-size:1.2rem;margin-bottom:4px}
-.modal-s{font-size:.8rem;color:var(--mu);margin-bottom:20px}
-.drop-area{border:2px dashed rgba(255,255,255,.15);border-radius:16px;padding:28px 20px;text-align:center;cursor:pointer;transition:all .2s;margin-bottom:16px;background:rgba(255,255,255,.02)}
-.drop-area:hover,.drop-area.drag{border-color:var(--mg);background:rgba(255,0,204,.05)}
-.drop-icon{font-size:2rem;margin-bottom:8px}
-.drop-title{font-weight:700;font-size:.95rem;margin-bottom:4px}
-.drop-sub{font-size:.78rem;color:var(--mu)}
-.drop-types{display:flex;gap:6px;justify-content:center;flex-wrap:wrap;margin-top:10px;font-size:.72rem;color:var(--mu)}
-#m-file-input{display:none}
-#m-preview{display:none;margin-bottom:12px;border-radius:12px;overflow:hidden;position:relative}
-#m-preview img{width:100%;max-height:200px;object-fit:cover;border-radius:12px}
-.m-preview-del{position:absolute;top:8px;right:8px;background:rgba(0,0,0,.7);border:none;color:#fff;border-radius:50%;width:28px;height:28px;cursor:pointer;font-size:.8rem}
-#m-ta{width:100%;background:rgba(255,255,255,.05);border:1.5px solid rgba(255,255,255,.1);border-radius:12px;padding:12px;color:#fff;font-family:'DM Sans',sans-serif;font-size:.88rem;resize:vertical;min-height:80px;outline:none;margin-bottom:12px}
-#m-ta:focus{border-color:var(--cy)}
-#m-ta::placeholder{color:rgba(255,255,255,.25)}
-.m-submit{width:100%;padding:14px;border:none;border-radius:14px;cursor:pointer;font-family:'Syne',sans-serif;font-weight:800;font-size:1rem;color:#fff;background:linear-gradient(135deg,var(--mg),var(--pu));box-shadow:0 0 24px rgba(255,0,204,.4);transition:all .2s;position:relative;overflow:hidden}
-.m-submit:hover{transform:translateY(-2px);box-shadow:0 0 40px rgba(255,0,204,.6)}
-.m-note{text-align:center;font-size:.72rem;color:var(--mu);margin-top:8px}
-/* Loading state */
-#m-loading{display:none;text-align:center;padding:20px 0}
-.m-load{display:none}
-.m-res{display:none}
-.m-load.on{display:block}
-.m-res.on{display:block}
-.m-load-title{font-family:'Syne',sans-serif;font-weight:800;font-size:1.1rem;margin-bottom:6px}
-.m-load-sub{font-size:.83rem;color:var(--mu);margin-bottom:20px}
-.m-steps{display:flex;flex-direction:column;gap:10px;text-align:left}
-.m-step{display:flex;align-items:center;gap:10px;font-size:.85rem;color:rgba(255,255,255,.6)}
-.m-step.active{color:#fff}
-.m-step-dot{width:10px;height:10px;border-radius:50%;background:rgba(255,255,255,.15);flex-shrink:0}
-.m-step.active .m-step-dot{background:var(--cy);box-shadow:0 0 8px var(--cy);animation:pulse 1s ease infinite}
-/* Result state */
-#m-result{display:none}
-.drawer-admin{color:var(--yw)!important;border:1px solid rgba(255,229,0,.2)!important;background:rgba(255,229,0,.04)!important}
-
-/* ══ LOGO ANIMADO ══ */
-nav .nav-logo span {
-  display: inline-block;
-  animation: letterPulse 2.5s ease-in-out infinite;
-  transition: text-shadow .3s;
+#hero h1 em{
+  font-style:normal;
+  background:linear-gradient(135deg,var(--green),#8AFFE0);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
 }
-nav .nav-logo span:nth-child(1){color:#FF00CC;text-shadow:0 0 12px #FF00CC;animation-delay:0s}
-nav .nav-logo span:nth-child(2){color:#FF6B1A;text-shadow:0 0 12px #FF6B1A;animation-delay:.18s}
-nav .nav-logo span:nth-child(3){color:#FFE500;text-shadow:0 0 12px #FFE500;animation-delay:.36s}
-nav .nav-logo span:nth-child(4){color:#1DFF8A;text-shadow:0 0 12px #1DFF8A;animation-delay:.54s}
-nav .nav-logo span:nth-child(5){color:#00F0FF;text-shadow:0 0 12px #00F0FF;animation-delay:.72s}
-nav .nav-logo span:nth-child(6){color:#3D7EFF;text-shadow:0 0 12px #3D7EFF;animation-delay:.90s}
-nav .nav-logo span:nth-child(7){color:#C400FF;text-shadow:0 0 12px #C400FF;animation-delay:1.08s}
+.hero-sub{
+  font-size:1.15rem;color:var(--muted);
+  line-height:1.75;margin-bottom:44px;
+  max-width:620px;margin-left:auto;margin-right:auto;
+}
+.hero-sub strong{color:var(--white);}
+.hero-btns{display:flex;gap:14px;flex-wrap:wrap;justify-content:center;}
 
-@keyframes letterPulse {
-  0%,100% { transform: translateY(0) scale(1); filter: brightness(1); }
-  50%      { transform: translateY(-4px) scale(1.08); filter: brightness(1.6); }
+.hero-deco{display:none;}
+
+/* ─── BOTONES ─── */
+.btn-g{
+  display:inline-flex;align-items:center;gap:9px;
+  padding:13px 30px;
+  background:linear-gradient(135deg,var(--green2),var(--green));
+  color:#0B1A0E;font-family:'Orbitron',sans-serif;
+  font-weight:700;font-size:.76rem;letter-spacing:.1em;
+  border:none;border-radius:10px;cursor:pointer;
+  box-shadow:0 4px 24px rgba(46,255,122,.25);
+  transition:all .3s;text-decoration:none;
+}
+.btn-g:hover{transform:translateY(-2px);box-shadow:0 6px 36px rgba(46,255,122,.4);}
+.btn-o{
+  display:inline-flex;align-items:center;gap:9px;
+  padding:12px 26px;background:transparent;
+  color:var(--white);font-family:'Orbitron',sans-serif;
+  font-weight:600;font-size:.73rem;letter-spacing:.09em;
+  border:1px solid rgba(255,255,255,.2);border-radius:10px;
+  cursor:pointer;transition:all .3s;text-decoration:none;
+}
+.btn-o:hover{background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.4);}
+
+/* ─── SECCIÓN ─── */
+.section{padding:80px 0;}
+.section-inner{max-width:1000px;margin:0 auto;padding:0 5%;}
+.sec-tag{
+  display:inline-block;
+  font-family:'Orbitron',sans-serif;font-size:.62rem;
+  letter-spacing:.18em;text-transform:uppercase;
+  color:var(--green);padding-left:12px;
+  border-left:2px solid var(--green);
+  margin-bottom:10px;
+}
+.sec-h{
+  font-family:'Orbitron',sans-serif;
+  font-size:clamp(1.3rem,3vw,2.1rem);
+  font-weight:900;margin-bottom:12px;
+  color:var(--white);line-height:1.2;
+}
+.sec-p{
+  font-size:1rem;color:var(--muted);
+  max-width:580px;line-height:1.75;margin-bottom:40px;
 }
 
-nav .nav-logo:hover span {
-  animation-play-state: running;
-  filter: brightness(2);
+.divider{
+  height:1px;
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,.08),transparent);
+  margin:0;
 }
 
+/* ─── QUÉ INCLUYE ─── */
+.incluye-grid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:12px;
+}
+@media(max-width:680px){.incluye-grid{grid-template-columns:1fr 1fr;}}
+@media(max-width:400px){.incluye-grid{grid-template-columns:1fr;}}
+
+.incluye-card{
+  padding:16px;border-radius:14px;
+  background:var(--card);border:1px solid var(--bord);
+  display:flex;gap:12px;align-items:flex-start;
+  transition:border-color .3s, background .3s;
+}
+.incluye-card:hover{background:var(--card2);border-color:rgba(255,255,255,.18);}
+.incluye-icon{font-size:1.4rem;flex-shrink:0;margin-top:1px;}
+.incluye-nom{
+  font-family:'Orbitron',sans-serif;font-size:.63rem;
+  font-weight:700;letter-spacing:.06em;margin-bottom:4px;
+}
+.incluye-desc{font-size:.82rem;color:var(--muted);line-height:1.45;}
+
+/* ─── PERFILES ─── */
+.perfil-grid{display:flex;flex-direction:column;gap:12px;}
+
+.perfil{
+  background:var(--card);
+  border:1px solid var(--bord);
+  border-radius:16px;overflow:hidden;
+  transition:border-color .3s, background .3s;
+}
+.perfil:hover{background:var(--card2);border-color:rgba(255,255,255,.18);}
+
+.phdr{
+  display:flex;align-items:center;gap:16px;
+  padding:18px 22px;cursor:pointer;
+}
+.pletra{
+  font-family:'Orbitron',sans-serif;
+  font-size:1.7rem;font-weight:900;
+  width:44px;flex-shrink:0;text-align:center;
+}
+.pintro{flex:1;}
+.pnom{
+  font-family:'Orbitron',sans-serif;
+  font-size:.72rem;font-weight:700;
+  letter-spacing:.08em;text-transform:uppercase;margin-bottom:2px;
+}
+.ptag{font-size:.9rem;color:var(--muted);}
+.parr{font-size:1.1rem;color:var(--muted);transition:transform .35s,color .3s;flex-shrink:0;}
+.perfil.open .parr{transform:rotate(90deg);color:var(--white);}
+
+.pbody{max-height:0;overflow:hidden;transition:max-height .45s ease;padding:0 22px;}
+.perfil.open .pbody{max-height:900px;padding-bottom:22px;}
+
+.pdesc{
+  font-size:.95rem;color:var(--muted);line-height:1.75;
+  padding:14px 0 16px;
+  border-top:1px solid var(--bord);
+}
+.pdesc strong{color:var(--white);}
+
+.dgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px;}
+@media(max-width:480px){.dgrid{grid-template-columns:1fr;}}
+.dato{
+  padding:12px 14px;border-radius:10px;
+  background:rgba(255,255,255,.04);
+  border:1px solid var(--bord);
+}
+.dlbl{
+  font-family:'Orbitron',sans-serif;font-size:.55rem;
+  letter-spacing:.12em;text-transform:uppercase;margin-bottom:4px;
+}
+.dval{font-size:.88rem;color:var(--white);line-height:1.4;}
+
+.dlabel{
+  font-family:'Orbitron',sans-serif;font-size:.58rem;
+  letter-spacing:.1em;text-transform:uppercase;
+  color:var(--green);margin-bottom:9px;
+}
+.dolores{display:flex;flex-direction:column;gap:6px;margin-bottom:16px;}
+.dolor{
+  font-size:.9rem;color:var(--muted);line-height:1.5;
+  padding-left:16px;position:relative;
+}
+.dolor::before{
+  content:'·';position:absolute;left:0;
+  font-size:1.4rem;line-height:1;top:-1px;
+}
+
+.pcta{
+  display:flex;align-items:center;justify-content:space-between;
+  flex-wrap:wrap;gap:12px;
+  padding:14px 16px;border-radius:12px;
+  background:rgba(255,255,255,.04);
+  border:1px solid var(--bord);
+}
+.pcta p{font-size:.88rem;color:var(--muted);line-height:1.5;}
+.pcta p strong{color:var(--white);}
+.btn-sm{
+  display:inline-flex;align-items:center;gap:6px;
+  padding:9px 18px;border-radius:8px;
+  font-family:'Orbitron',sans-serif;font-weight:700;
+  font-size:.67rem;letter-spacing:.07em;
+  border:none;cursor:pointer;text-decoration:none;
+  color:#0B1A0E;transition:all .25s;flex-shrink:0;
+}
+.btn-sm:hover{filter:brightness(1.1);transform:translateY(-1px);}
+
+/* ─── GALERÍA ─── */
+.gal-intro{
+  padding:24px 26px;border-radius:16px;
+  background:var(--card);
+  border:1px solid var(--bord);
+  margin-bottom:28px;
+}
+.gal-intro p{font-size:.97rem;color:var(--muted);line-height:1.75;margin-bottom:8px;}
+.gal-intro p:last-child{margin-bottom:0;}
+.gal-intro strong{color:var(--white);}
+
+.gal-grid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:14px;
+}
+@media(max-width:600px){.gal-grid{grid-template-columns:repeat(2,1fr);}}
+@media(max-width:380px){.gal-grid{grid-template-columns:1fr;}}
+
+.gcard{
+  border-radius:16px;overflow:hidden;
+  background:var(--bg2);
+  border:1px solid var(--bord);
+  transition:all .3s;cursor:pointer;
+  display:flex;flex-direction:column;
+}
+.gcard:hover{
+  border-color:rgba(46,255,122,.3);
+  transform:translateY(-4px);
+  box-shadow:0 12px 40px rgba(0,0,0,.4);
+}
+
+.gcard-img{
+  height:120px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:2.6rem;
+  position:relative;overflow:hidden;
+}
+.gcard-img::after{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(180deg,transparent 40%,var(--bg2) 100%);
+}
+
+.gcard-body{padding:14px 14px 16px;}
+.gcard-tag{
+  display:inline-block;
+  padding:2px 9px;border-radius:20px;
+  font-family:'Orbitron',sans-serif;font-size:.55rem;
+  letter-spacing:.08em;font-weight:700;margin-bottom:7px;
+}
+.tg-free{background:rgba(46,255,122,.15);color:var(--green);border:1px solid rgba(46,255,122,.25);}
+.tg-gal{background:rgba(240,192,64,.12);color:var(--gold);border:1px solid rgba(240,192,64,.22);}
+.tg-mem{background:rgba(255,122,46,.12);color:var(--orange);border:1px solid rgba(255,122,46,.22);}
+
+.gcard-nom{
+  font-family:'Orbitron',sans-serif;font-size:.72rem;
+  font-weight:700;letter-spacing:.05em;
+  color:var(--white);margin-bottom:5px;
+}
+.gcard-desc{font-size:.8rem;color:var(--muted);line-height:1.45;}
+
+/* ─── PLANES ─── */
+.planes-grid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:16px;
+}
+@media(max-width:680px){.planes-grid{grid-template-columns:1fr;}}
+
+.plan{
+  border-radius:18px;padding:26px 22px;
+  background:var(--card);
+  border:1px solid var(--bord);
+  display:flex;flex-direction:column;
+  transition:transform .3s,box-shadow .3s;
+  position:relative;overflow:hidden;
+}
+.plan:hover{transform:translateY(-4px);}
+
+.plan.feat{
+  border-color:rgba(46,255,122,.35);
+  background:rgba(46,255,122,.04);
+  box-shadow:0 0 40px rgba(46,255,122,.08);
+}
+.plan.feat::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:2px;
+  background:linear-gradient(90deg,transparent,var(--green),transparent);
+}
+.plan-badge{
+  position:absolute;top:14px;right:14px;
+  padding:3px 10px;border-radius:20px;
+  font-family:'Orbitron',sans-serif;font-size:.54rem;
+  letter-spacing:.1em;text-transform:uppercase;
+  background:rgba(46,255,122,.15);color:var(--green);
+  border:1px solid rgba(46,255,122,.28);
+}
+.plan-nom{
+  font-family:'Orbitron',sans-serif;font-size:.66rem;
+  letter-spacing:.12em;text-transform:uppercase;margin-bottom:4px;
+}
+.plan-perf{font-size:.85rem;color:var(--muted);margin-bottom:16px;}
+.plan-precio{
+  font-family:'Orbitron',sans-serif;margin-bottom:3px;
+  display:flex;align-items:baseline;gap:4px;
+}
+.plan-n{font-size:2.2rem;font-weight:900;}
+.plan-m{font-size:.8rem;color:var(--muted);}
+.plan-per{font-size:.73rem;color:var(--muted);margin-bottom:20px;}
+.plan-items{
+  list-style:none;flex:1;margin-bottom:20px;
+  display:flex;flex-direction:column;gap:7px;
+}
+.plan-items li{
+  font-size:.87rem;color:var(--muted);
+  display:flex;align-items:flex-start;gap:8px;line-height:1.4;
+}
+.plan-items li.hi{color:var(--white);}
+.plan-items li::before{
+  content:'✓';flex-shrink:0;
+  font-size:.76rem;margin-top:2px;font-weight:700;
+}
+.plan-btn{
+  display:flex;align-items:center;justify-content:center;gap:7px;
+  padding:12px 16px;border-radius:10px;
+  font-family:'Orbitron',sans-serif;font-weight:700;
+  font-size:.7rem;letter-spacing:.09em;
+  border:none;cursor:pointer;text-decoration:none;
+  transition:all .3s;width:100%;
+}
+.plan-btn:hover{transform:translateY(-1px);}
+.plan-nota{
+  text-align:center;font-size:.72rem;
+  color:var(--muted);margin-top:8px;line-height:1.5;
+}
+
+/* ─── AFILIADOS ─── */
+.ciclo-grid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:12px;margin-bottom:24px;
+}
+@media(max-width:680px){.ciclo-grid{grid-template-columns:1fr;}}
+
+.cpaso{
+  padding:20px 18px;border-radius:14px;
+  background:var(--card);border:1px solid var(--bord);
+}
+.cnum{
+  font-family:'Orbitron',sans-serif;font-size:.58rem;
+  letter-spacing:.12em;color:var(--green);margin-bottom:8px;
+}
+.ctit{
+  font-family:'Orbitron',sans-serif;font-size:.8rem;
+  font-weight:700;margin-bottom:7px;color:var(--white);
+}
+.cdesc{font-size:.86rem;color:var(--muted);line-height:1.55;}
+
+.ganas-grid{
+  display:grid;grid-template-columns:repeat(4,1fr);
+  gap:12px;margin-bottom:28px;
+}
+@media(max-width:680px){.ganas-grid{grid-template-columns:repeat(2,1fr);}}
+.gana{
+  padding:18px 16px;border-radius:14px;
+  background:var(--card);border:1px solid var(--bord);
+  text-align:center;
+}
+.gana-n{
+  font-family:'Orbitron',sans-serif;font-size:1.6rem;font-weight:900;
+  color:var(--green);margin-bottom:6px;
+}
+.gana-d{font-size:.82rem;color:var(--muted);line-height:1.4;}
+
+/* ─── CTA FINAL ─── */
+.cta-wrap{
+  padding:56px 40px;border-radius:20px;
+  background:var(--card);
+  border:1px solid rgba(46,255,122,.15);
+  text-align:center;position:relative;overflow:hidden;
+}
+.cta-wrap::before{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse 70% 60% at 50% 50%,rgba(46,255,122,.05) 0%,transparent 70%);
+  pointer-events:none;
+}
+.cta-wrap h2{
+  font-family:'Orbitron',sans-serif;
+  font-size:clamp(1.3rem,3vw,2.2rem);
+  font-weight:900;margin-bottom:16px;
+  color:var(--white);line-height:1.2;position:relative;
+}
+.cta-wrap p{font-size:1rem;color:var(--muted);line-height:1.75;max-width:500px;margin:0 auto 10px;position:relative;}
+.cta-btns{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;margin-top:28px;position:relative;}
+.cta-nota{font-size:.73rem;color:var(--muted);margin-top:16px;position:relative;letter-spacing:.05em;}
+
+/* ─── ASISTENTE ─── */
+#asib{
+  position:fixed;bottom:20px;right:20px;z-index:300;
+  width:52px;height:52px;border-radius:50%;
+  background:linear-gradient(135deg,#0A3D1C,var(--green));
+  border:none;cursor:pointer;font-size:1.3rem;
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:0 4px 24px rgba(46,255,122,.35);transition:transform .3s;
+}
+#asib:hover{transform:scale(1.1);}
+#asip{
+  position:fixed;bottom:80px;right:20px;
+  width:min(295px,calc(100vw-40px));
+  border-radius:18px;z-index:300;
+  background:rgba(11,26,14,.99);
+  border:1px solid rgba(46,255,122,.2);
+  box-shadow:0 20px 60px rgba(0,0,0,.7);
+  display:none;animation:sup .22s ease;
+}
+@keyframes sup{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+#asip.open{display:block;}
+.ash{padding:12px 16px;border-bottom:1px solid var(--bord);display:flex;align-items:center;gap:9px;background:rgba(46,255,122,.03);}
+.asav{width:30px;height:30px;border-radius:50%;background:linear-gradient(135deg,#0A3D1C,#7A4A00);display:flex;align-items:center;justify-content:center;font-size:.85rem;}
+.asnm{font-family:'Orbitron',sans-serif;font-size:.64rem;color:var(--green);letter-spacing:.04em;}
+.asst{font-size:.6rem;color:var(--muted);}
+#asmsg{padding:11px 16px;font-size:.84rem;color:var(--muted);line-height:1.6;border-bottom:1px solid var(--bord);}
+.asopts{padding:9px 12px;display:flex;flex-direction:column;gap:6px;}
+.aso{
+  padding:8px 12px;border-radius:8px;
+  border:1px solid var(--bord);background:transparent;
+  cursor:pointer;font-family:'Rajdhani',sans-serif;
+  font-size:.84rem;font-weight:500;color:var(--muted);
+  text-align:left;transition:all .2s;
+}
+.aso:hover{border-color:var(--green);color:var(--white);background:rgba(46,255,122,.05);}
+
+/* ─── SCROLL REVEAL ─── */
+.reveal{opacity:0;transform:translateY(24px);transition:opacity .6s,transform .6s;}
+.reveal.vis{opacity:1;transform:translateY(0);}
 </style>
 </head>
 <body>
-<canvas id="bgC"></canvas>
 
-<!-- NAV -->
-<nav>
-  <a class="logo nav-logo" href="#"><span>d</span><span>ª</span><span>t</span><span>ª</span><span>b</span><span>l</span><span>ɛ</span></a>
-  <button class="nav-ham" onclick="toggleMenu()" id="ham-btn">
-    <span></span><span></span><span></span>
-    <div class="ham-label">MENÚ</div>
-  </button>
-</nav>
-<!-- DRAWER MENU -->
-<div id="nav-drawer" onclick="closeMenuBg(event)">
-  <div class="drawer-panel">
-    <button class="drawer-close" onclick="toggleMenu()">✕</button>
-    <a class="logo" href="#" style="display:block;margin-bottom:28px"><span>d</span><span>ª</span><span>t</span><span>ª</span><span>b</span><span>l</span><span>ɛ</span></a>
-    <nav class="drawer-links">
-      <a href="#como" onclick="toggleMenu()">Cómo funciona</a>
-      <a href="#detecta" onclick="toggleMenu()">Qué resolvemos</a>
-      <a href="#precios" onclick="toggleMenu()">Precios</a>
-      <div class="drawer-sep"></div>
-      <a href="#" onclick="toggleMenu();openModal();" class="drawer-cta">⚡ Análisis gratis</a>
-      <div class="drawer-sep"></div>
-      <a href="dashboard.html" class="drawer-item" id="drawer-login">→ Iniciar sesión</a>
-      <a href="embajadores.html" class="drawer-item drawer-ref">🤝 Ser Embajador dªtªblɛ</a>
-      <a href="admin.html" class="drawer-item drawer-admin" id="drawer-admin" style="display:none">⚙️ Panel Admin</a>
-    </nav>
-  </div>
+<!-- ══ TOPBAR ══ -->
+<div id="top">
+  <div class="logo">Dªtªblɛ</div>
+  <ul class="nav-links">
+    <li><a href="#incluye">Qué incluye</a></li>
+    <li><a href="#perfiles">Perfiles</a></li>
+    <li><a href="#galeria">Galería</a></li>
+    <li><a href="#planes">Planes</a></li>
+    <li><a href="#afiliados">Afiliados</a></li>
+  </ul>
+  <div id="clk"><div id="ct">--:--:--</div><div id="cd">---</div></div>
 </div>
 
-<main>
-
-<!-- ══════ HERO ══════ -->
+<!-- ══ HERO ══ -->
 <section id="hero">
-  <div class="eyebrow">Digitalización de negocios · Diagnóstico en 30 segundos</div>
-  <h1 class="hero-h1">
-    <span class="h1-wh">Tu negocio puede</span>
-    <span class="h1-grad">crecer sin límites.</span>
-  </h1>
-  <p class="hero-p">
-    Mándanos una foto, un Excel, o cuéntanos cómo funciona tu negocio hoy. <strong>En 30 segundos te mostramos exactamente qué puedes optimizar y cómo escalar.</strong> Sin tecnicismos, sin reuniones, sin costo.
-  </p>
-  <div class="hero-btns">
-    <button class="btn-marquee" onclick="openModal()" style="font-size:1rem;padding:16px 36px">
-      👆 Quiero mi diagnóstico gratis
-      <div class="lights" id="hero-lights"></div>
-    </button>
-    <a class="btn-ghost" href="#como">¿Cómo funciona? →</a>
-  </div>
-
-  <div class="ucard">
-    <span class="ucard-emoji">👆</span>
-    <div class="ucard-title">Mándanos lo que tengas</div>
-    <div class="ucard-sub">Una foto de tu agenda, tu Excel, una foto de tu negocio, una nota a mano — cualquier cosa sirve. Si no tienes nada, cuéntanos con palabras cómo funciona tu negocio.</div>
-    <div class="fmt-row">
-      <span class="fmt">📸 Foto de tu negocio</span>
-      <span class="fmt">📊 Tu Excel</span>
-      <span class="fmt">📄 Cualquier documento</span>
-      <span class="fmt">✍️ Cuéntanos con palabras</span>
-    </div>
-    <textarea class="ucard-ta" id="hero-ta" placeholder="Ejemplo: Soy masajista a domicilio, mis clientes me escriben por WhatsApp y yo anoto todo en un cuaderno. A veces se me olvidan citas. Quiero organizar mejor mis pagos y mis clientes..."></textarea>
-    <button class="btn-marquee" onclick="openModalWithText()" style="width:100%;justify-content:center;font-size:1rem">
-      📤 Digitalizar mi negocio — es gratis
-      <div class="lights" id="ucard-lights"></div>
-    </button>
-  </div>
-
-  <div class="hstats">
-    <div class="hs"><div class="hs-n" style="color:var(--mg)">30s</div><div class="hs-l">Para tu diagnóstico</div></div>
-    <div class="hs"><div class="hs-n" style="color:var(--cy)">$0</div><div class="hs-l">Costo del análisis</div></div>
-    <div class="hs"><div class="hs-n" style="color:var(--gn)">100%</div><div class="hs-l">Hecho para tu negocio</div></div>
-    <div class="hs"><div class="hs-n" style="color:var(--yw)">+200</div><div class="hs-l">Negocios ya analizados</div></div>
-  </div>
-</section>
-
-<!-- ══════ CÓMO FUNCIONA ══════ -->
-<section class="sec" id="como">
-  <div class="wrap">
-    <div class="rv">
-      <div class="st-ey">Paso a paso</div>
-      <h2 class="st-h2">Así de fácil<br><span style="background:linear-gradient(90deg,var(--mg),var(--cy));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">es empezar.</span></h2>
-      <p class="st-p">No necesitas saber de tecnología. No necesitas preparar nada. Solo cuéntanos cómo trabajas hoy.</p>
-    </div>
-    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px;margin-top:50px" class="rv">
-
-      <div class="gc step-card" style="--ac:var(--mg)">
-        <div class="sc-num">01</div>
-        <span class="sc-icon">📸</span>
-        <div class="sc-title">Mándanos algo de tu negocio</div>
-        <div class="sc-desc">Una foto, un Excel, una nota escrita a mano, una captura de tu WhatsApp de trabajo — cualquier cosa. O simplemente escribe cómo funciona tu día a día.</div>
-        <span class="step-tag">⚡ 1 minuto</span>
-      </div>
-
-      <div class="gc step-card" style="--ac:var(--cy)">
-        <div class="sc-num">02</div>
-        <span class="sc-icon">🔬</span>
-        <div class="sc-title">Nuestro equipo lo analiza</div>
-        <div class="sc-desc">Nuestra metodología propia, desarrollada con cientos de negocios reales, identifica en segundos las mejores oportunidades de crecimiento para tu negocio.</div>
-        <span class="step-tag">🔍 30 segundos</span>
-      </div>
-
-      <div class="gc step-card" style="--ac:var(--gn)">
-        <div class="sc-num">03</div>
-        <span class="sc-icon">📋</span>
-        <div class="sc-title">Recibes tu plan personalizado</div>
-        <div class="sc-desc">Te decimos exactamente qué está fallando en tu negocio, qué arreglar primero y cuánto dinero puedes recuperar. Sin tecnicismos. Sin palabras raras.</div>
-        <span class="step-tag">✅ Listo para actuar</span>
-      </div>
-
-      <div class="gc step-card" style="--ac:var(--yw)">
-        <div class="sc-num">04</div>
-        <span class="sc-icon">🎯</span>
-        <div class="sc-title">Ve tu negocio funcionando</div>
-        <div class="sc-desc">Accede a una demostración con datos de tu negocio real — ve cómo se vería todo organizado: tus clientes, tus ingresos, tus procesos automáticos.</div>
-        <span class="step-tag">👀 Una vez gratis</span>
-      </div>
-
-      <div class="gc step-card" style="--ac:var(--or)">
-        <div class="sc-num">05</div>
-        <span class="sc-icon">🚀</span>
-        <div class="sc-title">Tu negocio en modo automático</div>
-        <div class="sc-desc">Por $499 pesos al mes tienes todo el sistema activo: clientes organizados, seguimientos automáticos, reportes listos. Sin pagar software caro de otras marcas.</div>
-        <span class="step-tag">💳 $499 MXN/mes</span>
-      </div>
-
+  <div class="hero-content">
+    <div class="hero-badge"><div class="bdot"></div>Potencializando tus activos · Digitalizando tu tiempo</div>
+    <h1>Cartografía<br>digital.<br><em>De la mano.</em></h1>
+    <p class="hero-sub">
+      No importa en qué etapa estás. Datable te entrega el mapa exacto,
+      las herramientas para ejecutarlo y <strong>el sistema para que funcione sin que todo dependa de ti.</strong>
+    </p>
+    <div class="hero-btns">
+      <a href="https://app.datable.com.mx/registro" class="btn-g" target="_blank">Comenzar ahora →</a>
+      <a href="#perfiles" class="btn-o">¿Cuál es mi perfil?</a>
     </div>
   </div>
-</section>
-
-<!-- ══════ QUÉ RESOLVEMOS ══════ -->
-<section class="sec" id="detecta" style="background:linear-gradient(180deg,transparent,rgba(255,0,204,.03),transparent)">
-  <div class="wrap">
-    <div class="rv">
-      <div class="st-ey">Lo que transformamos</div>
-      <h2 class="st-h2">¿Reconoces<br><span style="color:var(--mg);text-shadow:0 0 16px var(--mg)">alguna de estas situaciones?</span></h2>
-      <p class="st-p">Estas son las oportunidades de crecimiento más comunes que detectamos en los negocios que trabajan con nosotros.</p>
-    </div>
-    <div class="dg rv">
-      <div class="dc" style="--ac:var(--mg);background:rgba(255,0,204,.05);border-color:rgba(255,0,204,.25)">
-        <span class="dc-icon">😩</span>
-        <h3>✦ Seguimiento de clientes sin esfuerzo</h3>
-        <p>Con un sistema organizado, ningún cliente queda sin atención. Automatiza el seguimiento y haz que regresen solos.</p>
-      </div>
-      <div class="dc" style="--ac:var(--cy);background:rgba(0,240,255,.05);border-color:rgba(0,240,255,.25)">
-        <span class="dc-icon">📋</span>
-        <h3>✦ Toda tu información en un solo lugar</h3>
-        <p>Imagina tener toda la información de tu negocio accesible en segundos, desde cualquier dispositivo, en cualquier momento.</p>
-      </div>
-      <div class="dc" style="--ac:var(--gn);background:rgba(29,255,138,.05);border-color:rgba(29,255,138,.25)">
-        <span class="dc-icon">🧑‍💼</span>
-        <h3>✦ Tu negocio funciona aunque no estés</h3>
-        <p>Automatiza los procesos clave para que tu negocio opere solo, aunque estés de vacaciones o atendiendo otros proyectos.</p>
-      </div>
-      <div class="dc" style="--ac:var(--yw);background:rgba(255,229,0,.05);border-color:rgba(255,229,0,.25)">
-        <span class="dc-icon">💸</span>
-        <h3>✦ Tus números siempre claros</h3>
-        <p>Un tablero con tus métricas en tiempo real. Sabe exactamente cuánto entraste, cuánto salió y hacia dónde va tu negocio.</p>
-      </div>
-      <div class="dc" style="--ac:var(--or);background:rgba(255,107,26,.05);border-color:rgba(255,107,26,.25)">
-        <span class="dc-icon">⏱️</span>
-        <h3>✦ Tareas repetitivas en piloto automático</h3>
-        <p>Cotizaciones, confirmaciones, recordatorios, reportes — todo automático. Libera tu tiempo para lo que realmente importa: crecer.</p>
-      </div>
-      <div class="dc" style="--ac:var(--pu);background:rgba(196,0,255,.05);border-color:rgba(196,0,255,.25)">
-        <span class="dc-icon">😰</span>
-        <h3>✦ Crece con estructura y sin límites</h3>
-        <p>Con procesos digitalizados, escalar es simple. Más clientes, más sucursales, más ingresos — sin que nada se descontrole.</p>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ══════ DASHBOARD ══════ -->
-<section class="sec" id="dashboard" style="background:linear-gradient(180deg,transparent,rgba(0,240,255,.03),transparent)">
-  <div class="wrap">
-    <div class="rv">
-      <div class="st-ey">El sistema completo</div>
-      <h2 class="st-h2">Todo tu negocio<br><span style="color:var(--cy);text-shadow:0 0 14px var(--cy)">en una sola pantalla.</span></h2>
-      <p class="st-p">Una vez que te suscribes, accedes a todas las herramientas. Sin aprender nada complicado — todo diseñado para que cualquier persona lo use desde el primer día.</p>
-    </div>
-    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:12px;margin-top:50px" class="rv">
-      <div class="nc" style="--ac:var(--mg)"><div style="font-size:1.7rem;margin-bottom:9px">⚡</div><div style="font-family:'Syne',sans-serif;font-weight:700;font-size:.93rem;margin-bottom:5px;color:var(--mg)">Tareas automáticas</div><div style="font-size:.79rem;color:var(--mu);line-height:1.55">Las cosas que haces todos los días, ahora se hacen solas.</div></div>
-      <div class="nc" style="--ac:var(--cy)"><div style="font-size:1.7rem;margin-bottom:9px">📊</div><div style="font-family:'Syne',sans-serif;font-weight:700;font-size:.93rem;margin-bottom:5px;color:var(--cy)">Tus números</div><div style="font-size:.79rem;color:var(--mu);line-height:1.55">Cuánto entraste, cuánto salió, cuántos clientes nuevos — todo visible en un clic.</div></div>
-      <div class="nc" style="--ac:var(--gn)"><div style="font-size:1.7rem;margin-bottom:9px">👥</div><div style="font-family:'Syne',sans-serif;font-weight:700;font-size:.93rem;margin-bottom:5px;color:var(--gn)">Tus clientes</div><div style="font-size:.79rem;color:var(--mu);line-height:1.55">Todos en un lugar. Sus datos, su historial, cuándo fue la última vez que compraron.</div></div>
-      <div class="nc" style="--ac:var(--yw)"><div style="font-size:1.7rem;margin-bottom:9px">🧩</div><div style="font-family:'Syne',sans-serif;font-weight:700;font-size:.93rem;margin-bottom:5px;color:var(--yw)">Módulos extra</div><div style="font-size:.79rem;color:var(--mu);line-height:1.55">Cotizador, agenda, inventario — agrega lo que necesites cuando lo necesites.</div></div>
-      <div class="nc" style="--ac:var(--or)"><div style="font-size:1.7rem;margin-bottom:9px">🎁</div><div style="font-family:'Syne',sans-serif;font-weight:700;font-size:.93rem;margin-bottom:5px;color:var(--or)">Recomienda y gana</div><div style="font-size:.79rem;color:var(--mu);line-height:1.55">Invita a otros negocios y gana un mes gratis por cada uno que se una.</div></div>
-      <div class="nc" style="--ac:var(--pu)"><div style="font-size:1.7rem;margin-bottom:9px">💬</div><div style="font-family:'Syne',sans-serif;font-weight:700;font-size:.93rem;margin-bottom:5px;color:var(--pu)">Pregúntale al sistema</div><div style="font-size:.79rem;color:var(--mu);line-height:1.55">¿Tienes una duda sobre tu negocio? El sistema te responde al instante.</div></div>
-    </div>
-  </div>
-</section>
-
-<!-- ══════ VENDEDORES ══════ -->
-<section class="sec" id="vendedores">
-  <div class="wrap">
-    <div class="rv">
-      <div class="st-ey">Para los que quieren ganar más</div>
-      <h2 class="st-h2">¿Conoces negocios<br><span style="background:linear-gradient(90deg,var(--gn),var(--cy));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">que necesitan esto?</span></h2>
-      <p class="st-p">Comparte dªtªblɛ con negocios de tu comunidad y gana dinero por cada uno que se una. Sin ser empleado, sin horario fijo.</p>
-    </div>
-    <div class="ag-grid rv">
-      <div class="ag-card" style="--ac:var(--mg)">
-        <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:1.02rem;margin-bottom:7px;color:var(--mg)">💳 Primera mensualidad = tuya</div>
-        <div style="font-size:.82rem;color:var(--mu);line-height:1.6;margin-bottom:12px">Cuando alguien se une por tu recomendación, el primer pago completo es para ti. Si se suscriben a $499 MXN, tú recibes $499 MXN.</div>
-        <div class="comm-row"><div class="comm-n" style="color:var(--mg)">100%</div><div style="font-size:.75rem;color:var(--mu);line-height:1.3">del primer pago<br>de tu recomendado</div></div>
-      </div>
-      <div class="ag-card" style="--ac:var(--cy)">
-        <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:1.02rem;margin-bottom:7px;color:var(--cy)">🔄 Cada mes que sigan pagando, tú cobras</div>
-        <div style="font-size:.82rem;color:var(--mu);line-height:1.6;margin-bottom:12px">Por cada mes que ese negocio siga activo, tú recibes el 10% automático. Con 10 negocios activos, ganas +$499 MXN al mes sin hacer nada extra.</div>
-        <div class="comm-row"><div class="comm-n" style="color:var(--cy)">10%</div><div style="font-size:.75rem;color:var(--mu);line-height:1.3">cada mes<br>mientras sigan activos</div></div>
-      </div>
-      <div class="ag-card" style="--ac:var(--gn)">
-        <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:1.02rem;margin-bottom:7px;color:var(--gn)">🔗 Tu link y código QR listos</div>
-        <div style="font-size:.82rem;color:var(--mu);line-height:1.6;margin-bottom:12px">Recibes tu propio link y código QR para compartir. Lo mandas por WhatsApp o lo imprimes — cada quien que entre por ahí queda vinculado a ti.</div>
-        <div style="background:rgba(29,255,138,.08);border:1px solid rgba(29,255,138,.25);border-radius:10px;padding:10px 13px;font-size:.77rem">
-          <div style="color:var(--gn);font-weight:600;margin-bottom:3px">Tu link personalizado:</div>
-          <div style="color:rgba(255,255,255,.7);font-family:monospace">datable.com.mx/?ref=<span style="color:var(--gn)">TU-CODIGO</span></div>
-        </div>
-      </div>
-      <div class="ag-card" style="--ac:var(--yw)">
-        <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:1.02rem;margin-bottom:7px;color:var(--yw)">📊 Ves todo en tiempo real</div>
-        <div style="font-size:.82rem;color:var(--mu);line-height:1.6;margin-bottom:12px">Cuántos negocios recomendaste, cuántos están activos y cuánto has ganado — todo visible en tu pantalla en cualquier momento.</div>
-        <div style="display:flex;gap:8px">
-          <div style="flex:1;background:rgba(255,229,0,.08);border:1px solid rgba(255,229,0,.25);border-radius:9px;padding:8px;text-align:center"><div style="font-family:'Syne',sans-serif;font-weight:800;font-size:1.35rem;color:var(--yw)">24</div><div style="font-size:.66rem;color:var(--mu)">Recomendados</div></div>
-          <div style="flex:1;background:rgba(29,255,138,.08);border:1px solid rgba(29,255,138,.25);border-radius:9px;padding:8px;text-align:center"><div style="font-family:'Syne',sans-serif;font-weight:800;font-size:1.35rem;color:var(--gn)">8</div><div style="font-size:.66rem;color:var(--mu)">Activos</div></div>
-          <div style="flex:1;background:rgba(255,0,204,.08);border:1px solid rgba(255,0,204,.25);border-radius:9px;padding:8px;text-align:center"><div style="font-family:'Syne',sans-serif;font-weight:800;font-size:1.1rem;color:var(--mg)">$7.2K</div><div style="font-size:.66rem;color:var(--mu)">Ganado</div></div>
-        </div>
-      </div>
-    </div>
-    <div class="rv" style="text-align:center;margin-top:32px">
-      <button class="btn-marquee btn-gn-mq" style="font-size:1rem" onclick="openModal()">
-        Quiero ser Embajador →
-        <div class="lights" id="agent-lights"></div>
-      </button>
-      <div style="font-size:.77rem;color:var(--mu);margin-top:12px">Gratis · Sin costo de alta · Cobras automático</div>
-    </div>
-  </div>
-</section>
-
-<!-- ══════ POR QUÉ ══════ -->
-<section class="sec" style="background:linear-gradient(180deg,transparent,rgba(29,255,138,.03),transparent)">
-  <div class="wrap">
-    <div class="rv">
-      <div class="st-ey">Por qué dªtªblɛ</div>
-      <h2 class="st-h2">No somos una app más.<br>Somos tu <span style="color:var(--cy);text-shadow:0 0 14px var(--cy)">equipo de organización.</span></h2>
-    </div>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:50px" class="rv">
-      <div class="gc diff-big" style="grid-column:1/-1;--ac:var(--mg);padding:30px">
-        <div style="font-size:.66rem;letter-spacing:.18em;text-transform:uppercase;font-weight:700;color:var(--mg);margin-bottom:9px">Lo más importante</div>
-        <div style="font-family:'Syne',sans-serif;font-weight:800;font-size:1.3rem;margin-bottom:9px">El diagnóstico es 100% gratis. Sin registrarte. Sin tarjeta. Sin que nadie te llame a vender.</div>
-        <p style="font-size:.85rem;color:var(--mu);line-height:1.65">La mayoría de los consultores cobran miles de pesos solo para decirte qué necesitas. Nosotros te lo mostramos gratis, en 30 segundos, porque creemos que primero tienes que ver el valor antes de invertir un peso.</p>
-      </div>
-      <div class="gc" style="--ac:var(--cy)">
-        <div style="color:var(--cy);font-size:.66rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;margin-bottom:8px">Sin tecnicismos</div>
-        <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:1rem;margin-bottom:6px">Claro y directo</div>
-        <p style="font-size:.81rem;color:var(--mu);line-height:1.6">No necesitas saber de tecnología. Explicamos todo en palabras simples, como si estuviéramos tomando un café contigo.</p>
-      </div>
-      <div class="gc" style="--ac:var(--gn)">
-        <div style="color:var(--gn);font-size:.66rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;margin-bottom:8px">Rápido de verdad</div>
-        <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:1rem;margin-bottom:6px">Funcionando en 48–72 horas</div>
-        <p style="font-size:.81rem;color:var(--mu);line-height:1.6">Una vez que decides empezar, en menos de 3 días tienes todo operando. No en semanas ni meses como otras opciones.</p>
-      </div>
-      <div class="gc" style="--ac:var(--yw)">
-        <div style="color:var(--yw);font-size:.66rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;margin-bottom:8px">Sin mensualidades caras</div>
-        <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:1rem;margin-bottom:6px">$499 MXN/mes · Todo incluido</div>
-        <p style="font-size:.81rem;color:var(--mu);line-height:1.6">Otras plataformas de organización cobran $5,000–$25,000 pesos al mes. Nosotros no.</p>
-      </div>
-      <div class="gc" style="--ac:var(--or)">
-        <div style="color:var(--or);font-size:.66rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;margin-bottom:8px">Hecho para tu equipo</div>
-        <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:1rem;margin-bottom:6px">Si el equipo no lo usa, no sirve</div>
-        <p style="font-size:.81rem;color:var(--mu);line-height:1.6">Lo diseñamos para que cualquier persona en tu negocio pueda usarlo desde el primer día, sin entrenamiento especial.</p>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ══════ PRECIOS ══════ -->
-<section class="sec" id="precios">
-  <div class="wrap">
-    <div class="rv">
-      <div class="st-ey">Lo que cuesta</div>
-      <h2 class="st-h2">Un precio justo.<br><span style="background:linear-gradient(90deg,var(--gn),var(--cy));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">Sin trampa.</span></h2>
-      <p class="st-p">El análisis siempre es gratis. Si quieres todo el sistema, son $499 pesos al mes — cancelas cuando quieras.</p>
-    </div>
-    <div class="rv" style="max-width:860px;margin:50px auto 0">
-      <div class="price-grid">
-        <div class="pc" style="border-color:rgba(255,255,255,.1);background:rgba(255,255,255,.03)">
-          <div class="pc-head" style="background:rgba(255,255,255,.07)">
-            <div class="pc-name" style="color:rgba(255,255,255,.6)">Análisis</div>
-            <div class="pc-n" style="color:#fff">$0</div>
-            <div class="pc-period">gratis para siempre</div>
-          </div>
-          <div class="pc-body">
-            <div class="pc-feat">
-              <div class="pf">✓ &nbsp;Mandas lo que tengas</div>
-              <div class="pf">✓ &nbsp;Diagnóstico personalizado</div>
-              <div class="pf">✓ &nbsp;Ves el demo una vez</div>
-              <div class="pf">✓ &nbsp;Sin registro ni tarjeta</div>
-            </div>
-            <button class="btn-marquee btn-cy-mq" onclick="openModal()" style="width:100%;justify-content:center;font-size:.88rem;padding:12px">
-              Empezar gratis →
-              <div class="lights" id="free-lights"></div>
-            </button>
-          </div>
-        </div>
-        <div class="pc" style="border-color:var(--mg);background:rgba(255,0,204,.05);transform:scale(1.04)">
-          <div class="pc-badge">★ El más popular</div>
-          <div class="pc-head" style="background:linear-gradient(135deg,rgba(255,0,204,.28),rgba(196,0,255,.18))">
-            <div class="pc-name" style="color:#fff">Completo</div>
-            <div class="pc-n" style="color:var(--mg)"><sup>$</sup>499</div>
-            <div class="pc-period">pesos al mes · cancela cuando quieras</div>
-          </div>
-          <div class="pc-body">
-            <div class="pc-feat">
-              <div class="pf">✓ &nbsp;Todo el análisis gratis incluido</div>
-              <div class="pf">✓ &nbsp;Todos tus clientes organizados</div>
-              <div class="pf">✓ &nbsp;Recordatorios automáticos</div>
-              <div class="pf">✓ &nbsp;Tus números en tiempo real</div>
-              <div class="pf">✓ &nbsp;Tareas que se hacen solas</div>
-              <div class="pf">✓ &nbsp;Asistente para tus dudas</div>
-              <div class="pf">✓ &nbsp;App instalable en tu celular</div>
-              <div class="pf">✓ &nbsp;Soporte multiidioma</div>
-            </div>
-            <button class="btn-marquee" onclick="openModal()" style="width:100%;justify-content:center;font-size:.9rem;padding:13px">
-              Suscribirme ahora →
-              <div class="lights" id="pro-lights"></div>
-            </button>
-          </div>
-        </div>
-        <div class="pc" style="border-color:rgba(0,240,255,.3);background:rgba(0,240,255,.04)">
-          <div class="pc-head" style="background:rgba(0,240,255,.12)">
-            <div class="pc-name" style="color:var(--cy)">Para empresas</div>
-            <div class="pc-n" style="color:var(--cy)">A medida</div>
-            <div class="pc-period">varios negocios · equipos grandes</div>
-          </div>
-          <div class="pc-body">
-            <div class="pc-feat">
-              <div class="pf">✓ &nbsp;Todo lo del plan Completo</div>
-              <div class="pf">✓ &nbsp;Varios negocios conectados</div>
-              <div class="pf">✓ &nbsp;Permisos por persona</div>
-              <div class="pf">✓ &nbsp;Conexión con otros sistemas</div>
-              <div class="pf">✓ &nbsp;Atención dedicada</div>
-            </div>
-            <button class="btn-marquee btn-cy-mq" onclick="openModal()" style="width:100%;justify-content:center;font-size:.88rem;padding:12px">
-              Hablar con nosotros →
-              <div class="lights" id="ent-lights"></div>
-            </button>
-          </div>
-        </div>
-      </div>
-      <p style="text-align:center;color:var(--mu);font-size:.79rem;margin-top:18px">Pagos seguros · Cancelas cuando quieras · Sin penalización</p>
-    </div>
-  </div>
-</section>
-
-<!-- ══════ RESEÑAS ══════ -->
-<section class="sec" id="resenas" style="background:linear-gradient(180deg,transparent,rgba(29,255,138,.03),transparent)">
-  <div class="wrap">
-    <div class="rv">
-      <div class="st-ey">Lo dicen ellos, no nosotros</div>
-      <h2 class="st-h2">No solo lo decimos<br><span style="color:var(--gn);text-shadow:0 0 20px rgba(29,255,138,.4)">nosotros.</span></h2>
-      <p class="st-p">Negocios reales que ya digitalizaron su operación. Sus palabras, no las nuestras.</p>
-    </div>
-    <div class="reviews-grid rv">
-      <div class="review-card">
-        <div class="review-stars">★★★★★</div>
-        <p class="review-text">"Antes perdía clientes porque se me olvidaba darles seguimiento. Ahora tengo todo organizado y mis ventas subieron en el primer mes."</p>
-        <div class="review-author">
-          <div class="review-avatar" style="background:linear-gradient(135deg,var(--mg),var(--pu))">M</div>
-          <div>
-            <div class="review-name">María G.</div>
-            <div class="review-biz">Estética · Guadalajara</div>
-          </div>
-        </div>
-      </div>
-      <div class="review-card">
-        <div class="review-stars">★★★★★</div>
-        <p class="review-text">"Tenía todo en WhatsApp y cuadernos. En una semana ya tenía mi información organizada y podía ver mis números por primera vez."</p>
-        <div class="review-author">
-          <div class="review-avatar" style="background:linear-gradient(135deg,var(--cy),var(--bl))">R</div>
-          <div>
-            <div class="review-name">Roberto M.</div>
-            <div class="review-biz">Taller mecánico · CDMX</div>
-          </div>
-        </div>
-      </div>
-      <div class="review-card">
-        <div class="review-stars">★★★★★</div>
-        <p class="review-text">"Mi negocio dependía 100% de mí. Ahora mis empleados saben exactamente qué hacer sin que yo esté presente todo el tiempo."</p>
-        <div class="review-author">
-          <div class="review-avatar" style="background:linear-gradient(135deg,var(--yw),var(--or))">C</div>
-          <div>
-            <div class="review-name">Carmen L.</div>
-            <div class="review-biz">Restaurante · Puerto Vallarta</div>
-          </div>
-        </div>
-      </div>
-      <div class="review-card">
-        <div class="review-stars">★★★★★</div>
-        <p class="review-text">"No sabía cuánto ganaba cada mes hasta que usé esto. En 30 minutos tuve claridad de mis ingresos que no había tenido en 5 años."</p>
-        <div class="review-author">
-          <div class="review-avatar" style="background:linear-gradient(135deg,var(--gn),var(--cy))">J</div>
-          <div>
-            <div class="review-name">Jorge P.</div>
-            <div class="review-biz">Consultor · Monterrey</div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ══════ CTA FINAL ══════ -->
-<section id="cta-f">
-  <div class="rv">
-    <h2 class="cta-h2">¿Listo para llevar<br><span style="background:linear-gradient(90deg,var(--mg),var(--cy),var(--gn));background-size:200%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:gsh 3s ease infinite">tu negocio al siguiente nivel?</span></h2>
-    <p class="cta-p">Mándanos una foto, tu Excel o cuéntanos cómo funciona tu negocio. En 30 segundos te mostramos qué puedes optimizar y cómo digitalizarlo. Gratis, sin registro, sin compromiso.</p>
-    <button class="btn-marquee" onclick="openModal()" style="font-size:1.05rem;padding:17px 40px">
-      👆 Quiero mi diagnóstico gratis ahora
-      <div class="lights" id="cta-lights"></div>
-    </button>
-    <div style="display:inline-flex;align-items:center;gap:6px;font-size:.77rem;font-weight:600;color:var(--gn);margin-top:14px;display:block">✓ Sin registro &nbsp;·&nbsp; ✓ Sin tarjeta &nbsp;·&nbsp; ✓ Sin que nadie te llame a vender</div>
-  </div>
-</section>
-
-<!-- ══════ FOOTER ══════ -->
-<footer>
-  <a class="logo" href="#"><span>d</span><span>ª</span><span>t</span><span>ª</span><span>b</span><span>l</span><span>ɛ</span></a>
-  <div class="fl">
-    <a href="#como">Cómo funciona</a>
-    <a href="#detecta">Qué resolvemos</a>
-    <a href="#vendedores">Gana con nosotros</a>
-    <a href="#precios">Precios</a>
-    <a href="/cdn-cgi/l/email-protection#1b5f2f6f7a7977285b7c767a727735787476">Contacto</a>
-  </div>
-  <div style="color:var(--mu);font-size:.76rem">© 2026 dªtªblɛ</div>
-</footer>
-
-</main>
-
-<!-- ══════ AXOL MASCOTA ══════ -->
-<div id="axol-wrap">
-  <!-- Destellos alrededor del botón -->
-  <div id="axol-sparks-ring"></div>
-
-  <!-- Burbuja de chat -->
-  <div id="axol-bubble">
-    <button class="axol-close" onclick="axolClose()">✕</button>
-    <div id="axol-intro" class="axol-intro-msg">
-      <div class="axol-intro-name">¡Hola! Soy <strong>Axolín</strong> 👋</div>
-      <div class="axol-intro-text">Tu copiloto en dªtªblɛ. Estoy aquí para guiarte y ayudarte a digitalizar tu negocio — <strong>hoy mismo.</strong><br><br>Puedes seguir explorando la página y yo te iré dando guías para que no te pierdas. O si quieres, <strong>pregúntame lo que sea ahora</strong>. 🚀</div>
-      <div class="axol-intro-btns">
-        <button class="axol-qbtn" onclick="axolQuestion('¿Qué puedo hacer aquí?')">¿Qué puedo hacer aquí?</button>
-        <button class="axol-qbtn" onclick="axolQuestion('¿Cómo digitalizo mi negocio?')">¿Cómo digitalizo mi negocio?</button>
-        <button class="axol-qbtn" onclick="openModal();axolClose()">⚡ Quiero mi diagnóstico gratis</button>
-      </div>
-    </div>
-    <div id="axol-chat-history"></div>
-    <div class="axol-input-row">
-      <input id="axol-input" type="text" placeholder="Escríbeme algo..." onkeydown="if(event.key==='Enter')axolSend()">
-      <button class="axol-send" onclick="axolSend()">→</button>
-    </div>
-  </div>
-
-  <!-- Botón mascota -->
-  <button id="axol-btn" onclick="axolToggle()" aria-label="Abrir Axolín">
-    <svg id="axol-svg" viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg">
-      <defs>
-        <radialGradient id="bodyGrad" cx="50%" cy="40%" r="60%">
-          <stop offset="0%" stop-color="#a78bfa"/>
-          <stop offset="100%" stop-color="#7c3aed"/>
-        </radialGradient>
-        <radialGradient id="frillGrad" cx="50%" cy="50%" r="60%">
-          <stop offset="0%" stop-color="#67e8f9"/>
-          <stop offset="100%" stop-color="#a78bfa"/>
-        </radialGradient>
-      </defs>
-      <!-- body -->
-      <ellipse cx="40" cy="47" rx="21" ry="17" fill="url(#bodyGrad)"/>
-      <!-- head -->
-      <ellipse cx="40" cy="30" rx="18" ry="16" fill="url(#bodyGrad)"/>
-      <!-- eyes -->
-      <circle cx="33" cy="27" r="5.5" fill="white"/>
-      <circle cx="47" cy="27" r="5.5" fill="white"/>
-      <circle cx="34" cy="27.5" r="3" fill="#1a0a3e"/>
-      <circle cx="48" cy="27.5" r="3" fill="#1a0a3e"/>
-      <circle cx="33" cy="26" r="1.2" fill="white"/>
-      <circle cx="47" cy="26" r="1.2" fill="white"/>
-      <!-- smile -->
-      <path d="M34 34 Q40 38.5 46 34" stroke="#c084fc" stroke-width="2" fill="none" stroke-linecap="round"/>
-      <!-- gill frills left - cyan/teal -->
-      <ellipse cx="22" cy="21" rx="4" ry="9" fill="url(#frillGrad)" transform="rotate(-22 22 21)" opacity=".9"/>
-      <ellipse cx="16" cy="17" rx="3" ry="7" fill="#67e8f9" transform="rotate(-38 16 17)" opacity=".8"/>
-      <ellipse cx="27" cy="15" rx="3" ry="6" fill="#a78bfa" transform="rotate(-6 27 15)" opacity=".9"/>
-      <!-- gill frills right - cyan/teal -->
-      <ellipse cx="58" cy="21" rx="4" ry="9" fill="url(#frillGrad)" transform="rotate(22 58 21)" opacity=".9"/>
-      <ellipse cx="64" cy="17" rx="3" ry="7" fill="#67e8f9" transform="rotate(38 64 17)" opacity=".8"/>
-      <ellipse cx="53" cy="15" rx="3" ry="6" fill="#a78bfa" transform="rotate(6 53 15)" opacity=".9"/>
-      <!-- tail -->
-      <ellipse cx="40" cy="63" rx="11" ry="6" fill="#7c3aed" opacity=".8"/>
-      <ellipse cx="40" cy="65" rx="7" ry="4" fill="#67e8f9" opacity=".5"/>
-      <!-- legs -->
-      <ellipse cx="22" cy="57" rx="5.5" ry="3" fill="#a78bfa" transform="rotate(-22 22 57)"/>
-      <ellipse cx="58" cy="57" rx="5.5" ry="3" fill="#a78bfa" transform="rotate(22 58 57)"/>
-      <!-- cheeks - subtle pink glow -->
-      <circle cx="30" cy="32" r="4.5" fill="#f0abfc" opacity="0.35"/>
-      <circle cx="50" cy="32" r="4.5" fill="#f0abfc" opacity="0.35"/>
-      <!-- belly shimmer -->
-      <ellipse cx="40" cy="47" rx="11" ry="8" fill="#c4b5fd" opacity="0.2"/>
+  <div class="hero-deco">
+    <svg viewBox="0 0 400 400" fill="none" xmlns="http://www.w3.org/2000/svg" opacity=".6">
+      <circle cx="200" cy="200" r="120" stroke="rgba(46,255,122,.15)" stroke-width="1"/>
+      <circle cx="200" cy="200" r="80" stroke="rgba(46,255,122,.2)" stroke-width="1"/>
+      <circle cx="200" cy="200" r="40" stroke="rgba(46,255,122,.3)" stroke-width="1"/>
+      <circle cx="200" cy="80" r="8" fill="rgba(46,255,122,.4)"/>
+      <circle cx="320" cy="200" r="6" fill="rgba(240,192,64,.4)"/>
+      <circle cx="200" cy="320" r="8" fill="rgba(46,255,122,.4)"/>
+      <circle cx="80" cy="200" r="6" fill="rgba(255,122,46,.3)"/>
+      <circle cx="270" cy="130" r="5" fill="rgba(46,255,122,.3)"/>
+      <circle cx="130" cy="270" r="5" fill="rgba(46,255,122,.3)"/>
+      <line x1="200" y1="80" x2="200" y2="200" stroke="rgba(46,255,122,.2)" stroke-width="1"/>
+      <line x1="320" y1="200" x2="200" y2="200" stroke="rgba(240,192,64,.2)" stroke-width="1"/>
+      <line x1="200" y1="320" x2="200" y2="200" stroke="rgba(46,255,122,.2)" stroke-width="1"/>
+      <line x1="80" y1="200" x2="200" y2="200" stroke="rgba(255,122,46,.2)" stroke-width="1"/>
+      <line x1="270" y1="130" x2="200" y2="200" stroke="rgba(46,255,122,.15)" stroke-width="1"/>
+      <line x1="130" y1="270" x2="200" y2="200" stroke="rgba(46,255,122,.15)" stroke-width="1"/>
+      <circle cx="200" cy="200" r="12" fill="rgba(46,255,122,.2)" stroke="rgba(46,255,122,.4)" stroke-width="1.5"/>
     </svg>
-    <div id="axol-notif" class="axol-notif">1</div>
-  </button>
-</div>
+  </div>
+</section>
 
-<!-- ══════ MODAL ══════ -->
-<div class="ov" id="ov" onclick="closeBg(event)">
-  <div class="modal">
-    <button class="mc" onclick="closeModal()">✕</button>
+<div class="divider"></div>
 
-    <div id="m-up">
-      <div class="modal-t">⚡ Tu análisis gratuito</div>
-      <div class="modal-s">Sin registrarte · Sin tarjeta · Resultado en 30 segundos</div>
+<!-- ══ QUÉ INCLUYE ══ -->
+<section class="section reveal" id="incluye">
+  <div class="section-inner">
+    <div class="sec-tag">Todo en una plataforma</div>
+    <h2 class="sec-h">¿Qué incluye Datable?</h2>
+    <p class="sec-p">Herramientas que antes necesitabas comprar por separado — ahora integradas y funcionando juntas desde el día uno.</p>
 
-      <!-- Drop zone -->
-      <div class="dz" id="dz" onclick="document.getElementById('fi').click()" ondragover="dov(event)" ondragleave="dol()" ondrop="ddr(event)">
-        <span class="dz-icon" id="dz-icon">📸</span>
-        <div class="dz-hint" id="dz-hint">
-          <strong>Toca aquí para subir una foto o archivo</strong><br>
-          <span style="font-size:.78rem;color:var(--mu)">📸 Foto &nbsp;·&nbsp; 📊 Excel &nbsp;·&nbsp; 📄 PDF</span>
-        </div>
-        <div id="dz-preview" style="display:none;margin-top:8px">
-          <img id="dz-img" style="max-height:120px;border-radius:8px;max-width:100%;display:none">
-          <div id="dz-fname" style="font-size:.82rem;color:var(--gn);font-weight:600;margin-top:4px"></div>
-          <button onclick="event.stopPropagation();clearFile()" style="margin-top:6px;background:rgba(255,0,100,.15);border:1px solid rgba(255,0,100,.3);color:#ff6680;border-radius:8px;padding:4px 12px;font-size:.75rem;cursor:pointer">✕ Quitar archivo</button>
+    <div class="incluye-grid">
+      <div class="incluye-card">
+        <div class="incluye-icon">🔄</div>
+        <div>
+          <div class="incluye-nom" style="color:#2EFF7A;">CRM Completo</div>
+          <div class="incluye-desc">Contactos, pipelines de ventas e historial de interacciones en un solo lugar.</div>
         </div>
       </div>
-      <input type="file" id="fi" accept=".xlsx,.xls,.csv,.pdf,.png,.jpg,.jpeg" onchange="previewFile()">
-
-      <div style="margin-top:14px">
-        <label style="font-size:.8rem;font-weight:600;color:rgba(255,255,255,.75);display:block;margin-bottom:6px">✍️ Cuéntanos cómo funciona tu negocio <span style="color:var(--mu);font-weight:400">(o agrega contexto a tu archivo)</span></label>
-        <textarea id="desc" style="width:100%;background:rgba(255,255,255,.05);border:1.5px solid rgba(255,255,255,.12);border-radius:12px;padding:12px;color:#fff;font-family:'DM Sans',sans-serif;font-size:.88rem;resize:vertical;min-height:90px;outline:none;transition:border-color .2s" placeholder="Ej: Soy masajista a domicilio, llevo todo en WhatsApp y un cuaderno. Se me olvidan citas y no sé cuánto gané este mes...&#10;&#10;(Entre más detallas, mejor diagnóstico recibes)"></textarea>
+      <div class="incluye-card">
+        <div class="incluye-icon">📧</div>
+        <div>
+          <div class="incluye-nom" style="color:#2EFF7A;">Email Marketing</div>
+          <div class="incluye-desc">Campañas, secuencias automatizadas y estadísticas de apertura y clics.</div>
+        </div>
       </div>
-      <button class="btn-marquee" onclick="startDiag()" style="width:100%;justify-content:center;font-size:.95rem;margin-top:12px" id="btn-analizar">
-        🔬 Analizar mi negocio →
-        <div class="lights" id="modal-lights"></div>
-      </button>
-      <p style="font-size:.73rem;color:var(--mu);text-align:center;margin-top:8px">Sin registro · Sin tarjeta · Tu info es privada</p>
+      <div class="incluye-card">
+        <div class="incluye-icon">💬</div>
+        <div>
+          <div class="incluye-nom" style="color:#2EFF7A;">SMS y WhatsApp</div>
+          <div class="incluye-desc">Mensajería automatizada multicanal directamente desde la plataforma.</div>
+        </div>
+      </div>
+      <div class="incluye-card">
+        <div class="incluye-icon">🚀</div>
+        <div>
+          <div class="incluye-nom" style="color:#F0C040;">Funnels y Landing Pages</div>
+          <div class="incluye-desc">Constructor sin código. Sin necesidad de ClickFunnels ni herramientas externas.</div>
+        </div>
+      </div>
+      <div class="incluye-card">
+        <div class="incluye-icon">🤖</div>
+        <div>
+          <div class="incluye-nom" style="color:#F0C040;">Chatbots con IA</div>
+          <div class="incluye-desc">Responde leads 24/7 de forma automática sin intervención humana.</div>
+        </div>
+      </div>
+      <div class="incluye-card">
+        <div class="incluye-icon">⭐</div>
+        <div>
+          <div class="incluye-nom" style="color:#F0C040;">Gestión de Reseñas</div>
+          <div class="incluye-desc">Pide reviews en Google automáticamente a tus clientes.</div>
+        </div>
+      </div>
+      <div class="incluye-card">
+        <div class="incluye-icon">📅</div>
+        <div>
+          <div class="incluye-nom" style="color:#FF7A2E;">Calendarios y Citas</div>
+          <div class="incluye-desc">Reservas online con confirmaciones y recordatorios integrados al CRM.</div>
+        </div>
+      </div>
+      <div class="incluye-card">
+        <div class="incluye-icon">🎓</div>
+        <div>
+          <div class="incluye-nom" style="color:#FF7A2E;">Membresías y Cursos</div>
+          <div class="incluye-desc">Vende productos digitales sin necesidad de plataformas externas.</div>
+        </div>
+      </div>
+      <div class="incluye-card">
+        <div class="incluye-icon">🧠</div>
+        <div>
+          <div class="incluye-nom" style="color:#FF7A2E;">Agentes IA</div>
+          <div class="incluye-desc">Inteligencia artificial que cualifica leads y gestiona conversaciones completas.</div>
+        </div>
+      </div>
     </div>
+  </div>
+</section>
 
-    <div class="m-load" id="m-load">
-      <div style="margin-bottom:10px;animation:floatAjo 1.5s ease-in-out infinite;display:flex;justify-content:center">
-<svg width="60" height="60" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <ellipse cx="60" cy="72" rx="26" ry="20" fill="#FFB6D9"/>
-  <ellipse cx="60" cy="52" rx="24" ry="20" fill="#FFB6D9"/>
-  <ellipse cx="42" cy="58" rx="7" ry="4" fill="#FF85B3" opacity="0.5"/>
-  <ellipse cx="78" cy="58" rx="7" ry="4" fill="#FF85B3" opacity="0.5"/>
-  <g transform="translate(36,34)"><path d="M0 0 Q-6-15-4-28" stroke="#FF69A0" stroke-width="2.5" fill="none" stroke-linecap="round"/><path d="M-2-10 Q-12-12-13-8" stroke="#FF85B3" stroke-width="2" fill="none" stroke-linecap="round"/><path d="M-3-18 Q-13-21-13-16" stroke="#FF85B3" stroke-width="2" fill="none" stroke-linecap="round"/><path d="M1 0 Q8-14 6-27" stroke="#FF69A0" stroke-width="2.5" fill="none" stroke-linecap="round"/><path d="M4-10 Q14-12 14-8" stroke="#FF85B3" stroke-width="2" fill="none" stroke-linecap="round"/><path d="M5-18 Q14-21 13-16" stroke="#FF85B3" stroke-width="2" fill="none" stroke-linecap="round"/></g>
-  <g transform="translate(84,34) scale(-1,1)"><path d="M0 0 Q-6-15-4-28" stroke="#FF69A0" stroke-width="2.5" fill="none" stroke-linecap="round"/><path d="M-2-10 Q-12-12-13-8" stroke="#FF85B3" stroke-width="2" fill="none" stroke-linecap="round"/><path d="M-3-18 Q-13-21-13-16" stroke="#FF85B3" stroke-width="2" fill="none" stroke-linecap="round"/><path d="M1 0 Q8-14 6-27" stroke="#FF69A0" stroke-width="2.5" fill="none" stroke-linecap="round"/><path d="M4-10 Q14-12 14-8" stroke="#FF85B3" stroke-width="2" fill="none" stroke-linecap="round"/><path d="M5-18 Q14-21 13-16" stroke="#FF85B3" stroke-width="2" fill="none" stroke-linecap="round"/></g>
-  <ellipse cx="48" cy="50" rx="9" ry="9" fill="white"/>
-  <ellipse cx="72" cy="50" rx="9" ry="9" fill="white"/>
-  <ellipse cx="50" cy="51" rx="6" ry="6" fill="#1a1a3e"/>
-  <ellipse cx="74" cy="51" rx="6" ry="6" fill="#1a1a3e"/>
-  <ellipse cx="52" cy="48" rx="2" ry="2" fill="white"/>
-  <ellipse cx="76" cy="48" rx="2" ry="2" fill="white"/>
-  <path d="M52 63 Q60 69 68 63" stroke="#FF69A0" stroke-width="2.5" fill="none" stroke-linecap="round"/>
-  <path d="M60 85 Q47 103 40 112 Q51 106 60 98 Q69 106 80 112 Q73 103 60 85Z" fill="#FF9EC4" opacity="0.8"/>
-</svg></div>
-      <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:1.1rem;margin-bottom:4px">Analizando tu negocio...</div>
-      <div style="font-size:.81rem;color:var(--mu);margin-bottom:18px">Nuestro equipo está procesando tu información</div>
-      <div id="dsteps" style="text-align:left">
-        <div class="dstep" id="d1"><div class="dstep-i">○</div>Revisando cómo trabajas hoy</div>
-        <div class="dstep" id="d2"><div class="dstep-i">○</div>Encontrando qué se puede mejorar</div>
-        <div class="dstep" id="d3"><div class="dstep-i">○</div>Calculando cuánto te cuesta el desorden</div>
-        <div class="dstep" id="d4"><div class="dstep-i">○</div>Armando tu plan personalizado</div>
-        <div class="dstep" id="d5"><div class="dstep-i">○</div>Preparando tu diagnóstico</div>
-      </div>
-    </div>
+<div class="divider"></div>
 
-    <div class="m-res" id="m-res">
+<!-- ══ PERFILES ══ -->
+<section class="section reveal" id="perfiles">
+  <div class="section-inner">
+    <div class="sec-tag">Identifica tu perfil</div>
+    <h2 class="sec-h">¿En qué punto estás?</h2>
+    <p class="sec-p">Cada perfil tiene un camino diferente. Las herramientas que recibes cambian según tu etapa.</p>
 
-      <!-- ══ FASE 1: DIAGNÓSTICO COMPLETO ══ -->
-      <div id="fase-diag">
-        <div style="text-align:center;margin-bottom:14px">
-          <div style="font-size:1.3rem;margin-bottom:4px">✅ Tu diagnóstico está listo</div>
-          <div id="r-tipo" style="font-size:.8rem;color:var(--cy);font-weight:600"></div>
+    <div class="perfil-grid">
+
+      <!-- EMPRESARIO -->
+      <div class="perfil" id="p0">
+        <div class="phdr" onclick="tp(0)">
+          <div class="pletra" style="color:#2EFF7A;">E</div>
+          <div class="pintro">
+            <div class="pnom" style="color:#2EFF7A;">Empresario · Propietario</div>
+            <div class="ptag">El que opera y escala el sistema.</div>
+          </div>
+          <div class="parr">›</div>
         </div>
-
-        <!-- Score -->
-        <div style="display:flex;align-items:center;gap:14px;background:rgba(255,255,255,.04);border-radius:14px;padding:14px;margin-bottom:14px">
-          <div id="r-score" style="font-family:'Syne',sans-serif;font-weight:800;font-size:2.8rem;line-height:1;min-width:64px;text-align:center;color:var(--mg);text-shadow:0 0 20px var(--mg)"></div>
-          <div>
-            <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:.92rem;color:#fff;margin-bottom:2px">Potencial de digitalización</div>
-            <div style="font-size:.78rem;color:var(--mu)">Nivel <span id="r-niv" style="color:var(--yw);font-weight:700"></span></div>
-            <div style="font-size:.74rem;color:var(--mu);margin-top:2px"><span id="r-areas"></span></div>
+        <div class="pbody">
+          <p class="pdesc">
+            El empresario ya no está probando ideas — está ejecutando, optimizando y multiplicando algo que <strong>ya funciona.</strong>
+            Su reto no es empezar. Es que el negocio deje de depender de él para operar.<br><br>
+            Datable es el empleado que nunca llegará tarde, nunca se enfermará, no pedirá vacaciones,
+            no necesitará ser capacitado dos veces y siempre hará exactamente lo que se le pide.
+            <strong>Su costo es menor que el café que consumes al mes.</strong>
+          </p>
+          <div class="dgrid">
+            <div class="dato"><div class="dlbl" style="color:#2EFF7A;">Mentalidad</div><div class="dval">"Esto ya funciona. Ahora lo escalo sin que todo dependa de mí."</div></div>
+            <div class="dato"><div class="dlbl" style="color:#2EFF7A;">Activo principal</div><div class="dval">Sistemas, equipo y flujo de dinero estable.</div></div>
+            <div class="dato"><div class="dlbl" style="color:#2EFF7A;">Riesgo</div><div class="dval">Controlado — hay datos, estructura y operación probada.</div></div>
+            <div class="dato"><div class="dlbl" style="color:#2EFF7A;">Potencial</div><div class="dval">Muy alto. Escala con estructura, no con más horas.</div></div>
+          </div>
+          <div class="dlabel">Puntos críticos frecuentes</div>
+          <div class="dolores">
+            <div class="dolor">Flujo de dinero inestable — entra bien un mes, el siguiente con incertidumbre.</div>
+            <div class="dolor">Todo pasa por el dueño. Nadie resuelve sin preguntarle primero.</div>
+            <div class="dolor">Alta rotación, errores de equipo y procesos sin documentar.</div>
+            <div class="dolor">Sin claridad real sobre el margen de ganancia del negocio.</div>
+            <div class="dolor">Opera pero no escala. Siempre en el mismo nivel.</div>
+          </div>
+          <div class="pcta">
+            <p><strong>Datable integra y automatiza</strong> los sistemas de tu negocio para que funcione aunque tú no estés.</p>
+            <a href="https://app.datable.com.mx/empresario" class="btn-sm" style="background:linear-gradient(135deg,#0A3D1C,#2EFF7A);" target="_blank">Ver mi plan →</a>
           </div>
         </div>
+      </div>
 
-        <!-- Narrativa personalizada -->
-        <div id="r-narrativa" style="background:rgba(0,240,255,.05);border:1px solid rgba(0,240,255,.18);border-radius:12px;padding:14px;margin-bottom:14px;font-size:.84rem;color:rgba(255,255,255,.88);line-height:1.65"></div>
-
-        <!-- Áreas con impacto -->
-        <div style="font-size:.68rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--mu);margin-bottom:8px">📋 Lo que encontramos en tu negocio</div>
-        <div id="r-items"></div>
-
-        <!-- Herramienta recomendada preview -->
-        <div id="r-herramienta-rec" style="margin-top:12px;padding:12px 14px;background:rgba(255,229,0,.05);border:1px solid rgba(255,229,0,.2);border-radius:11px;font-size:.8rem;color:rgba(255,255,255,.8);line-height:1.55"></div>
-
-        <!-- CTA empezar magia -->
-        <div style="margin-top:18px;text-align:center;padding:20px 16px;background:linear-gradient(135deg,rgba(255,0,204,.08),rgba(196,0,255,.08));border:1px solid rgba(255,0,204,.22);border-radius:16px">
-          <div style="font-family:'Syne',sans-serif;font-weight:800;font-size:1.15rem;margin-bottom:8px">✨ ¿Empezamos la magia?</div>
-          <div style="font-size:.82rem;color:rgba(255,255,255,.6);margin-bottom:16px;line-height:1.55">La primera parte del proceso va por nuestra cuenta — sin costo, sin registro. Solo queremos que veas que esto funciona de verdad.</div>
-          <button class="btn-marquee" onclick="mostrarFase2()" style="width:100%;justify-content:center;font-size:.95rem">
-            🚀 Sí, ¡empezar ahora! →
-            <div class="lights" id="res-lights-fase1"></div>
-          </button>
+      <!-- EMPRENDEDOR -->
+      <div class="perfil" id="p1">
+        <div class="phdr" onclick="tp(1)">
+          <div class="pletra" style="color:#FF7A2E;">Em</div>
+          <div class="pintro">
+            <div class="pnom" style="color:#FF7A2E;">Emprendedor · Afiliado</div>
+            <div class="ptag">El que construye el juego.</div>
+          </div>
+          <div class="parr">›</div>
+        </div>
+        <div class="pbody">
+          <p class="pdesc">
+            Un emprendedor no solo vende — <strong>crea el sistema completo.</strong>
+            Define la marca, arma el producto, construye el equipo y diseña los procesos.<br><br>
+            ¿Ya lo intentaste con Shopify? ¿Con Amazon? No había producto que funcionara, no había tráfico.
+            Con Datable llegas hoy y hoy ya tienes la tienda abierta — completa, con productos, precios y descripciones.
+            <strong>Ya hay clientes esperando. Solo falta que tú llegues al mostrador.</strong>
+          </p>
+          <div class="dgrid">
+            <div class="dato"><div class="dlbl" style="color:#FF7A2E;">Mentalidad</div><div class="dval">"Yo defino las reglas del juego."</div></div>
+            <div class="dato"><div class="dlbl" style="color:#FF7A2E;">Activo principal</div><div class="dval">Su negocio: marca, producto, equipo, procesos.</div></div>
+            <div class="dato"><div class="dlbl" style="color:#FF7A2E;">Riesgo</div><div class="dval">Alto — con las herramientas correctas, calculado.</div></div>
+            <div class="dato"><div class="dlbl" style="color:#FF7A2E;">Potencial</div><div class="dval">Sin techo. Genera ingresos incluso sin su presencia directa.</div></div>
+          </div>
+          <div class="dlabel">Puntos críticos frecuentes</div>
+          <div class="dolores">
+            <div class="dolor">Paralizado por exceso de opciones — la idea está clara pero no sabe por dónde empezar.</div>
+            <div class="dolor">Ha intentado lanzar antes y no funcionó. No identificó en qué punto falló.</div>
+            <div class="dolor">Flujo de caja inestable en los primeros meses de operación.</div>
+            <div class="dolor">Decisiones de alto impacto sin datos suficientes para respaldarlas.</div>
+            <div class="dolor">Dificultad para delegar — siente que nadie lo haría tan bien como él.</div>
+          </div>
+          <div class="pcta">
+            <p><strong>Datable te da la estructura base</strong> para que lances con orden, con tráfico y sin improvisar.</p>
+            <a href="https://app.datable.com.mx/emprendedor" class="btn-sm" style="background:linear-gradient(135deg,#5C2A00,#FF7A2E);" target="_blank">Ver mi plan →</a>
+          </div>
         </div>
       </div>
 
-      <!-- ══ FASE 2: ELIGE TU HERRAMIENTA ══ -->
-      <div id="fase-elige" style="display:none">
-        <div style="text-align:center;margin-bottom:14px">
-          <div style="font-size:1.2rem;margin-bottom:4px">⚡ Elige con qué empezamos</div>
-          <div style="font-size:.8rem;color:var(--mu)">2 opciones disponibles gratis para tu negocio</div>
+      <!-- INDEPENDIENTE -->
+      <div class="perfil" id="p2">
+        <div class="phdr" onclick="tp(2)">
+          <div class="pletra" style="color:#F0C040;">In</div>
+          <div class="pintro">
+            <div class="pnom" style="color:#F0C040;">Independiente</div>
+            <div class="ptag">El que se monetiza a sí mismo.</div>
+          </div>
+          <div class="parr">›</div>
         </div>
-        <div style="font-size:.7rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--mu);margin-bottom:8px">Selecciona una:</div>
-        <div id="r-items-elige"></div>
-        <div style="font-size:.72rem;color:rgba(255,255,255,.35);text-align:center;margin-top:6px;margin-bottom:4px">🔒 El resto queda guardado en tu perfil cuando te registres</div>
-      </div>
-
-      <!-- ══ FASE 3: HERRAMIENTA ACTIVA + REGISTRO ══ -->
-      <div id="fase-activa" style="display:none">
-        <div style="text-align:center;margin-bottom:12px">
-          <div style="font-size:1.3rem">⚡ ¡Tu herramienta está activa!</div>
-          <div style="font-size:.8rem;color:var(--mu);margin-top:4px">Disponible <strong style="color:var(--yw)">48 horas</strong> gratis</div>
+        <div class="pbody">
+          <p class="pdesc">
+            El independiente no construye una empresa — <strong>él es el producto.</strong>
+            Sus habilidades son su activo: diseño, consultoría, servicios especializados, estética.
+            Genera buenos ingresos, pero su crecimiento está limitado por sus horas disponibles.
+          </p>
+          <div class="dgrid">
+            <div class="dato"><div class="dlbl" style="color:#F0C040;">Mentalidad</div><div class="dval">"Mis habilidades son mi negocio."</div></div>
+            <div class="dato"><div class="dlbl" style="color:#F0C040;">Activo principal</div><div class="dval">Su conocimiento, habilidades y tiempo.</div></div>
+            <div class="dato"><div class="dlbl" style="color:#F0C040;">Riesgo</div><div class="dval">Medio — sin trabajo no hay ingreso, inversión inicial baja.</div></div>
+            <div class="dato"><div class="dlbl" style="color:#F0C040;">Potencial</div><div class="dval">Limitado por tiempo — hasta que digitaliza y escala.</div></div>
+          </div>
+          <div class="dlabel">Puntos críticos frecuentes</div>
+          <div class="dolores">
+            <div class="dolor">Ingresos inestables — un mes bien, el siguiente con incertidumbre.</div>
+            <div class="dolor">Clientes que pagan tarde, cancelan o no respetan el valor del trabajo.</div>
+            <div class="dolor">Sin tiempo para crecer — atiende, cobra, resuelve y promueve solo.</div>
+            <div class="dolor">No proyecta imagen profesional — cotiza por WhatsApp y pierde credibilidad.</div>
+            <div class="dolor">Siempre en el mismo nivel, sin importar cuánto trabaje.</div>
+          </div>
+          <div class="pcta">
+            <p><strong>Entra a la Galería,</strong> toma la herramienta que necesitas y empieza a digitalizarte.</p>
+            <a href="https://app.datable.com.mx/registro" class="btn-sm" style="background:linear-gradient(135deg,#5C4A00,#F0C040);" target="_blank">Ver la Galería →</a>
+          </div>
         </div>
-        <div id="activation-result" style="font-size:.84rem;color:#E8E8F0;line-height:1.6;margin-bottom:14px"></div>
-        <!-- Mensaje humano: prueba la herramienta -->
-        <div style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:14px;margin-bottom:14px;font-size:.82rem;color:rgba(255,255,255,.8);line-height:1.6">
-          Sabemos lo importante que es en estos tiempos que un negocio como el tuyo se digitalice y se automatice. <strong style="color:#fff">Por favor prueba la herramienta — dinos si funciona.</strong> Nos importa que realmente te sirva, no nada más entregarte algo bonito. Tu opinión vale mucho para nosotros. 🙏
-        </div>
-
-        <!-- Diagnóstico PDF: copy inteligente -->
-        <div style="background:rgba(0,240,255,.05);border:1px solid rgba(0,240,255,.18);border-radius:12px;padding:14px;margin-bottom:16px;font-size:.82rem;color:rgba(255,255,255,.8);line-height:1.6">
-          Tu diagnóstico completo ya está listo — lo tengo aquí guardado. <strong style="color:var(--cy)">Solo necesito saber a dónde enviártelo.</strong> En cuanto te registres, lo tengo listo en PDF para que lo puedas guardar, imprimir o compartir con quien quieras.
-        </div>
-
-        <button class="btn-marquee btn-gn-mq" style="width:100%;justify-content:center;font-size:.95rem;margin-bottom:8px" onclick="goRegister()">
-          ⚡ Abrir mi herramienta gratis →
-          <div class="lights" id="res-lights1"></div>
-        </button>
-        <p style="font-size:.7rem;color:var(--mu);text-align:center;margin-top:8px">Sin tarjeta · Sin registro · Lista en segundos</p>
       </div>
 
     </div>
   </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ══ GALERÍA ══ -->
+<section class="section reveal" id="galeria">
+  <div class="section-inner">
+    <div class="sec-tag">Marketplace</div>
+    <h2 class="sec-h">La Galería</h2>
+    <p class="sec-p">Al identificar tu perfil recibes tu <strong style="color:var(--white)">Mapa de Procesos gratuito.</strong> Desde ahí exploras herramientas, plantillas y servicios. Con membresía, acceso a todo.</p>
+
+    <div class="gal-grid">
+      <div class="gcard">
+        <div class="gcard-img" style="background:linear-gradient(135deg,#0A2E12,#1A5C24);">🗺️</div>
+        <div class="gcard-body">
+          <span class="gcard-tag tg-free">Gratuito</span>
+          <div class="gcard-nom" style="color:#2EFF7A;">Mapa de Procesos</div>
+          <div class="gcard-desc">Infografía personalizada con el orden y las piezas que necesita tu negocio según tu perfil.</div>
+        </div>
+      </div>
+      <div class="gcard">
+        <div class="gcard-img" style="background:linear-gradient(135deg,#1A1A0A,#3D3A0A);">🔄</div>
+        <div class="gcard-body">
+          <span class="gcard-tag tg-gal">Galería</span>
+          <div class="gcard-nom" style="color:#F0C040;">CRM + Seguimiento</div>
+          <div class="gcard-desc">Gestión de clientes, historial y seguimiento automatizado en un solo panel.</div>
+        </div>
+      </div>
+      <div class="gcard">
+        <div class="gcard-img" style="background:linear-gradient(135deg,#1A0E0A,#3D2A0A);">📣</div>
+        <div class="gcard-body">
+          <span class="gcard-tag tg-gal">Galería</span>
+          <div class="gcard-nom" style="color:#FF7A2E;">Embudos de Venta</div>
+          <div class="gcard-desc">Páginas de captura, secuencias y automatización del proceso de venta.</div>
+        </div>
+      </div>
+      <div class="gcard">
+        <div class="gcard-img" style="background:linear-gradient(135deg,#0A1A2E,#0A2E3D);">📅</div>
+        <div class="gcard-body">
+          <span class="gcard-tag tg-gal">Galería</span>
+          <div class="gcard-nom" style="color:#7AD4FF;">Agenda Automática</div>
+          <div class="gcard-desc">Reservas, confirmaciones y recordatorios que se gestionan solos.</div>
+        </div>
+      </div>
+      <div class="gcard">
+        <div class="gcard-img" style="background:linear-gradient(135deg,#1A0A2E,#2E0A3D);">💳</div>
+        <div class="gcard-body">
+          <span class="gcard-tag tg-gal">Galería</span>
+          <div class="gcard-nom" style="color:#C07AFF;">Pagos y Facturación</div>
+          <div class="gcard-desc">Cobros vía Stripe, anticipos, pagos recurrentes y facturación automatizada.</div>
+        </div>
+      </div>
+      <div class="gcard">
+        <div class="gcard-img" style="background:linear-gradient(135deg,#0A2E12,#1A5C24);">🏪</div>
+        <div class="gcard-body">
+          <span class="gcard-tag tg-mem">Membresía</span>
+          <div class="gcard-nom" style="color:#2EFF7A;">Tienda Completa</div>
+          <div class="gcard-desc">Tienda lista con productos, precios y descripciones. Solo pones tu logo y arrancas hoy.</div>
+        </div>
+      </div>
+      <div class="gcard">
+        <div class="gcard-img" style="background:linear-gradient(135deg,#1A1A0A,#3D3A0A);">⚡</div>
+        <div class="gcard-body">
+          <span class="gcard-tag tg-mem">Membresía</span>
+          <div class="gcard-nom" style="color:#F0C040;">Automatizaciones</div>
+          <div class="gcard-desc">Flujos de trabajo que se activan solos según el comportamiento de tus clientes.</div>
+        </div>
+      </div>
+      <div class="gcard">
+        <div class="gcard-img" style="background:linear-gradient(135deg,#1A0E0A,#3D2A0A);">🎯</div>
+        <div class="gcard-body">
+          <span class="gcard-tag tg-mem">Membresía</span>
+          <div class="gcard-nom" style="color:#FF7A2E;">Asesorías de Afiliados</div>
+          <div class="gcard-desc">Configuraciones e integraciones ofrecidas por afiliados certificados de Datable.</div>
+        </div>
+      </div>
+      <div class="gcard" style="border-color:rgba(46,255,122,.15);background:rgba(46,255,122,.03);">
+        <div class="gcard-img" style="background:linear-gradient(135deg,#0A2E18,#1A5C30);">➕</div>
+        <div class="gcard-body">
+          <span class="gcard-tag tg-mem">Membresía</span>
+          <div class="gcard-nom" style="color:#2EFF7A;">Sube tus plantillas</div>
+          <div class="gcard-desc">Eres independiente o afiliado y tienes herramientas propias. Véndelas aquí. 80% para ti.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ══ PLANES ══ -->
+<section class="section reveal" id="planes">
+  <div class="section-inner">
+    <div class="sec-tag">Elige tu plan</div>
+    <h2 class="sec-h">Sin letra chica. Sin sorpresas.</h2>
+    <p class="sec-p">Tres planes para tres etapas. Puedes cambiar o escalar cuando quieras.</p>
+
+    <div class="planes-grid">
+
+      <div class="plan">
+        <div class="plan-nom" style="color:#F0C040;">Independiente</div>
+        <div class="plan-perf">Para quien se monetiza a sí mismo</div>
+        <div class="plan-precio" style="color:#F0C040;"><span class="plan-n">20%</span><span class="plan-m">por venta</span></div>
+        <div class="plan-per">Sin mensualidad · Solo pagas cuando vendes</div>
+        <ul class="plan-items">
+          <li class="hi">Mapa de Procesos gratuito</li>
+          <li>Acceso a la Galería para explorar y comprar</li>
+          <li>Compra herramientas individuales sin membresía</li>
+          <li>Sube tus plantillas a la Galería registrándote</li>
+          <li>80% de cada venta es tuyo</li>
+        </ul>
+        <a href="https://app.datable.com.mx/registro" class="plan-btn" style="background:rgba(240,192,64,.1);color:#F0C040;border:1px solid rgba(240,192,64,.25);" target="_blank">Entrar a la Galería →</a>
+      </div>
+
+      <div class="plan feat">
+        <div class="plan-badge">Mayor potencial</div>
+        <div class="plan-nom" style="color:#2EFF7A;">Emprendedor · Afiliado</div>
+        <div class="plan-perf">Para quien construye y escala</div>
+        <div class="plan-precio" style="color:#2EFF7A;"><span class="plan-n">$499</span><span class="plan-m">MXN/mes</span></div>
+        <div class="plan-per">14 días de prueba incluidos</div>
+        <ul class="plan-items">
+          <li class="hi">Tienda completa lista desde el día 1</li>
+          <li class="hi">Acceso ilimitado a toda la Galería</li>
+          <li>Subcuenta con tu propia marca y logo</li>
+          <li>Refiere: 100% primera mensualidad</li>
+          <li>10% recurrente de por vida</li>
+          <li>80/20 en tu agencia independiente</li>
+          <li>Construye tu propio equipo de afiliados</li>
+        </ul>
+        <a href="https://app.datable.com.mx/emprendedor" class="plan-btn" style="background:linear-gradient(135deg,#0A3D1C,#2EFF7A);color:#0B1A0E;" target="_blank">Comenzar ahora →</a>
+        <div class="plan-nota">El plan con más opciones de retorno a menor inversión.</div>
+      </div>
+
+      <div class="plan">
+        <div class="plan-nom" style="color:#FF7A2E;">Empresario · Propietario</div>
+        <div class="plan-perf">Para quien ya tiene negocio operando</div>
+        <div class="plan-precio" style="color:#FF7A2E;"><span class="plan-n">$999</span><span class="plan-m">MXN/mes</span></div>
+        <div class="plan-per">Incluye implementación y afiliado asignado</div>
+        <ul class="plan-items">
+          <li class="hi">Todo lo del plan Emprendedor</li>
+          <li class="hi">Integración en tu negocio actual</li>
+          <li class="hi">Afiliado asignado en 48 horas</li>
+          <li>Monta, configura y entrega funcionando</li>
+          <li>Asesoría continua para tu operación</li>
+          <li>Asesorías adicionales en la Galería</li>
+        </ul>
+        <a href="https://app.datable.com.mx/empresario" class="plan-btn" style="background:rgba(255,122,46,.1);color:#FF7A2E;border:1px solid rgba(255,122,46,.25);" target="_blank">Quiero que lo monten →</a>
+        <div class="plan-nota">La diferencia es el servicio de implementación incluido.</div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ══ AFILIADOS ══ -->
+<section class="section reveal" id="afiliados">
+  <div class="section-inner">
+    <div class="sec-tag">Programa de afiliados</div>
+    <h2 class="sec-h">Cómo funciona el ciclo</h2>
+    <p class="sec-p">El modelo que hace que todos ganen y que el ecosistema crezca solo.</p>
+
+    <div class="ciclo-grid">
+      <div class="cpaso"><div class="cnum">PASO 01</div><div class="ctit">Te registras</div><div class="cdesc">Entras al plan Emprendedor a $499/mes. Recibes tu subcuenta con tu marca, lista para operar.</div></div>
+      <div class="cpaso"><div class="cnum">PASO 02</div><div class="ctit">Conoces el producto</div><div class="cdesc">Aprendes qué problema resuelve Datable y cómo presentarlo. No necesitas saber de tecnología.</div></div>
+      <div class="cpaso"><div class="cnum">PASO 03</div><div class="ctit">Se te asigna un cliente</div><div class="cdesc">Alguien elige el plan $999. Se te asigna con una carpeta con el perfil completo de su negocio.</div></div>
+      <div class="cpaso"><div class="cnum">PASO 04</div><div class="ctit">Contacto en 48 horas</div><div class="cdesc">Montas, configuras y entregas la plataforma funcionando y adaptada a su negocio específico.</div></div>
+      <div class="cpaso"><div class="cnum">PASO 05</div><div class="ctit">El cliente se queda</div><div class="cdesc">Queda registrado bajo tu nombre para siempre. Cobras recurrente mientras siga activo.</div></div>
+      <div class="cpaso"><div class="cnum">PASO 06</div><div class="ctit">Construyes tu equipo</div><div class="cdesc">Puedes tener tus propios afiliados bajo tu estructura. Tu red y tus ingresos crecen con ellos.</div></div>
+    </div>
+
+    <div class="ganas-grid">
+      <div class="gana"><div class="gana-n">100%</div><div class="gana-d">Primera mensualidad por cada cliente que implementas</div></div>
+      <div class="gana"><div class="gana-n">10%</div><div class="gana-d">Recurrente de por vida, sin tope ni vencimiento</div></div>
+      <div class="gana"><div class="gana-n">80%</div><div class="gana-d">De lo que facturas con tu agencia independiente</div></div>
+      <div class="gana"><div class="gana-n">80%</div><div class="gana-d">De cada servicio o plantilla vendida en la Galería</div></div>
+    </div>
+
+    <div style="text-align:center;">
+      <a href="https://app.datable.com.mx/emprendedor" class="btn-g" target="_blank">Quiero ser afiliado →</a>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ══ CTA FINAL ══ -->
+<section class="section reveal">
+  <div class="section-inner">
+    <div class="cta-wrap">
+      <h2>¿Identificaste tu punto de partida?<br>Tu siguiente paso está aquí.</h2>
+      <p>No importa si tienes negocio, si estás empezando o si quieres generar ingresos sin operación propia.</p>
+      <p>Datable tiene una entrada para cada etapa.</p>
+      <div class="cta-btns">
+        <a href="https://app.datable.com.mx/registro" class="btn-g" target="_blank">Comenzar ahora →</a>
+        <a href="https://app.datable.com.mx/embajadores" class="btn-o" target="_blank">Programa de afiliados</a>
+      </div>
+      <p class="cta-nota">Sin tarjeta de crédito · 14 días de prueba · Acceso inmediato</p>
+    </div>
+  </div>
+</section>
+
+<!-- ══ ASISTENTE ══ -->
+<button id="asib" onclick="toggleAsi()">💬</button>
+<div id="asip">
+  <div class="ash"><div class="asav">🤖</div><div><div class="asnm">Orientación Datable</div><div class="asst">● En línea</div></div></div>
+  <div id="asmsg" class="asmsg">Hola. ¿En qué puedo orientarte?</div>
+  <div class="asopts">
+    <button class="aso" onclick="asiR(this)">¿Qué es Datable?</button>
+    <button class="aso" onclick="asiR(this)">¿Qué plan me conviene?</button>
+    <button class="aso" onclick="asiR(this)">Quiero hablar con un asesor</button>
+    <button class="aso" onclick="asiR(this)">¿Cómo funciona el programa de afiliados?</button>
+  </div>
 </div>
 
-<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
-/* ══ MENU — declarado primero para evitar ReferenceError ══ */
-function toggleMenu(){
-  const d=document.getElementById('nav-drawer');
-  d.classList.toggle('on');
-  document.body.style.overflow=d.classList.contains('on')?'hidden':'';
+<script>
+/* RELOJ */
+function clk(){
+  const n=new Date(),p=x=>String(x).padStart(2,'0');
+  document.getElementById('ct').textContent=`${p(n.getHours())}:${p(n.getMinutes())}:${p(n.getSeconds())}`;
+  const ds=['Dom','Lun','Mar','Mié','Jue','Vie','Sáb'];
+  const ms=['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
+  document.getElementById('cd').textContent=`${ds[n.getDay()]} ${n.getDate()} ${ms[n.getMonth()]} ${n.getFullYear()}`;
 }
-function closeMenuBg(e){
-  if(e.target===document.getElementById('nav-drawer')) toggleMenu();
-}
+clk(); setInterval(clk,1000);
 
-/* ══ CANVAS FONDO ══ */
-const cv=document.getElementById('bgC'),ctx=cv.getContext('2d');
-let W,H;
-function rsz(){W=cv.width=window.innerWidth;H=cv.height=window.innerHeight}
-const blobs=[
-  {x:.1,y:.15,r:.4,c:'#FF00CC',p:0},{x:.85,y:.1,r:.33,c:'#00F0FF',p:1.2},
-  {x:.5,y:.7,r:.44,c:'#BF00FF',p:2.4},{x:.06,y:.8,r:.3,c:'#FF6B1A',p:3.6},
-  {x:.9,y:.6,r:.36,c:'#1DFF8A',p:4.8},{x:.42,y:.25,r:.28,c:'#FFE500',p:.6},
-  {x:.68,y:.9,r:.26,c:'#3D7EFF',p:1.8}
-];
-let t=0;
-function draw(){
-  ctx.clearRect(0,0,W,H);ctx.fillStyle='#04040F';ctx.fillRect(0,0,W,H);t+=.004;
-  blobs.forEach(b=>{
-    const px=(b.x+Math.sin(t+b.p)*.12)*W,py=(b.y+Math.cos(t*.72+b.p)*.1)*H;
-    const r=b.r*Math.min(W,H)*.72;
-    const g=ctx.createRadialGradient(px,py,0,px,py,r);
-    g.addColorStop(0,b.c+'1C');g.addColorStop(.45,b.c+'0B');g.addColorStop(1,'transparent');
-    ctx.fillStyle=g;ctx.beginPath();ctx.arc(px,py,r,0,Math.PI*2);ctx.fill();
-  });
-  requestAnimationFrame(draw);
-}
-rsz();draw();window.addEventListener('resize',rsz);
-
-/* ══ MARQUEE LIGHTS ══ */
-function makeLights(containerId, count){
-  const c=document.getElementById(containerId);
-  if(!c||c.dataset.lit)return;
-  c.dataset.lit='1';
-  // Clear previous
-  c.innerHTML='';
-  const btn=c.parentElement;
-  const rect_w=btn.offsetWidth||200;
-  const rect_h=btn.offsetHeight||52;
-  const total=Math.max(10,Math.round((rect_w*2+rect_h*2)/18));
-  const positions=[];
-  const steps=Math.ceil(total/4);
-  for(let i=0;i<steps;i++) positions.push({left:(i/(steps-1||1))*100+'%',top:'-7px'});
-  for(let i=1;i<steps;i++) positions.push({right:'-7px',top:(i/(steps-1||1))*100+'%'});
-  for(let i=steps-2;i>=0;i--) positions.push({left:(i/(steps-1||1))*100+'%',bottom:'-7px'});
-  for(let i=steps-2;i>0;i--) positions.push({left:'-7px',top:(i/(steps-1||1))*100+'%'});
-  positions.forEach((pos,idx)=>{
-    const s=document.createElement('span');
-    Object.assign(s.style,{position:'absolute',width:'7px',height:'7px',borderRadius:'50%',
-      background:'#fff',animationDelay:(idx*(1.2/positions.length))+'s',...pos});
-    c.appendChild(s);
-  });
-}
-
-function initAllLights(){
-  document.querySelectorAll('.btn-marquee .lights').forEach(el=>makeLights(el.id,14));
-}
-
-window.addEventListener('load',()=>{
-  initAllLights();
-  // Re-run after modal opens
-  const origOpen=window.openModal;
-  window.openModal=function(){origOpen&&origOpen();setTimeout(initAllLights,120);};
-});
-
-/* ══ SCROLL REVEAL ══ */
-const io=new IntersectionObserver(es=>es.forEach(e=>{
-  if(e.isIntersecting){e.target.classList.add('on');io.unobserve(e.target)}
-}),{threshold:.07,rootMargin:'0px 0px -40px 0px'});
-document.querySelectorAll('.rv').forEach(r=>io.observe(r));
-
-/* ══ AJOLOTE con IA real ══ */
-let ajoConversation=[];
-let ajoTyping=false;
-
-const ajoWelcomeMsgs=[
-  "¡Hola! 👋 Soy Axol, tu guía de d4tabl3. ¿Quieres un diagnóstico gratis de tu negocio? ¡Sin registro!",
-  "👆 ¿Tienes un minuto? Cuéntame cómo funciona tu negocio y te digo cómo mejorarlo.",
-  "🤔 ¿Tienes dudas sobre d4tabl3? ¡Pregúntame lo que sea!",
-  "💡 Muchos negocios como el tuyo ya se organizaron con nosotros. ¿Quieres saber cómo?",
-];
-let ajoWelcomeIdx=0;
-
-
-let axolIntroShown = false;
-let axolOpen = false;
-
-function axolMaybeIntro(){
-  if(axolIntroShown) return;
-  axolIntroShown = true;
-  // Remove listeners
-  window.removeEventListener('scroll', axolMaybeIntro);
-  window.removeEventListener('mousemove', axolMaybeIntro);
-  // Bounce in with sparkles after short delay
-  setTimeout(() => {
-    const btn = document.getElementById('axol-btn');
-    btn.classList.add('axol-bounce');
-    axolSparkBurst();
-    // Auto open intro after bounce
-    setTimeout(() => axolOpenBubble(), 900);
-  }, 600);
-}
-window.addEventListener('scroll', axolMaybeIntro, {once:true});
-window.addEventListener('mousemove', axolMaybeIntro, {once:true});
-
-function axolSparkBurst(){
-  const ring = document.getElementById('axol-sparks-ring');
-  const colors = ['#FF00CC','#FF6B1A','#FFE500','#1DFF8A','#00F0FF','#C400FF','#FF9EDB'];
-  for(let i = 0; i < 14; i++){
-    const dot = document.createElement('div');
-    dot.className = 'spark-dot';
-    const angle = (i / 14) * Math.PI * 2;
-    const dist = 40 + Math.random() * 24;
-    dot.style.cssText = `
-      left:50%;top:50%;
-      background:${colors[i % colors.length]};
-      box-shadow:0 0 6px ${colors[i % colors.length]};
-      --tx:${Math.cos(angle)*dist}px;
-      --ty:${Math.sin(angle)*dist}px;
-      animation-delay:${i*0.04}s;
-    `;
-    ring.appendChild(dot);
-    setTimeout(() => dot.remove(), 900);
+/* ACORDEÓN */
+function tp(idx){
+  for(let i=0;i<3;i++){
+    const el=document.getElementById('p'+i);
+    if(i===idx) el.classList.toggle('open');
+    else el.classList.remove('open');
   }
 }
 
-function axolOpenBubble(){
-  axolOpen = true;
-  const bubble = document.getElementById('axol-bubble');
-  bubble.classList.add('on');
-  // Hide notif dot
-  const notif = document.getElementById('axol-notif');
-  if(notif) notif.style.display = 'none';
-}
+/* SCROLL REVEAL */
+const obs=new IntersectionObserver(es=>{
+  es.forEach(e=>{ if(e.isIntersecting) e.target.classList.add('vis'); });
+},{threshold:.08});
+document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
 
-function axolClose(){
-  axolOpen = false;
-  document.getElementById('axol-bubble').classList.remove('on');
-}
-
-function axolToggle(){
-  if(axolOpen) axolClose();
-  else { axolSparkBurst(); axolOpenBubble(); }
-}
-
-function axolQuestion(q){
-  document.getElementById('axol-intro').style.display='none';
-  addAxolMsg(q, 'user');
-  axolThinkAndRespond(q);
-}
-
-function axolSend(){
-  const inp = document.getElementById('axol-input');
-  const msg = inp.value.trim();
-  if(!msg) return;
-  inp.value = '';
-  document.getElementById('axol-intro').style.display='none';
-  addAxolMsg(msg, 'user');
-  axolThinkAndRespond(msg);
-}
-
-function addAxolMsg(text, from){
-  const hist = document.getElementById('axol-chat-history');
-  const div = document.createElement('div');
-  div.className = from === 'user' ? 'axol-msg-user' : 'axol-msg-axol';
-  div.textContent = text;
-  hist.appendChild(div);
-  hist.scrollTop = hist.scrollHeight;
-}
-
-async function axolThinkAndRespond(userMsg){
-  const hist = document.getElementById('axol-chat-history');
-  const thinking = document.createElement('div');
-  thinking.className = 'axol-msg-axol';
-  thinking.textContent = '...';
-  hist.appendChild(thinking);
-  hist.scrollTop = hist.scrollHeight;
-
-  const SUPABASE_URL = 'https://vronhuwjuyitlxcabkme.supabase.co';
-  const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZyb25odXdqdXlpdGx4Y2Fia21lIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMxNDY0MzgsImV4cCI6MjA4ODcyMjQzOH0._Tp_y1JMZoNbNXbftMo1PCVm6h95VrlgcVF-vKIegbY';
-
-  try {
-    const resp = await fetch(`${SUPABASE_URL}/functions/v1/chat-claude`, {
-      method:'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${SUPABASE_KEY}`,
-        'apikey': SUPABASE_KEY
-      },
-      body: JSON.stringify({
-        max_tokens: 300,
-        system:`Eres Axolín, la mascota y guía interactiva de dªtªblɛ — una plataforma que digitaliza negocios pequeños y medianos en México. Tu personalidad: amigable, entusiasta, claro, directo, sin tecnicismos. Nunca menciones que eres IA. Tus respuestas son cortas (máx 3 frases). Si alguien quiere hablar con una persona, diles que pueden escribir a D4tabl3@gmail.com.`,
-        messages:[{role:'user', content: userMsg}]
-      })
-    });
-    const data = await resp.json();
-    const reply = data.content?.[0]?.text || 'Disculpa, tuve un problema. ¿Me repites tu pregunta?';
-    thinking.textContent = reply;
-  } catch(e) {
-    thinking.textContent = '¡Ups! Algo falló. Escríbenos directo a D4tabl3@gmail.com 😊';
-  }
-  hist.scrollTop = hist.scrollHeight;
-}
-
-
-
-/* ══ MODAL ══ */
-function openModal(){
-  document.getElementById('ov').classList.add('on');
-  document.body.style.overflow='hidden';
-  resetM();
-  setTimeout(()=>makeLights('modal-lights',14),100);
-}
-function openModalWithText(){
-  const txt=document.getElementById('hero-ta').value.trim();
-  openModal();
-  if(txt){
-    setTimeout(()=>{document.getElementById('desc').value=txt},100);
-  }
-}
-function closeModal(){document.getElementById('ov').classList.remove('on');document.body.style.overflow=''}
-function closeBg(e){if(e.target===document.getElementById('ov'))closeModal()}
-function resetM(){
-  document.getElementById('m-up').style.display='block';
-  document.getElementById('m-load').classList.remove('on');
-  document.getElementById('m-res').classList.remove('on');
-  document.getElementById('desc').value='';
-  ['d1','d2','d3','d4','d5'].forEach(id=>{
-    const el=document.getElementById(id);
-    el.classList.remove('done','act');
-    el.querySelector('.dstep-i').textContent='○';
-  });
-}
-function dov(e){e.preventDefault();document.getElementById('dz').classList.add('drag')}
-function dol(){document.getElementById('dz').classList.remove('drag')}
-function ddr(e){e.preventDefault();dol();startDiag()}
-
-function startDiag(){
-  const desc=document.getElementById('desc').value.trim();
-  const file=document.getElementById('fi').files[0];
-  if(!desc&&!file){
-    const ta=document.getElementById('desc');ta.focus();
-    ta.style.borderColor='var(--mg)';ta.placeholder='👆 Cuéntanos algo de tu negocio aquí...';
-    setTimeout(()=>ta.style.borderColor='',1500);return;
-  }
-  document.getElementById('m-up').style.display='none';
-  document.getElementById('m-load').classList.add('on');
-
-  // Animate steps while AI processes
-  const seq=[{id:'d1',d:400},{id:'d2',d:900},{id:'d3',d:1500},{id:'d4',d:2100},{id:'d5',d:2700}];
-  let prev=null;
-  seq.forEach(({id,d})=>setTimeout(()=>{
-    if(prev){const p=document.getElementById(prev);p.classList.remove('act');p.classList.add('done');p.querySelector('.dstep-i').textContent='✓'}
-    const cur=document.getElementById(id);cur.classList.add('act');cur.querySelector('.dstep-i').textContent='·';prev=id;
-  },d));
-
-  // Call real Claude AI
-  runAIDiagnosis(desc, file).then(result=>{
-    const last=document.getElementById('d5');last.classList.remove('act');last.classList.add('done');last.querySelector('.dstep-i').textContent='✓';
-    document.getElementById('r-score').textContent=result.score;
-    document.getElementById('r-niv').textContent=result.nivel;
-    document.getElementById('r-niv').style.color=result.score>70?'var(--mg)':result.score>50?'var(--yw)':'var(--gn)';
-    document.getElementById('r-areas').textContent=result.areas.length+' cosas que mejorar';
-    renderDiagFull(result);
-    document.getElementById('m-load').classList.remove('on');
-    document.getElementById('m-res').classList.add('on');
-    document.getElementById('fase-diag').style.display='block';
-    document.getElementById('fase-elige').style.display='none';
-    document.getElementById('fase-activa').style.display='none';
-    lastDiagResult = result;
-    setTimeout(()=>initAllLights(),100);
-  }).catch(()=>{
-    // Fallback to static result
-    const last=document.getElementById('d5');last.classList.remove('act');last.classList.add('done');last.querySelector('.dstep-i').textContent='✓';
-    showStaticResult();
-  });
-}
-
-async function runAIDiagnosis(desc, file){
-  let userContent = `Analiza este negocio y dame un diagnóstico: "${desc}"`;
-  let messages = [{role:'user', content: userContent}];
-
-  // Si envían imagen
-  if(file && file.type.startsWith('image/')){
-    const b64 = await new Promise(res=>{const r=new FileReader();r.onload=()=>res(r.result.split(',')[1]);r.readAsDataURL(file);});
-    messages = [{role:'user', content:[
-      {type:'image', source:{type:'base64', media_type:file.type, data:b64}},
-      {type:'text', text: userContent || 'Analiza esta imagen de mi negocio y dame un diagnóstico.'}
-    ]}];
-  }
-
-  // Llamada SEGURA a Supabase
-  const SUPABASE_URL = 'https://vronhuwjuyitlxcabkme.supabase.co';
-  const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZyb25odXdqdXlpdGx4Y2Fia21lIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMxNDY0MzgsImV4cCI6MjA4ODcyMjQzOH0._Tp_y1JMZoNbNXbftMo1PCVm6h95VrlgcVF-vKIegbY';
-
-  const res = await fetch(`${SUPABASE_URL}/functions/v1/chat-claude`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${SUPABASE_KEY}`,
-      'apikey': SUPABASE_KEY
-    },
-    body: JSON.stringify({
-      max_tokens: 1000,
-      system: `Eres consultor experto de digitalización de d4tabl3, especializado en negocios pequeños mexicanos. Haces diagnósticos REALES y PERSONALIZADOS, como un experto con 20 años de experiencia.
-REGLAS:
-- NUNCA des respuestas genéricas. Cada diagnóstico debe ser específico para el negocio descrito.
-- Calcula impacto real: estima cuánto dinero/tiempo pierde al mes por cada problema.
-- Habla en español mexicano cálido y directo.
-Responde SOLO con JSON válido sin markdown:
-{
-  "score": número 45-92,
-  "nivel": "Alto" | "Medio-Alto" | "Medio",
-  "tipo_negocio": "nombre corto del negocio",
-  "narrativa": "3-4 oraciones personalizadas.",
-  "areas":[{"problema": "...", "impacto": "...", "urgencia": "Urgente" | "Alto" | "Medio"}],
-  "herramienta_recomendada": "flyer" | "pagina" | "crm",
-  "herramienta_razon": "1 oración del por qué."
-}`,
-      messages
-    })
-  });
-  const data = await res.json();
-  const text = data.content?.[0]?.text || '{}';
-  return JSON.parse(text.replace(/```json|```/g,'').trim());
-}
-
-function showStaticResult(){
-  document.getElementById('r-score').textContent=68;
-  document.getElementById('r-niv').textContent='Medio-Alto';
-  document.getElementById('r-niv').style.color='var(--yw)';
-  document.getElementById('r-areas').textContent='4 cosas que mejorar';
-  const items=[
-    {problema:'Seguimiento de clientes',urgencia:'Urgente'},
-    {problema:'Información en varios lugares',urgencia:'Alto'},
-    {problema:'Tareas repetitivas manuales',urgencia:'Alto'},
-    {problema:'Todo depende de una persona',urgencia:'Medio'},
-  ];
-  const staticResult = {
-    score:68, nivel:'Medio-Alto', tipo_negocio:'Negocio pequeño',
-    narrativa:'Tu negocio tiene potencial real de crecer, pero hay procesos que te están costando tiempo y clientes cada mes. Sin un sistema de seguimiento, es fácil perder ventas que ya estaban casi cerradas. Digitalizar los puntos clave puede liberarte horas cada semana y ayudarte a crecer sin depender todo el tiempo de ti.',
-    areas:items.map(i=>({...i, impacto:'Revisa con tu equipo el impacto mensual de esta área'})),
-    herramienta_recomendada:'flyer',
-    herramienta_razon:'La promoción digital es el punto de entrada más rápido para conseguir nuevos clientes.'
-  };
-  renderDiagFull(staticResult);
-  document.getElementById('m-load').classList.remove('on');
-  document.getElementById('m-res').classList.add('on');
-  document.getElementById('fase-diag').style.display='block';
-  document.getElementById('fase-elige').style.display='none';
-  document.getElementById('fase-activa').style.display='none';
-  lastDiagResult = staticResult;
-  setTimeout(()=>initAllLights(),100);
-}
-
-
-/* ══ RENDER DIAGNÓSTICO COMPLETO PERSONALIZADO ══ */
-function renderDiagFull(result){
-  const colors=['var(--mg)','var(--cy)','var(--yw)','var(--gn)','var(--or)'];
-  const bgs=['rgba(255,0,204,','rgba(0,240,255,','rgba(255,229,0,','rgba(29,255,138,','rgba(255,107,26,'];
-
-  // Score y nivel
-  const scoreEl = document.getElementById('r-score');
-  if(scoreEl) scoreEl.textContent = result.score || '';
-  const nivEl = document.getElementById('r-niv');
-  if(nivEl){ nivEl.textContent = result.nivel || ''; nivEl.style.color = result.score > 70 ? 'var(--mg)' : result.score > 55 ? 'var(--yw)' : 'var(--gn)'; }
-  const areasEl = document.getElementById('r-areas');
-  if(areasEl) areasEl.textContent = (result.areas?.length || 0) + ' áreas identificadas';
-
-  // Tipo de negocio
-  const tipoEl = document.getElementById('r-tipo');
-  if(tipoEl && result.tipo_negocio) tipoEl.textContent = result.tipo_negocio;
-
-  // Narrativa personalizada
-  const narEl = document.getElementById('r-narrativa');
-  if(narEl && result.narrativa) narEl.innerHTML = '💬 ' + result.narrativa;
-
-  // Áreas con impacto
-  document.getElementById('r-items').innerHTML = (result.areas||[]).map((a,i)=>{
-    const c=colors[i%colors.length]; const bg=bgs[i%bgs.length];
-    return `<div class="res-ri" style="margin-bottom:8px;flex-direction:column;align-items:flex-start;gap:4px">
-      <div style="display:flex;align-items:center;gap:8px;width:100%">
-        <div class="ri-dot" style="background:${c}"></div>
-        <div class="ri-lbl" style="font-weight:600">${a.problema}</div>
-        <div class="ri-pill" style="border-color:${c};color:${c};background:${bg}.08);margin-left:auto">${a.urgencia}</div>
-      </div>
-      ${a.impacto ? `<div style="font-size:.75rem;color:rgba(255,255,255,.5);padding-left:18px;line-height:1.4">→ ${a.impacto}</div>` : ''}
-    </div>`;
-  }).join('');
-
-  // Herramienta recomendada
-  const herramientaMap = {
-    'flyer': '🎨 Te preparamos un <strong style="color:var(--yw)">flyer/tarjeta digital</strong> personalizado para que empieces a promocionarte hoy mismo en redes sociales.',
-    'pagina': '🌐 Te armamos una <strong style="color:var(--cy)">mini página de tu negocio</strong> con tu info, servicios y contacto — lista para compartir.',
-    'crm': '👥 Te activamos un <strong style="color:var(--mg)">registro de clientes</strong> donde puedes llevar el control de quién te debe, quién sigue activo y quién necesita seguimiento.'
-  };
-  const recEl = document.getElementById('r-herramienta-rec');
-  if(recEl){
-    const h = result.herramienta_recomendada || 'flyer';
-    recEl.innerHTML = (herramientaMap[h] || herramientaMap['flyer']) +
-      (result.herramienta_razon ? `<div style="margin-top:5px;color:rgba(255,255,255,.5);font-size:.75rem">${result.herramienta_razon}</div>` : '');
-  }
-}
-
-/* ══ RENDER DIAG ITEMS (fallback) ══ */
-function renderDiagItems(areas){
-  renderDiagFull({areas});
-}
-
-/* ══ FASE 2: mostrar opciones de herramientas ══ */
-function mostrarFase2(){
-  document.getElementById('fase-diag').style.display='none';
-  document.getElementById('fase-elige').style.display='block';
-  const areas = lastDiagResult?.areas || [];
-  const colors=['var(--mg)','var(--cy)','var(--yw)','var(--gn)','var(--or)'];
-  const bgs=['rgba(255,0,204,','rgba(0,240,255,','rgba(255,229,0,','rgba(29,255,138,','rgba(255,107,26,'];
-  // Show first 2 as clickable, rest blurred
-  document.getElementById('r-items-elige').innerHTML = areas.map((a,i)=>{
-    const c=colors[i%colors.length]; const bg=bgs[i%bgs.length];
-    if(i < 2){
-      return `<div class="res-ri" style="cursor:pointer;border:1.5px solid ${c};background:${bg}.06);margin-bottom:8px;transition:all .2s" onclick="elegirHerramienta(${i})" onmouseover="this.style.transform='translateX(4px)'" onmouseout="this.style.transform=''">
-        <div class="ri-dot" style="background:${c}"></div>
-        <div class="ri-lbl" style="color:#fff;font-weight:600">${a.problema}</div>
-        <div style="font-size:.72rem;color:${c};font-weight:700;flex-shrink:0">Elegir →</div>
-      </div>`;
-    } else {
-      return `<div class="res-ri blurred" style="margin-bottom:7px">
-        <div class="ri-dot" style="background:${c}"></div>
-        <div class="ri-lbl">${a.problema}</div>
-        <div class="ri-pill" style="border-color:${c};color:${c};background:${bg}.08)">${a.urgencia}</div>
-      </div>`;
-    }
-  }).join('');
-}
-
-/* ══ FASE 3: herramienta elegida ══ */
-function elegirHerramienta(idx){
-  const areas = lastDiagResult?.areas || [];
-  const area = areas[idx] || areas[0];
-  document.getElementById('fase-elige').style.display='none';
-  document.getElementById('fase-activa').style.display='block';
-
-  const areaText = (area.problema || '').toLowerCase();
-  let tool;
-
-  if(areaText.includes('cita') || areaText.includes('agenda') || areaText.includes('horario') || areaText.includes('clase')){
-    tool = {
-      icon:'📅', name:'Agenda de citas y clases',
-      preview:`<div style="background:rgba(0,0,0,.3);border-radius:10px;padding:12px;font-size:.8rem">
-        <div style="color:var(--cy);font-weight:700;margin-bottom:8px">📅 Tu agenda activada</div>
-        <div style="display:flex;flex-direction:column;gap:5px">
-          <div style="background:rgba(255,255,255,.06);border-radius:7px;padding:7px 10px;display:flex;justify-content:space-between"><span>10:00 AM — Clase/Cita nueva</span><span style="color:var(--gn)">✓ Confirmada</span></div>
-          <div style="background:rgba(255,255,255,.06);border-radius:7px;padding:7px 10px;display:flex;justify-content:space-between"><span>12:30 PM — Seguimiento</span><span style="color:var(--yw)">⏳ Pendiente</span></div>
-          <div style="background:rgba(255,255,255,.04);border-radius:7px;padding:7px 10px;text-align:center;font-size:.73rem;color:rgba(255,255,255,.35)">+ más citas al registrarte...</div>
-        </div>
-      </div>`
-    };
-  } else if(areaText.includes('pago') || areaText.includes('cobro') || areaText.includes('venta') || areaText.includes('ingreso')){
-    tool = {
-      icon:'💳', name:'Sistema de pagos y cobros',
-      preview:`<div style="background:rgba(0,0,0,.3);border-radius:10px;padding:12px;font-size:.8rem">
-        <div style="color:var(--gn);font-weight:700;margin-bottom:8px">💳 Panel de pagos activado</div>
-        <div style="display:flex;gap:8px;margin-bottom:8px">
-          <div style="flex:1;background:rgba(29,255,138,.08);border:1px solid rgba(29,255,138,.2);border-radius:8px;padding:8px;text-align:center"><div style="font-weight:800;color:var(--gn)">$0</div><div style="font-size:.68rem;color:var(--mu)">Hoy</div></div>
-          <div style="flex:1;background:rgba(0,240,255,.06);border-radius:8px;padding:8px;text-align:center;filter:blur(3px)"><div style="font-weight:800">···</div><div style="font-size:.68rem;color:var(--mu)">Semana</div></div>
-          <div style="flex:1;background:rgba(255,229,0,.06);border-radius:8px;padding:8px;text-align:center;filter:blur(3px)"><div style="font-weight:800">···</div><div style="font-size:.68rem;color:var(--mu)">Mes</div></div>
-        </div>
-        <div style="font-size:.72rem;color:rgba(255,255,255,.4)">Regístrate para ingresar tus primeros cobros →</div>
-      </div>`
-    };
-  } else if(areaText.includes('client') || areaText.includes('seguimiento') || areaText.includes('contacto')){
-    tool = {
-      icon:'👥', name:'Lista de clientes (CRM básico)',
-      preview:`<div style="background:rgba(0,0,0,.3);border-radius:10px;padding:12px;font-size:.8rem">
-        <div style="color:var(--mg);font-weight:700;margin-bottom:8px">👥 Tu CRM activado</div>
-        <div style="display:flex;flex-direction:column;gap:5px">
-          <div style="background:rgba(255,255,255,.06);border-radius:7px;padding:7px 10px;display:flex;align-items:center;gap:8px">
-            <div style="width:26px;height:26px;border-radius:50%;background:linear-gradient(135deg,var(--mg),var(--pu));display:flex;align-items:center;justify-content:center;font-weight:800;font-size:.8rem">C</div>
-            <div><div style="font-weight:600">Cliente de ejemplo</div><div style="font-size:.7rem;color:var(--mu)">Sin seguimiento aún</div></div>
-            <div style="margin-left:auto;font-size:.7rem;color:var(--yw)">⚠ Nuevo</div>
-          </div>
-          <div style="background:rgba(255,255,255,.04);border-radius:7px;padding:7px 10px;text-align:center;font-size:.73rem;color:rgba(255,255,255,.35)">+ tus clientes reales al registrarte...</div>
-        </div>
-      </div>`
-    };
-  } else {
-    tool = {
-      icon:'⚡', name:'Panel de organización',
-      preview:`<div style="background:rgba(0,0,0,.3);border-radius:10px;padding:12px;font-size:.8rem">
-        <div style="color:var(--cy);font-weight:700;margin-bottom:8px">⚡ Panel activado</div>
-        <div style="display:flex;flex-direction:column;gap:5px">
-          <div style="background:rgba(255,255,255,.06);border-radius:7px;padding:7px 10px">✓ Área 1 — lista para organizar</div>
-          <div style="background:rgba(255,255,255,.06);border-radius:7px;padding:7px 10px">✓ Área 2 — configurando...</div>
-          <div style="background:rgba(255,255,255,.04);border-radius:7px;padding:7px 10px;text-align:center;font-size:.73rem;color:rgba(255,255,255,.35)">+ más al registrarte...</div>
-        </div>
-      </div>`
-    };
-  }
-
-  const expiry = Date.now() + (48*60*60*1000);
-
-  // Determine tipo for herramienta.html routing
-  let tipo = 'crm';
-  if(tool.icon === '📅') tipo = 'agenda';
-  else if(tool.icon === '💳') tipo = 'pagos';
-  else if(tool.icon === '👥') tipo = 'crm';
-  else tipo = 'flyer';
-
-  localStorage.setItem('d4tabl3_free_tool', JSON.stringify({title:tool.name, expiry, diag:lastDiagResult, tipo}));
-  document.getElementById('activation-result').innerHTML =
-    `<strong style="color:#fff;font-size:.95rem">${tool.icon} ${tool.name}</strong>
-    <div style="font-size:.78rem;color:rgba(255,255,255,.5);margin-top:4px;margin-bottom:10px">Regístrate para activarla con tus datos reales</div>
-    ${tool.preview}`;
-  setTimeout(()=>initAllLights(), 100);
-}
-
-/* ══ FILE PREVIEW ══ */
-function previewFile(){
-  const fi = document.getElementById('fi');
-  const file = fi.files[0];
-  if(!file) return;
-  const preview = document.getElementById('dz-preview');
-  const img = document.getElementById('dz-img');
-  const fname = document.getElementById('dz-fname');
-  const hint = document.getElementById('dz-hint');
-  const icon = document.getElementById('dz-icon');
-  preview.style.display = 'block';
-  hint.style.display = 'none';
-  icon.style.display = 'none';
-  fname.textContent = '✅ ' + file.name;
-  if(file.type.startsWith('image/')){
-    const reader = new FileReader();
-    reader.onload = e => { img.src = e.target.result; img.style.display = 'block'; };
-    reader.readAsDataURL(file);
-  } else {
-    img.style.display = 'none';
-  }
-}
-
-function clearFile(){
-  document.getElementById('fi').value = '';
-  document.getElementById('dz-preview').style.display = 'none';
-  document.getElementById('dz-hint').style.display = 'block';
-  document.getElementById('dz-icon').style.display = 'block';
-  document.getElementById('dz-img').src = '';
-}
-
-/* ══ ACTIVATION & CONVERSION FLOW ══ */
-let lastDiagResult = null;
-
-function activateInstantSolution(diagResult) {
-  lastDiagResult = diagResult;
-  const areas = (diagResult?.areas||[]).map(a=>a.problema?.toLowerCase()).join(' ');
-  
-  // Pick the best matching tool
-  let tool;
-  if(areas.includes('cita') || areas.includes('agenda')){
-    tool = {
-      icon:'📅', name:'Agenda de citas',
-      preview:`<div style="background:rgba(0,0,0,.3);border-radius:10px;padding:12px;font-size:.8rem;margin-top:8px">
-        <div style="color:var(--cy);font-weight:700;margin-bottom:8px">📅 Tu agenda de citas</div>
-        <div style="display:flex;flex-direction:column;gap:6px">
-          <div style="background:rgba(255,255,255,.06);border-radius:7px;padding:7px 10px;display:flex;justify-content:space-between"><span>10:00 AM — Cliente nuevo</span><span style="color:var(--gn)">✓ Confirmado</span></div>
-          <div style="background:rgba(255,255,255,.06);border-radius:7px;padding:7px 10px;display:flex;justify-content:space-between"><span>12:30 PM — Seguimiento</span><span style="color:var(--yw)">⏳ Pendiente</span></div>
-          <div style="background:rgba(255,255,255,.06);border-radius:7px;padding:7px 10px;display:flex;justify-content:space-between;filter:blur(3px)"><span>3:00 PM — Consulta</span><span>···</span></div>
-        </div>
-        <div style="margin-top:8px;font-size:.72rem;color:rgba(255,255,255,.4)">Regístrate para ver y editar tu agenda completa →</div>
-      </div>`
-    };
-  } else if(areas.includes('venta') || areas.includes('ingreso') || areas.includes('dinero')){
-    tool = {
-      icon:'💰', name:'Registro de ventas',
-      preview:`<div style="background:rgba(0,0,0,.3);border-radius:10px;padding:12px;font-size:.8rem;margin-top:8px">
-        <div style="color:var(--gn);font-weight:700;margin-bottom:8px">💰 Tu registro de ventas</div>
-        <div style="display:flex;gap:8px;margin-bottom:8px">
-          <div style="flex:1;background:rgba(29,255,138,.08);border:1px solid rgba(29,255,138,.2);border-radius:8px;padding:8px;text-align:center"><div style="font-weight:800;color:var(--gn)">$0</div><div style="font-size:.68rem;color:var(--mu)">Hoy</div></div>
-          <div style="flex:1;background:rgba(0,240,255,.08);border:1px solid rgba(0,240,255,.2);border-radius:8px;padding:8px;text-align:center;filter:blur(3px)"><div style="font-weight:800;color:var(--cy)">$···</div><div style="font-size:.68rem;color:var(--mu)">Esta semana</div></div>
-          <div style="flex:1;background:rgba(255,229,0,.08);border:1px solid rgba(255,229,0,.2);border-radius:8px;padding:8px;text-align:center;filter:blur(3px)"><div style="font-weight:800;color:var(--yw)">$···</div><div style="font-size:.68rem;color:var(--mu)">Este mes</div></div>
-        </div>
-        <div style="font-size:.72rem;color:rgba(255,255,255,.4)">Regístrate para registrar tus primeras ventas →</div>
-      </div>`
-    };
-  } else {
-    tool = {
-      icon:'👥', name:'Lista de clientes (CRM)',
-      preview:`<div style="background:rgba(0,0,0,.3);border-radius:10px;padding:12px;font-size:.8rem;margin-top:8px">
-        <div style="color:var(--mg);font-weight:700;margin-bottom:8px">👥 Tu lista de clientes</div>
-        <div style="display:flex;flex-direction:column;gap:5px">
-          <div style="background:rgba(255,255,255,.06);border-radius:7px;padding:7px 10px;display:flex;align-items:center;gap:9px">
-            <div style="width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,var(--mg),var(--pu));display:flex;align-items:center;justify-content:center;font-size:.8rem;font-weight:800">C</div>
-            <div><div style="font-weight:600">Cliente nuevo</div><div style="font-size:.7rem;color:var(--mu)">Sin seguimiento aún</div></div>
-            <div style="margin-left:auto;font-size:.7rem;color:var(--yw)">⚠ Nuevo</div>
-          </div>
-          <div style="background:rgba(255,255,255,.06);border-radius:7px;padding:7px 10px;display:flex;align-items:center;gap:9px;filter:blur(3px)">
-            <div style="width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,var(--cy),var(--bl));display:flex;align-items:center;justify-content:center;font-weight:800">R</div>
-            <div><div>···</div><div style="font-size:.7rem">···</div></div>
-          </div>
-        </div>
-        <div style="margin-top:8px;font-size:.72rem;color:rgba(255,255,255,.4)">Regístrate para agregar tus clientes reales →</div>
-      </div>`
-    };
-  }
-
-  const expiry = Date.now() + (48*60*60*1000);
-
-  // Determine tipo for herramienta.html routing
-  let tipo = 'crm';
-  if(tool.icon === '📅') tipo = 'agenda';
-  else if(tool.icon === '💰') tipo = 'pagos';
-  else if(tool.icon === '👥') tipo = 'crm';
-  else tipo = 'flyer';
-
-  localStorage.setItem('d4tabl3_free_tool', JSON.stringify({title:tool.name,expiry,diag:diagResult,tipo}));
-
-  document.getElementById('activation-result').innerHTML = 
-    `<strong style="color:#fff">${tool.icon} ${tool.name}</strong> — lista para ti<br>
-    <span style="font-size:.78rem;color:rgba(255,255,255,.55)">Haz clic en el botón para abrirla →</span>
-    ${tool.preview}`;
-}
-
-function goRegister() {
-  // Save diagnosis to pass to herramienta
-  const toolData = (() => { try { return JSON.parse(localStorage.getItem('d4tabl3_free_tool')||'{}'); } catch(e){ return {}; } })();
-  const diagResult = lastDiagResult || toolData.diag || null;
-  if (diagResult) {
-    localStorage.setItem('d4tabl3_pending_diag', JSON.stringify(diagResult));
-  }
-
-  // Generate unique client code
-  const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
-  let code = 'D4T-';
-  for(let i=0;i<4;i++) code += chars[Math.floor(Math.random()*chars.length)];
-
-  // Get the tool type selected
-  const tipo = toolData.tipo || 'flyer';
-
-  // Redirect to herramienta.html with code and tipo
-  window.location.href = `herramienta.html?code=${code}&tipo=${tipo}`;
-}
-
-/* ══ DETECCIÓN AUTOMÁTICA DE IDIOMA ══ */
-const i18n = {
-  en: {
-    eyebrow: "Business organization specialists · Results in 30 seconds",
-    h1_white: "Your business can",
-    h1_grad: "run itself.",
-    hero_p: "Send us a photo, spreadsheet, or describe how you work today. <strong>In 30 seconds we tell you exactly what's failing</strong> and how to fix it. No jargon, no meetings, no cost.",
-    ucard_title: "Send us whatever you have",
-    ucard_sub: "A photo of your schedule, your spreadsheet, a business photo, a handwritten note — anything works. Or just tell us how your business runs.",
-    stat1: "To see your diagnosis", stat2: "Cost of analysis", stat3: "Made for your business", stat4: "Businesses analyzed",
-    nav_login: "Sign in", nav_cta: "Free analysis ⚡",
-    modal_t: "⚡ Your free analysis", modal_s: "No sign up · No credit card · Results in 30 seconds",
-    ajo: ["Hi! 👋 I'm Axol, your d4tabl3 guide. Want to know what's failing in your business? It's free!",
-          "👆 Got a minute? Tell me about your business and I'll show you how to improve it.",
-          "🤔 Questions about d4tabl3? Ask me anything!",
-          "💡 Many businesses like yours already organized with us. Want to know how?"]
-  }
+/* ASISTENTE */
+function toggleAsi(){ document.getElementById('asip').classList.toggle('open'); }
+const ASI={
+  '¿Qué es Datable?':'Datable digitaliza y automatiza tu negocio con las herramientas en el orden correcto según tu etapa. Funciona sobre GoHighLevel — una de las plataformas más completas del mercado.',
+  '¿Qué plan me conviene?':'Si ya tienes negocio → plan Empresario $999. Si estás construyendo o quieres ingresos como afiliado → plan Emprendedor $499. Si solo necesitas herramientas puntuales → entra a la Galería sin mensualidad.',
+  'Quiero hablar con un asesor':'Con gusto. Sin presión de compra. Escríbenos a través de app.datable.com.mx y un asesor te contactará.',
+  '¿Cómo funciona el programa de afiliados?':'Te registras a $499/mes, recibes tu subcuenta propia y empiezas a referir clientes. Ganas 100% de la primera mensualidad + 10% recurrente de por vida. Además puedes operar tu agencia propia y vender en la Galería.'
 };
-
-function applyLang(){
-  const lang = (navigator.language||'es').toLowerCase().startsWith('en') ? 'en' : 'es';
-  document.documentElement.lang = lang;
-  if(lang === 'es') return;
-  const t = i18n.en;
-  const q = s => document.querySelector(s);
-  const qa = s => document.querySelectorAll(s);
-  if(q('.h1-wh')) q('.h1-wh').textContent = t.h1_white;
-  if(q('.h1-grad')) q('.h1-grad').textContent = t.h1_grad;
-  if(q('.hero-p')) q('.hero-p').innerHTML = t.hero_p;
-  if(q('.eyebrow')) q('.eyebrow').innerHTML = '&#11044;&nbsp; ' + t.eyebrow;
-  if(q('.ucard-title')) q('.ucard-title').textContent = t.ucard_title;
-  if(q('.ucard-sub')) q('.ucard-sub').textContent = t.ucard_sub;
-  qa('.hs-l').forEach((el,i) => { const s=[t.stat1,t.stat2,t.stat3,t.stat4]; if(s[i]) el.textContent=s[i]; });
-  qa('.nav-r a.btn-ghost').forEach(el => el.textContent = t.nav_login);
-  if(q('.modal-t')) q('.modal-t').innerHTML = t.modal_t;
-  if(q('.modal-s')) q('.modal-s').textContent = t.modal_s;
-  window.ajoWelcomeMsgs = t.ajo;
-}
-document.addEventListener('DOMContentLoaded', applyLang);
-
-
-/* ══ LOGO SPARKS CIRCUS ANIMATION ══ */
-
-
-/* ══ ADMIN SESSION CHECK ══ */
-(function(){
-  const session = localStorage.getItem('d4tabl3_session');
-  if(session){
-    try {
-      const data = JSON.parse(session);
-      if(data.role === 'admin'){
-        const adminLink = document.getElementById('drawer-admin');
-        if(adminLink) adminLink.style.display = 'block';
-        const loginLink = document.getElementById('drawer-login');
-        if(loginLink) loginLink.textContent = '→ Mi panel';
-      }
-    } catch(e){}
-  }
-})();
+function asiR(btn){ document.getElementById('asmsg').textContent=ASI[btn.textContent]||'Visita app.datable.com.mx'; }
 </script>
 </body>
 </html>
