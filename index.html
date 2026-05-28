@@ -569,18 +569,21 @@ async function analizarRespuestas() {
   cont.innerHTML = `<div class="typing-dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div><span style="margin-left:8px">Analizando tu situación...</span></div>`;
 
   try {
-    const resp = await fetch("https://api.anthropic.com/v1/messages", {
+    const resp = await fetch("https://vronhuwjuyitlxcabkme.supabase.co/functions/v1/chat-claude", {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZyb25odXdqdXlpdGx4Y2Fia21lIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDM2MjM4MDQsImV4cCI6MjA1OTE5OTgwNH0.p0bFMCsP6UFRM6BVNF5bpnJjkAeFPlVMPDJjnKtWpds"
+      },
       body: JSON.stringify({
-        model: "claude-sonnet-4-20250514",
+        model: "claude-sonnet-4-5",
         max_tokens: 800,
         system: systemPrompt,
         messages: [{ role: 'user', content: contexto }]
       })
     });
     const data = await resp.json();
-    const respuesta = data.content?.[0]?.text || "Un momento por favor...";
+    const respuesta = data.content?.[0]?.text || data.message || "Un momento por favor...";
 
     cont.innerHTML = `<div class="resultado-area">
       <div class="resultado-texto">${respuesta}</div>
